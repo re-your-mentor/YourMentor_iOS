@@ -24,7 +24,7 @@ struct IncomingProfile: View {
             .resizable()
             .renderingMode(.original)
             .clipShape(Circle())
-            .frame(maxWidth: 75, maxHeight: 55)
+            .frame(maxWidth: 55, maxHeight: 55)
     }
 }
 
