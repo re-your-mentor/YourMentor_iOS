@@ -16,7 +16,7 @@ struct OutgoingBubble: View {
                 .foregroundColor(.white)
                 .padding(.vertical, 10)
                 .padding(.horizontal, 20)
-//                .frame(maxWidth: 300)
+                .fixedSize(horizontal: false, vertical: true)
                 .background(
                     ZStack(alignment: .bottomTrailing) {
                         RoundedRectangle(cornerRadius: 20)

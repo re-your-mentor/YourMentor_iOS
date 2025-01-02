@@ -15,7 +15,7 @@ struct ChatCell: View {
             VStack(spacing: 3) {
                 Text(title)
                     .font(.system(size: 20))
-                    .fontWeight(.semibold)
+                    .foregroundColor(.black)
                     .frame(maxWidth: .infinity, maxHeight: 20, alignment: .leading)
             }
             HStack {

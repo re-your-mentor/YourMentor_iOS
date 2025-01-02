@@ -17,6 +17,7 @@ struct Hashtag: View {
                 Text(title)
             }
             .font(.system(size: 13))
+            .foregroundColor(.black)
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 7)

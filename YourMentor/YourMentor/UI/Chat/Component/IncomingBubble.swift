@@ -35,5 +35,5 @@ struct IncomingBubble: View {
 
 
 #Preview {
-    IncomingBubble(char: "그 누구보다 빠르게 남들과는 다르게 색다르게 리듬을 타는 비트위의 나그네")
+    IncomingBubble(char: "안녕하세요")
 }
