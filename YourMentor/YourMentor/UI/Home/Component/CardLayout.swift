@@ -18,7 +18,7 @@ struct CardLayout: View {
                     Hashtag(title: "SwiftUI")
                 }
             }
-            .padding(.top, 100)
+            .padding(.top, 90)
             .padding(.trailing, 27)
             .frame(maxWidth: 265, maxHeight: 140)
             .background(
@@ -42,6 +42,7 @@ struct CardLayout: View {
                     .foregroundColor(.gray)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
+                .padding(.top, 5)
                 .padding(.leading, 7)
                 Spacer()
             }

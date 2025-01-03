@@ -33,6 +33,28 @@ struct Hashtag: View {
     }
 }
 
+struct All: View {
+    var body: some View {
+        VStack {
+            Text("전체")
+                .font(.system(size: 13))
+                .foregroundColor(.black)
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 7)
+        .background(
+            RoundedRectangle(cornerRadius: 30)
+                .fill(Color.white)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 30)
+                .stroke(lineWidth: 1)
+                .foregroundColor(.black)
+        )
+    }
+}
+
+
 #Preview {
     Hashtag(title: "ddd")
 }

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ChatView: View {
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 30) {
                 HStack(alignment: .top) {
                     VStack {
@@ -57,7 +57,6 @@ struct ChatView: View {
                 }
             }
         }
-
         .navigationBarBackButtonHidden(true)
     }
 }
