@@ -37,7 +37,7 @@ struct LoginView: View {
                         AuthTextField(text: $password, placeholder: "비밀번호를 입력해주세요.", imageName: "lock", title: "Password")
                     }
                     VStack(spacing: 10) {
-                        Button(text: "Login")
+                        AuthButton(text: "Login")
                         KakaoButton(auth: "Login")
                     }
                 }

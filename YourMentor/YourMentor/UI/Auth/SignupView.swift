@@ -39,7 +39,7 @@ struct SignupView: View {
                         AuthTextField(text: $password, placeholder: "비밀번호를 입력해주세요.", imageName: "lock", title: "Password")
                     }
                     VStack(spacing: 10) {
-                        Button(text: "Signup")
+                        AuthButton(text: "Signup")
                         KakaoButton(auth: "Signup")
                     }
                 }

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MyView: View {
     var body: some View {
-        ScrollView {
+        ScrollView(showsIndicators: false) {
             VStack {
                 HStack {
                     Spacer()
@@ -17,6 +17,7 @@ struct MyView: View {
                         .resizable()
                         .frame(width: 30, height: 30)
                         .padding(.trailing, 25)
+                        .foregroundColor(.gray)
                 }
                 MyProfile(email: "uoto716@dgsw.hs.kr")
                 Spacer()
@@ -29,6 +30,7 @@ struct MyView: View {
                     }
                 }
             }
+            .padding(.top)
         }
     }
 }

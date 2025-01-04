@@ -14,11 +14,11 @@ struct Keyword: View {
         HStack(spacing: 5) {
             Image(systemName: "xmark")
                 .resizable()
-                .frame(maxWidth: 15, maxHeight: 15)
+                .frame(maxWidth: 10, maxHeight: 10)
             Text(keyword)
-                .font(.system(size: 15))
+                .font(.system(size: 13))
         }
-        .padding(10)
+        .padding(7)
         .foregroundColor(.white)
         .background(
             RoundedRectangle(cornerRadius: 10)

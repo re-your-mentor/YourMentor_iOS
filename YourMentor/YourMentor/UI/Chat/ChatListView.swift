@@ -11,7 +11,7 @@ struct ChatListView: View {
     
     var body: some View {
         NavigationStack {
-            ScrollView {
+            ScrollView(showsIndicators: false) {
                 VStack {
                     HStack {
                         Image(systemName: "plus")
@@ -45,6 +45,7 @@ struct ChatListView: View {
                     }
                     Spacer()
                 }
+                .padding(.top)
             }
         }
         .navigationBarBackButtonHidden(true)

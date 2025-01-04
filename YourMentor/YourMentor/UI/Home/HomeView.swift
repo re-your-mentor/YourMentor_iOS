@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     var body: some View {
-        ScrollView {
+        ScrollView(showsIndicators: false) {
             VStack(spacing: 25) {
                 VStack(alignment: .leading) {
                     Text("학교 행사&이벤트")
@@ -18,25 +18,34 @@ struct HomeView: View {
                         .frame(maxWidth: 330)
                         .frame(height: 150)
                 }
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack {
-                        ForEach(0..<4, id: \.self) { _ in
-                            CardLayout(title: "안드로이드 깃허브로 협업하는 방법에 대하여", date: Date())
+                VStack{
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack {
+                            ForEach(0..<4, id: \.self) { _ in
+                                CardLayout(title: "안드로이드 깃허브로 협업하는 방법에 대하여", date: Date())
+                                    .frame(width: 270)
+                            }
                         }
+                        .padding(.horizontal)
                     }
-                }
-                VStack(alignment: .leading) {
-                    Text("업로드 목록")
-                        .font(.system(size: 20, weight: .semibold))
-                    HStack {
-                        All()
-                        Hashtag(title: "SwiftUI")
-                    }
-                    ForEach(0..<4, id: \.self) { _ in
-                        PostCell(title: "안드로이드 깃허브로 협업하는 방법에 대하여", date: Date())
+                    ZStack {
+                        Color.back
+                        VStack(alignment: .leading) {
+                            Text("업로드 목록")
+                                .font(.system(size: 20, weight: .semibold))
+                            HStack {
+                                All()
+                                Hashtag(title: "SwiftUI")
+                            }
+                            ForEach(0..<4, id: \.self) { _ in
+                                PostCell(title: "안드로이드 깃허브로 협업하는 방법에 대하여", date: Date())
+                            }
+                        }
+                        .padding(.vertical)
                     }
                 }
             }
+            .padding(.top)
         }
     }
 }

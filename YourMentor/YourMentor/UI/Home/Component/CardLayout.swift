@@ -10,7 +10,7 @@ import SwiftUI
 struct CardLayout: View {
     var title: String
     var date: Date
-    
+
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 5) {
@@ -18,9 +18,9 @@ struct CardLayout: View {
                     Hashtag(title: "SwiftUI")
                 }
             }
-            .padding(.top, 90)
+            .padding(.top, 95)
             .padding(.trailing, 27)
-            .frame(maxWidth: 265, maxHeight: 140)
+            .frame(maxWidth: .infinity, maxHeight: 140)
             .background(
                 RoundedCornerShape(corners: [.topLeft, .topRight], radius: 7)
                     .fill(.main.opacity(0.3))
@@ -34,7 +34,7 @@ struct CardLayout: View {
                     HStack(spacing: 1) {
                         Image(systemName: "clock")
                             .resizable()
-                            .frame(maxWidth: 10, maxHeight: 10)
+                            .frame(width: 10, height: 10)
                         Text(formattedDate(date))
                             .font(.system(size: 10))
                             .fontWeight(.semibold)
@@ -46,17 +46,18 @@ struct CardLayout: View {
                 .padding(.leading, 7)
                 Spacer()
             }
-            .frame(maxWidth: 265, maxHeight: 45)
+            .frame(maxWidth: .infinity, maxHeight: 45)
             .background(
                 RoundedCornerShape(corners: [.bottomLeft, .bottomRight], radius: 7)
                     .foregroundColor(.white)
             )
-
         }
+        .frame(maxWidth: 265)
     }
+
     private func formattedDate(_ date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy.MM.dd" // 원하는 형식
+        formatter.dateFormat = "yyyy.MM.dd"
         return formatter.string(from: date)
     }
 }
@@ -64,7 +65,7 @@ struct CardLayout: View {
 struct RoundedCornerShape: Shape {
     var corners: UIRectCorner
     var radius: CGFloat
-    
+
     func path(in rect: CGRect) -> Path {
         let path = UIBezierPath(
             roundedRect: rect,
@@ -78,4 +79,3 @@ struct RoundedCornerShape: Shape {
 #Preview {
     CardLayout(title: "안드로이드 깃허브로 협업하는 방법에 대하여", date: Date())
 }
-

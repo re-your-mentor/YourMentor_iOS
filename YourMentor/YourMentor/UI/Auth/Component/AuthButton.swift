@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct Button: View {
+struct AuthButton: View {
     var text: String
     
     var body: some View {
@@ -25,5 +25,5 @@ struct Button: View {
 }
 
 #Preview {
-    Button(text: "next")
+    AuthButton(text: "next")
 }
