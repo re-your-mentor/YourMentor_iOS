@@ -28,16 +28,14 @@ struct CardLayout: View {
             HStack(alignment: .top) {
                 VStack(spacing: 3) {
                     Text(title)
-                        .font(.system(size: 15))
-                        .fontWeight(.semibold)
+                        .font(.system(size: 15, weight: .semibold))
                         .frame(maxWidth: .infinity, alignment: .leading)
                     HStack(spacing: 1) {
                         Image(systemName: "clock")
                             .resizable()
                             .frame(width: 10, height: 10)
                         Text(formattedDate(date))
-                            .font(.system(size: 10))
-                            .fontWeight(.semibold)
+                            .font(.system(size: 10, weight: .semibold))
                     }
                     .foregroundColor(.gray)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -52,6 +50,7 @@ struct CardLayout: View {
                     .foregroundColor(.white)
             )
         }
+        .foregroundColor(.black)
         .frame(maxWidth: 265)
     }
 

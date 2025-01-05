@@ -28,8 +28,7 @@ struct SignupView: View {
                 VStack(spacing: 60) {
                     VStack(spacing: 15) {
                         Text("Sign up")
-                            .font(.system(size: 45))
-                            .fontWeight(.heavy)
+                            .font(.system(size: 45, weight: .heavy))
                         Text("당신의 멘토를 찾으러 오신것을 환영 합니다!")
                             .fontWeight(.semibold)
                     }

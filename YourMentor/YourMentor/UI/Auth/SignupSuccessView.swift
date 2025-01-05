@@ -17,8 +17,7 @@ struct SignupSuccessView: View {
                     .padding(.bottom, 45)
                 VStack(spacing: 30) {
                     Text("회원가입\n완료되었습니다!")
-                        .font(.system(size: 32))
-                        .fontWeight(.heavy)
+                        .font(.system(size: 32, weight: .heavy))
                         .multilineTextAlignment(.center)
                     VStack {
                         Text("멘토를 만나러 바로 출발합시다!")

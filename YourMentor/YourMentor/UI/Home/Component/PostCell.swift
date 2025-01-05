@@ -15,20 +15,19 @@ struct PostCell: View {
         VStack(spacing: 10) {
             VStack(spacing: 3) {
                 Text(title)
-                    .font(.system(size: 15))
-                    .fontWeight(.semibold)
+                    .font(.system(size: 15, weight: .semibold))
                     .frame(maxWidth: .infinity, alignment: .leading)
                 HStack(spacing: 1) {
                     Image(systemName: "clock")
                         .resizable()
                         .frame(maxWidth: 10, maxHeight: 10)
                     Text(formattedDate(date))
-                        .font(.system(size: 10))
-                        .fontWeight(.semibold)
+                        .font(.system(size: 10, weight: .semibold))
                 }
                 .foregroundColor(.gray)
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
+            .foregroundColor(.black)
             HStack {
                 HStack(spacing: 5) {
                     ForEach(0..<3, id: \.self) { _ in

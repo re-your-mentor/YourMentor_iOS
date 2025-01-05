@@ -27,8 +27,7 @@ struct LoginView: View {
                 VStack(spacing: 60) {
                     VStack(spacing: 15) {
                         Text("Log in")
-                            .font(.system(size: 45))
-                            .fontWeight(.heavy)
+                            .font(.system(size: 45, weight: .heavy))
                         Text("멘토들을 만나러 가도록 해봅시다!")
                             .fontWeight(.semibold)
                     }

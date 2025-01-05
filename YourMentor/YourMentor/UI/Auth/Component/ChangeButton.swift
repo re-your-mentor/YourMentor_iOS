@@ -13,8 +13,7 @@ struct ChangeButton: View {
     var body: some View {
         VStack {
             Text(auth)
-                .font(.system(size: 14))
-                .fontWeight(.semibold)
+                .font(.system(size: 14, weight: .semibold))
                 .foregroundStyle(.black)
         }
         .padding(.horizontal)
