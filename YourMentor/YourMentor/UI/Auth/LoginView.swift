@@ -35,12 +35,25 @@ struct LoginView: View {
                         AuthTextField(text: $id, placeholder: "아이디를 입력해주세요.", imageName: "person", title: "ID")
                         AuthTextField(text: $password, placeholder: "비밀번호를 입력해주세요.", imageName: "lock", title: "Password")
                     }
-                    VStack(spacing: 10) {
+                    VStack(spacing: 20) {
                         AuthButton(text: "Login")
-                        KakaoButton(auth: "Login")
+                        Button {
+                            
+                        } label: {
+                            Text("or continue with")
+                                .font(.system(size: 17, weight: .medium))
+                                .foregroundStyle(.gray)
+                        }
+                        Button {
+                            
+                        } label: {
+                            KakaoButton()
+                                .padding(.top)
+                        }
                     }
                 }
             }
+            .background(Image("loginback"))
             .padding(.horizontal, 7)
         }
         .navigationBarBackButtonHidden(true)

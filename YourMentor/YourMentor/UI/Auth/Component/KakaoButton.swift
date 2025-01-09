@@ -8,22 +8,17 @@
 import SwiftUI
 
 struct KakaoButton: View {
-    var auth: String
-    
+
     var body: some View {
-        HStack(spacing: 15) {
-            Image("KakaoLogo")
-            Text("Kakao "+auth)
-                .font(.system(size: 14).bold())
-        }
-        .frame(maxWidth: .infinity)
-        .frame(height: 50)
-        .background(Color.kakao)
-        .cornerRadius(30)
-        .padding(.horizontal)
+        Image("KakaoLogo")
+            .padding()
+            .background(
+                Circle()
+                    .fill(.kakao)
+            )
     }
 }
 
 #Preview {
-    KakaoButton(auth: "signup")
+    KakaoButton()
 }

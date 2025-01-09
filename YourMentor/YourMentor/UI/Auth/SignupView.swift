@@ -39,7 +39,7 @@ struct SignupView: View {
                     }
                     VStack(spacing: 10) {
                         AuthButton(text: "Signup")
-                        KakaoButton(auth: "Signup")
+                        KakaoButton()
                     }
                 }
             }

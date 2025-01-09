@@ -13,7 +13,7 @@ struct PostDetailView: View {
     var nicname: String
     var content: String
     @State private var c_text: String = ""
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         NavigationStack {
@@ -117,7 +117,7 @@ struct PostDetailView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(action: {
-                        presentationMode.wrappedValue.dismiss()
+                        dismiss()
                     }) {
                         HStack {
                             Image(systemName: "chevron.backward")
