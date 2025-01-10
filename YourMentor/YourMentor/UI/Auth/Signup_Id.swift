@@ -10,6 +10,7 @@ import SwiftUI
 struct Signup_Id: View {
     @State private var id: String = ""
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var userData: UserData
     
     var body: some View {
         NavigationStack {
@@ -34,7 +35,8 @@ struct Signup_Id: View {
                     .padding(.horizontal, 50)
                 ZStack {
                     if !id.isEmpty {
-                        NavigationLink(destination: Signup_Password()) {
+                        NavigationLink(destination: Signup_Password()
+                            .environmentObject(userData)) {
                             Text("다음")
                                 .font(.system(size: 15, weight: .black))
                                 .foregroundStyle(.white)

@@ -11,7 +11,7 @@ import SwiftUI
 struct YourMentorApp: App {
     var body: some Scene {
         WindowGroup {
-            SignupView()
+            LoginView()
         }
     }
 }

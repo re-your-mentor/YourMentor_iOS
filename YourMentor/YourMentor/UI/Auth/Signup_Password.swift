@@ -13,6 +13,7 @@ struct Signup_Password: View {
     @State private var showpass = false
     @State private var showpasscheck = false
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var userData: UserData
     
     var body: some View {
         NavigationStack {
@@ -91,7 +92,8 @@ struct Signup_Password: View {
                 .frame(height: 20)
                 ZStack {
                     if !passcheck.isEmpty {
-                        NavigationLink(destination: SignupView()) {
+                        NavigationLink(destination: Signup_Tag()
+                            .environmentObject(userData)) {
                             Text("다음")
                                 .font(.system(size: 15, weight: .black))
                                 .foregroundStyle(.white)

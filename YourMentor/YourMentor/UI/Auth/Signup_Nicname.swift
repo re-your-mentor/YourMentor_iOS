@@ -38,7 +38,8 @@ struct Signup_Nicname: View {
                     .padding(.horizontal, 50)
                 ZStack {
                     if !userData.nicname.isEmpty {
-                        NavigationLink(destination: Signup_Email()) {
+                        NavigationLink(destination: Signup_Email()
+                            .environmentObject(userData)) {
                             Text("다음")
                                 .font(.system(size: 15, weight: .black))
                                 .foregroundStyle(.white)

@@ -10,6 +10,7 @@ import SwiftUI
 struct LoginView: View {
     @State private var id: String = ""
     @State private var password: String = ""
+    @StateObject var userData = UserData()
     
     var body: some View {
         NavigationStack {
@@ -17,7 +18,8 @@ struct LoginView: View {
                 VStack {
                     HStack {
                         Spacer()
-                        NavigationLink(destination: SignupView()) {
+                        NavigationLink(destination: Signup_Nicname()
+                            .environmentObject(userData)) {
                             ChangeButton(auth: "Sign Up")
                                 .padding(.trailing)
                         }
