@@ -86,7 +86,7 @@ struct MainView: View {
     var body: some View {
         NavigationView {
             VStack {
-                MainHeaderView(isSearchActive: $isSearchActive)
+//                MainHeaderView(isSearchActive: $isSearchActive)
                 
                 if isSearchActive {
                     SearchView()
@@ -113,55 +113,55 @@ struct MainView: View {
     }
 }
 
-struct MainHeaderView: View {
-    @Binding var isSearchActive: Bool
-
-    var body: some View {
-        ZStack {
-            Color.white
-                .shadow(color: .gray.opacity(0.1), radius: 3, x: 0, y: 5)
-            if isSearchActive {
-                ZStack {
-                    Button(action: {
-                        isSearchActive.toggle()
-                    }) {
-                        Image(systemName: "magnifyingglass")
-                            .resizable()
-                            .frame(width: 23, height: 23)
-                            .foregroundColor(.black)
-                    }
-                    .padding(.vertical, 11)
-                    .padding(.leading)
-                    .padding(.trailing, 300)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 20)
-                            .stroke(lineWidth: 1)
-                            .foregroundColor(.black)
-                    )
-                    Keyword(keyword: "SwiftUI")
-                }
-                .padding(.bottom, 7)
-            } else {
-                HStack {
-                    Image("apptitle")
-                        .resizable()
-                        .frame(width: 80, height: 18)
-                    Spacer()
-                    Button(action: {
-                        isSearchActive.toggle()
-                    }) {
-                        Image(systemName: "magnifyingglass")
-                            .resizable()
-                            .frame(width: 23, height: 23)
-                            .foregroundColor(.black)
-                    }
-                }
-                .padding(.horizontal)
-            }
-        }
-        .frame(height: 50)
-    }
-}
+//struct MainHeaderView: View {
+//    @Binding var isSearchActive: Bool
+//
+//    var body: some View {
+//        ZStack {
+//            Color.white
+//                .shadow(color: .gray.opacity(0.1), radius: 3, x: 0, y: 5)
+//            if isSearchActive {
+//                ZStack {
+//                    Button(action: {
+//                        isSearchActive.toggle()
+//                    }) {
+//                        Image(systemName: "magnifyingglass")
+//                            .resizable()
+//                            .frame(width: 23, height: 23)
+//                            .foregroundColor(.black)
+//                    }
+//                    .padding(.vertical, 11)
+//                    .padding(.leading)
+//                    .padding(.trailing, 300)
+//                    .overlay(
+//                        RoundedRectangle(cornerRadius: 20)
+//                            .stroke(lineWidth: 1)
+//                            .foregroundColor(.black)
+//                    )
+//                    Keyword(keyword: "SwiftUI")
+//                }
+//                .padding(.bottom, 7)
+//            } else {
+//                HStack {
+//                    Image("apptitle")
+//                        .resizable()
+//                        .frame(width: 80, height: 18)
+//                    Spacer()
+//                    Button(action: {
+//                        isSearchActive.toggle()
+//                    }) {
+//                        Image(systemName: "magnifyingglass")
+//                            .resizable()
+//                            .frame(width: 23, height: 23)
+//                            .foregroundColor(.black)
+//                    }
+//                }
+//                .padding(.horizontal)
+//            }
+//        }
+//        .frame(height: 50)
+//    }
+//}
 
 #Preview {
     MainView()

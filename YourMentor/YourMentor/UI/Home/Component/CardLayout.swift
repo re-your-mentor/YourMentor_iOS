@@ -23,7 +23,7 @@ struct CardLayout: View {
             .frame(maxWidth: .infinity, maxHeight: 140)
             .background(
                 RoundedCornerShape(corners: [.topLeft, .topRight], radius: 7)
-                    .fill(.main.opacity(0.3))
+                    .fill(.notimage)
             )
             HStack(alignment: .top) {
                 VStack(spacing: 3) {

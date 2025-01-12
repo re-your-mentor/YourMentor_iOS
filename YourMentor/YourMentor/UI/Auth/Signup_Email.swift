@@ -9,7 +9,6 @@ import SwiftUI
 
 struct Signup_Email: View {
     @EnvironmentObject var userData: UserData
-    @State private var email: String = ""
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
@@ -18,7 +17,7 @@ struct Signup_Email: View {
                 Image("loudspeaker")
                 Text("너의 멘토에서 \(userData.nicname)님에게\n어떤 이메일로 연락을 드리면 될까요?")
                     .font(.system(size: 21, weight: .semibold))
-                TextField("이메일을 작성해주세요!", text: $email)
+                TextField("이메일을 작성해주세요!", text: $userData.email)
                     .font(.system(size: 14))
                     .padding(.leading)
                     .padding(.bottom, 7)
@@ -30,7 +29,7 @@ struct Signup_Email: View {
                     )
                     .padding(.horizontal, 50)
                 ZStack {
-                    if !email.isEmpty {
+                    if !userData.email.isEmpty {
                         NavigationLink(destination: Signup_Id()
                             .environmentObject(userData)) {
                             Text("다음")

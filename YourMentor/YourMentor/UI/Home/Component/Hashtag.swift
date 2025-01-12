@@ -33,6 +33,27 @@ struct Hashtag: View {
     }
 }
 
+struct UserHashtag: View {
+    var title: String
+    
+    var body: some View {
+        VStack {
+            HStack(spacing: 0) {
+                Text("#")
+                Text(title)
+            }
+            .font(.system(size: 13))
+            .foregroundColor(.main)
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 7)
+        .background(
+            RoundedRectangle(cornerRadius: 30)
+                .fill(Color.white)
+        )
+    }
+}
+
 struct All: View {
     var body: some View {
         VStack {
@@ -56,5 +77,5 @@ struct All: View {
 
 
 #Preview {
-    Hashtag(title: "ddd")
+    UserHashtag(title: "ddd")
 }

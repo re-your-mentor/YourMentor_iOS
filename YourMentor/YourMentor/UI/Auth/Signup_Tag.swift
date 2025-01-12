@@ -10,7 +10,6 @@ import SwiftUI
 struct Signup_Tag: View {
     @EnvironmentObject var userData: UserData
     @Environment(\.dismiss) private var dismiss
-    @State private var selectedTags: Set<String> = []
     
     let primaryTags = [
         "안드로이드", "서버", "iOS", "웹", "임베디드",
@@ -27,11 +26,11 @@ struct Signup_Tag: View {
                 Text("\(userData.nicname)님께서 편안한 멘토맨티 서비스를\n위해 관심있는 태그를 클릭해주세요!")
                     .font(.system(size: 21, weight: .semibold))
                 
-                TagGridView(tags: primaryTags, selectedTags: $selectedTags)
-                TagGridView(tags: secondaryTags, selectedTags: $selectedTags)
+                TagGridView(tags: primaryTags, selectedTags: $userData.selectedTags)
+                TagGridView(tags: secondaryTags, selectedTags: $userData.selectedTags)
                 
                 ZStack {
-                    if !selectedTags.isEmpty {
+                    if !userData.selectedTags.isEmpty {
                         NavigationLink(destination: SignupSuccessView()) {
                             Text("다음")
                                 .font(.system(size: 15, weight: .black))

@@ -9,6 +9,8 @@ import SwiftUI
 
 class UserData: ObservableObject {
     @Published var nicname: String = ""
+    @Published var email: String = ""
+    @Published var selectedTags: Set<String> = []
 }
 
 struct Signup_Nicname: View {
