@@ -30,7 +30,7 @@ struct Signup_Email: View {
                     .padding(.horizontal, 50)
                 ZStack {
                     if !userData.email.isEmpty {
-                        NavigationLink(destination: Signup_Id()
+                        NavigationLink(destination: Signup_Password()
                             .environmentObject(userData)) {
                             Text("다음")
                                 .font(.system(size: 15, weight: .black))

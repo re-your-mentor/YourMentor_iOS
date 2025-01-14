@@ -8,18 +8,30 @@
 import SwiftUI
 
 struct UserProfileCard: View {
+    @EnvironmentObject var userData: UserData
+    
     var body: some View {
-        VStack {
-            HStack {
-                Text("email")
-                    .font(.system(size: 15, weight: .bold))
-                Spacer()
-                Image(systemName: "chevron.right")
+        VStack(spacing: 0) {
+            VStack {
+                HStack {
+                    Text(userData.email)
+                        .font(.system(size: 15, weight: .bold))
+                    Spacer()
+                    NavigationLink(destination: MyView()){
+                        Image(systemName: "chevron.right")
+                    }
+                }
+                Rectangle()
+                    .foregroundColor(.white.opacity(0.5))
+                    .frame(height: 1)
             }
-            .padding(.vertical, 5)
-            Rectangle()
-                .foregroundColor(.white.opacity(0.5))
-                .frame(height: 1)
+            .padding(.top, 25)
+            .padding(.horizontal, 20)
+            .frame(width: 295)
+            .background(
+                RoundedCornerShape(corners: [.topLeft, .topRight], radius: 15)
+                    .fill(.main)
+            )
             VStack(alignment: .leading, spacing: 0) {
                 HStack {
                     Text("내가 선택한 관심태그")
@@ -29,18 +41,21 @@ struct UserProfileCard: View {
                 }
                 UserHashtag(title: "SwiftUI")
             }
+            .padding(.top, 5)
+            .padding(.bottom, 25)
+            .padding(.horizontal, 20)
+            .frame(width: 295)
+            .background(
+                RoundedCornerShape(corners: [.bottomLeft, .bottomRight], radius: 15)
+                    .foregroundColor(.main)
+            )
         }
-        .padding(.horizontal, 20)
         .foregroundColor(.white)
-        .frame(width: 295)
-        .frame(minHeight: 80, maxHeight: 150)
-        .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(.main)
-        )
+        .frame(maxWidth: 265)
     }
 }
 
 #Preview {
     UserProfileCard()
+        .environmentObject(UserData())
 }

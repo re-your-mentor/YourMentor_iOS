@@ -12,6 +12,7 @@ struct CustomTabBar: View {
     
     var body: some View {
         VStack {
+//            Color.gray
             HStack {
                 Button(action: {
                     selectedTab = 0
@@ -64,28 +65,46 @@ struct CustomTabBar: View {
                 Button(action: {
                     selectedTab = 4
                 }) {
-                    Image(systemName: "person")
+                    Image("basicsprofile")
                         .resizable()
+                        .scaledToFill()
+                        .clipShape(Circle())
                         .frame(width: 25, height: 25)
                         .padding()
-                        .foregroundColor(selectedTab == 4 ? .email.opacity(0.7) : .gray.opacity(0.3))
                 }
             }
             .frame(maxWidth: .infinity)
             .padding(.horizontal, 20)
         }
-        .background(Color.white)
-        .shadow(color: .gray.opacity(0.1), radius: 3, x: 0, y: -5)
+        .background(
+            ZStack {
+                Rectangle()
+                    .fill(
+                        LinearGradient(
+                            gradient: Gradient(colors: [.black.opacity(0.5), .clear]),
+                            startPoint: .bottom,
+                            endPoint: .top
+                        )
+                    )
+                    .frame(height: 90)
+                Rectangle()
+                    .fill(.white)
+                    .frame(height: 74)
+                    .padding(.top)
+            }
+        )
+//        .shadow(color: .gray.opacity(0.1), radius: 3, x: 0, y: -5)
     }
 }
 
 struct MainView: View {
     @State private var selectedTab = 0
     @State private var isSearchActive = false
+    @EnvironmentObject var userData: UserData
 
     var body: some View {
         NavigationView {
-            VStack {
+            VStack(spacing: 0) {
 //                MainHeaderView(isSearchActive: $isSearchActive)
                 
                 if isSearchActive {
@@ -95,6 +114,7 @@ struct MainView: View {
                         // Tab content
                         if selectedTab == 0 {
                             HomeView()
+                                .environmentObject(UserData())
                         } else if selectedTab == 1 {
                             PostListView()
                         } else if selectedTab == 2 {
@@ -105,7 +125,6 @@ struct MainView: View {
                             MyView()
                         }
                     }
-                    
                     CustomTabBar(selectedTab: $selectedTab)
                 }
             }
@@ -120,7 +139,7 @@ struct MainView: View {
 //        ZStack {
 //            Color.white
 //                .shadow(color: .gray.opacity(0.1), radius: 3, x: 0, y: 5)
-//            if isSearchActive {
+//            if !isSearchActive {
 //                ZStack {
 //                    Button(action: {
 //                        isSearchActive.toggle()
@@ -130,33 +149,8 @@ struct MainView: View {
 //                            .frame(width: 23, height: 23)
 //                            .foregroundColor(.black)
 //                    }
-//                    .padding(.vertical, 11)
-//                    .padding(.leading)
-//                    .padding(.trailing, 300)
-//                    .overlay(
-//                        RoundedRectangle(cornerRadius: 20)
-//                            .stroke(lineWidth: 1)
-//                            .foregroundColor(.black)
-//                    )
-//                    Keyword(keyword: "SwiftUI")
 //                }
 //                .padding(.bottom, 7)
-//            } else {
-//                HStack {
-//                    Image("apptitle")
-//                        .resizable()
-//                        .frame(width: 80, height: 18)
-//                    Spacer()
-//                    Button(action: {
-//                        isSearchActive.toggle()
-//                    }) {
-//                        Image(systemName: "magnifyingglass")
-//                            .resizable()
-//                            .frame(width: 23, height: 23)
-//                            .foregroundColor(.black)
-//                    }
-//                }
-//                .padding(.horizontal)
 //            }
 //        }
 //        .frame(height: 50)

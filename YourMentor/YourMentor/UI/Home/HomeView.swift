@@ -8,34 +8,57 @@
 import SwiftUI
 
 struct HomeView: View {
+    @EnvironmentObject var userData: UserData
+    
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(spacing: 25) {
-                UserProfileCard()
-                    .frame(height: 150)
-                VStack(alignment: .leading){
-                    Text("업로드 목록")
-                        .font(.system(size: 20, weight: .semibold))
-                    ScrollView(.horizontal, showsIndicators: false) {
+        ZStack {
+            Color.back
+                .ignoresSafeArea()
+            ScrollView(showsIndicators: false) {
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text("안녕하세요!")
+                            .font(.system(size: 20, weight: .regular))
+                            .foregroundColor(.subfont)
+                        Text(userData.nicname+"님")
+                            .font(.system(size: 23, weight: .bold))
+                    }
+                    Spacer()
+                    Image("basicsprofile")
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 60, height: 60)
+                        .clipShape(Circle())
+                }
+                .padding(.horizontal, 50)
+                .padding(.top)
+                VStack {
+                    UserProfileCard()
+                        .environmentObject(UserData())
+                        .frame(height: 150)
+                    VStack(alignment: .leading){
+                        Text("업로드 목록")
+                            .font(.system(size: 20, weight: .semibold))
+                            .padding(.leading)
                         ForEach(0..<4, id: \.self) { _ in
-                                NavigationLink(destination: PostDetailView(
-                                    title: "안드로이드 깃허브로 협업하는 방법에 대하여",
-                                    date: Date(),
-                                    nicname: "맛좋은 오징어",
-                                    content: "지금 제가 정공이 안드로이드인데 팀 프로젝트를 하는건 처음이라서 잘 모르겠어요...뭔가 깃허브로 학습하는 방식이 있던걸로 아는데 어떤 방식이 있는지 다 까먹어 버렸어요... 알아보게 혹시 협업 방식 명이라도 알려주실 분 구합니다.")) {
-                                        CardLayout(title: "안드로이드 깃허브로 협업하는 방법에 대하여", date: Date())
+                            NavigationLink(destination: PostDetailView(
+                                title: "안드로이드 깃허브로 협업하는 방법에 대하여",
+                                date: Date(),
+                                nicname: "맛좋은 오징어",
+                                content: "지금 제가 정공이 안드로이드이라도 알려주실 분 구합니다.")) {
+                                    CardLayout(title: "안드로이드 깃허브로 협업하는 방법에 대하여", date: Date())
                                 }
-                                    .frame(width: 270)
-                            }
+                                .frame(width: 270)
+                        }
                         .padding(.horizontal)
                     }
                 }
             }
-            .padding(.top)
         }
     }
 }
 
 #Preview {
     HomeView()
+        .environmentObject(UserData())
 }
