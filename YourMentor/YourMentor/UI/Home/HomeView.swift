@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject var userData: UserData
+    @State var searchtext: String = ""
     
     var body: some View {
         ZStack {
@@ -18,16 +19,16 @@ struct HomeView: View {
                 HStack {
                     VStack(alignment: .leading) {
                         Text("안녕하세요!")
-                            .font(.system(size: 20, weight: .regular))
+                            .font(.system(size: 18, weight: .regular))
                             .foregroundColor(.subfont)
                         Text(userData.nicname+"님")
-                            .font(.system(size: 23, weight: .bold))
+                            .font(.system(size: 21, weight: .bold))
                     }
                     Spacer()
                     Image("basicsprofile")
                         .resizable()
                         .scaledToFill()
-                        .frame(width: 60, height: 60)
+                        .frame(width: 56, height: 56)
                         .clipShape(Circle())
                 }
                 .padding(.horizontal, 50)
@@ -36,11 +37,30 @@ struct HomeView: View {
                     UserProfileCard()
                         .environmentObject(UserData())
                         .frame(height: 150)
+                        .padding(.bottom, 20)
+                    
+                    HStack {
+                        Image(systemName: "magnifyingglass")
+                            .foregroundColor(.gray)
+                        TextField("검색어를 입력해주세요.", text: $searchtext)
+                            .font(.system(size: 15))
+                    }
+                    .padding(.horizontal, 25)
+                    .padding(.vertical, 13)
+                    .frame(maxWidth: 295)
+                    .background(
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(.white)
+                    )
+                    
+                    TagList()
+                        .padding(.bottom, 20)
+                    
                     VStack(alignment: .leading){
                         Text("업로드 목록")
-                            .font(.system(size: 20, weight: .semibold))
+                            .font(.system(size: 17, weight: .semibold))
                             .padding(.leading)
-                        ForEach(0..<4, id: \.self) { _ in
+                        ForEach(0..<10, id: \.self) { _ in
                             NavigationLink(destination: PostDetailView(
                                 title: "안드로이드 깃허브로 협업하는 방법에 대하여",
                                 date: Date(),
@@ -48,9 +68,44 @@ struct HomeView: View {
                                 content: "지금 제가 정공이 안드로이드이라도 알려주실 분 구합니다.")) {
                                     CardLayout(title: "안드로이드 깃허브로 협업하는 방법에 대하여", date: Date())
                                 }
-                                .frame(width: 270)
+                                .frame(maxWidth: 295)
+                                .frame(height: 190)
                         }
                         .padding(.horizontal)
+                    }
+                }
+            }
+        }
+    }
+}
+
+struct TagList: View {
+    @State private var selectedHashtag: String? = "전체"
+    
+    let hashtags = ["전체", "Android", "Server", "iOS", "Web", "Embedded", "Kotlin", "Java", "Swift", "JavaScript", "Arduino", "Figma", "협업", "프로젝트"]
+    
+    var body: some View {
+        VStack {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 5) {
+                    Spacer()
+                        .frame(width: 45)
+                    ForEach(hashtags, id: \.self) { hashtag in
+                        Button(action: {
+                            selectedHashtag = hashtag
+                        }) {
+                            Text(hashtag)
+                                .font(.system(size: 13, weight: .medium))
+                                .padding(.horizontal, 13)
+                                .padding(.vertical, 7)
+                                .background(selectedHashtag == hashtag ? .main : .white)
+                                .foregroundColor(selectedHashtag == hashtag ? .white : .black)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 30)
+                                        .stroke(selectedHashtag == hashtag ? .clear : .main, lineWidth: 1.5)
+                                )
+                                .cornerRadius(30)
+                        }
                     }
                 }
             }

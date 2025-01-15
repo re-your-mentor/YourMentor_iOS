@@ -13,18 +13,32 @@ struct CardLayout: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack(spacing: 5) {
-                ForEach(0..<3, id: \.self) { _ in
-                    Hashtag(title: "SwiftUI")
+            ZStack {
+                RoundedCornerShape(corners: [.topLeft, .topRight], radius: 12)
+                    .foregroundColor(.notimage)
+                VStack {
+                    Spacer()
+                    HStack(spacing: 5) {
+                        ForEach(0..<3, id: \.self) { _ in
+                            Hashtag(title: "SwiftUI")
+                        }
+                        Spacer()
+                    }
+                    .padding(.leading, 5)
+                    .padding(.bottom, 7)
                 }
             }
-            .padding(.top, 95)
-            .padding(.trailing, 27)
-            .frame(maxWidth: .infinity, maxHeight: 140)
-            .background(
-                RoundedCornerShape(corners: [.topLeft, .topRight], radius: 7)
-                    .fill(.notimage)
-            )
+            .frame(height: 140)
+//            HStack(spacing: 5) {
+//                ForEach(0..<3, id: \.self) { _ in
+//                    Hashtag(title: "SwiftUI")
+//                }
+//            }
+//            .frame(maxWidth: .infinity, maxHeight: 140)
+//            .background(
+//                RoundedCornerShape(corners: [.topLeft, .topRight], radius: 12)
+//                    .fill(.notimage)
+//            )
             HStack(alignment: .top) {
                 VStack(spacing: 3) {
                     Text(title)
@@ -40,18 +54,17 @@ struct CardLayout: View {
                     .foregroundColor(.gray)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .padding(.top, 5)
                 .padding(.leading, 7)
                 Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: 45)
             .background(
-                RoundedCornerShape(corners: [.bottomLeft, .bottomRight], radius: 7)
+                RoundedCornerShape(corners: [.bottomLeft, .bottomRight], radius: 12)
                     .foregroundColor(.white)
             )
         }
         .foregroundColor(.black)
-        .frame(maxWidth: 265)
+        .frame(maxWidth: 295)
     }
 
     private func formattedDate(_ date: Date) -> String {

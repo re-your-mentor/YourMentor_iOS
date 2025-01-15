@@ -30,7 +30,7 @@ struct SignupSuccessView: View {
                                 .fontWeight(.semibold)
                         }
                     }
-                    NavigationLink(destination: LoginView()) {
+                    NavigationLink(destination: MainView()) {
                         AuthButton(text: "Start")
                     }
                 }

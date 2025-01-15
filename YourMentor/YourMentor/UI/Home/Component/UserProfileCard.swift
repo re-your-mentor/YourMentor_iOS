@@ -21,6 +21,7 @@ struct UserProfileCard: View {
                         Image(systemName: "chevron.right")
                     }
                 }
+                .padding(.bottom, 3)
                 Rectangle()
                     .foregroundColor(.white.opacity(0.5))
                     .frame(height: 1)

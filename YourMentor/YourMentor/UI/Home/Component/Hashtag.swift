@@ -16,11 +16,11 @@ struct Hashtag: View {
                 Text("#")
                 Text(title)
             }
-            .font(.system(size: 13))
+            .font(.system(size: 10))
             .foregroundColor(.black)
         }
         .padding(.horizontal, 10)
-        .padding(.vertical, 7)
+        .padding(.vertical, 6)
         .background(
             RoundedRectangle(cornerRadius: 30)
                 .fill(Color.white)
