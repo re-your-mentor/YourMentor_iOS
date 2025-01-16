@@ -50,7 +50,7 @@ struct PostCell: View {
     }
     private func formattedDate(_ date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy.MM.dd" // 원하는 형식
+        formatter.dateFormat = "yyyy.MM.dd"
         return formatter.string(from: date)
     }
 }

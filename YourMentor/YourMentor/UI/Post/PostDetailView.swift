@@ -13,16 +13,16 @@ struct PostDetailView: View {
     var nicname: String
     var content: String
     @State private var c_text: String = ""
-    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        NavigationStack {
+        ZStack(alignment: .top) {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 0) {
-                    Image("postex")
-                        .resizable()
-                        .frame(maxWidth: .infinity)
+                    Spacer()
+                        .frame(height: 55)
+                    Color.notimage
                         .frame(height: 200)
+                    
                     VStack(spacing: 15) {
                         VStack {
                             VStack(spacing: 3) {
@@ -48,38 +48,33 @@ struct PostDetailView: View {
                                 Spacer()
                             }
                         }
-                        VStack(alignment: .leading, spacing: 13) {
+                        VStack(alignment: .leading, spacing: 5) {
                             HStack {
-                                Text(nicname+"님의 작성글")
-                                    .font(.system(size: 15, weight: .medium))
+                                Text(nicname + "님의 작성글")
+                                    .font(.system(size: 14, weight: .medium))
                                 Spacer()
-                                Text("follow")
-                                    .padding(.vertical, 5)
-                                    .padding(.horizontal, 10)
-                                    .font(.system(size: 13, weight: .medium))
-                                    .foregroundColor(.white)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 30)
-                                            .foregroundColor(.email)
-                                    )
                             }
                             Divider()
+                                .padding(.bottom)
                             Text(content)
-                                .font(.system(size: 16, weight: .medium))
+                                .font(.system(size: 15, weight: .medium))
                         }
                     }
-                    .padding(.horizontal, 25)
+                    .frame(maxWidth: 300)
                     .padding(.vertical, 30)
+                    
                     Rectangle()
-                        .frame(height: 25)
+                        .frame(height: 7)
                         .foregroundColor(.back)
+                    
                     VStack(spacing: 25) {
                         VStack(alignment: .leading) {
                             Text("댓글")
-                                .font(.system(size: 17, weight: .medium))
+                                .font(.system(size: 13, weight: .medium))
                                 .padding(.leading)
                             ZStack {
                                 TextField("댓글을 작성해주세요.", text: $c_text)
+                                    .font(.system(size: 14, weight: .medium))
                                     .frame(height: 45)
                                     .padding(.leading)
                                     .background(
@@ -88,49 +83,33 @@ struct PostDetailView: View {
                                     )
                                 HStack {
                                     Spacer()
-                                    Button(action: {
-                                        // 전송 버튼 동작
-                                    }) {
+                                    Button {
+                                        
+                                    } label: {
                                         Image(systemName: "paperplane")
                                             .resizable()
-                                            .frame(maxWidth: 17, maxHeight: 15)
+                                            .frame(maxWidth: 15, maxHeight: 15)
                                             .foregroundColor(.gray)
                                             .padding(.trailing)
                                     }
                                 }
                             }
                         }
-                        VStack(spacing: 20) {
-                            ForEach(0..<3, id: \.self) { _ in
-                                CommentCell(
-                                    c_nicname: "오징어먹물",
-                                    c_content: "저도 잘 모르겠는데요... 제가 아는 선배 분들 중에 협업 많이 하시는걸로 유명한 선배있는데 컨택해드릴까요?"
-                                )
-                            }
+                        VStack(spacing: 25) {
+                            CommentSection()
                         }
                     }
-                    .padding(.horizontal, 25)
+                    .frame(maxWidth: 300)
                     .padding(.top, 30)
                 }
-                
             }
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button(action: {
-                        dismiss()
-                    }) {
-                        HStack {
-                            Image(systemName: "chevron.backward")
-                            Text("돌아가기")
-                        }
-                        .fontWeight(.bold)
-                        .foregroundColor(.black)
-                    }
-                }
-            }
+            
+            PostDetailHead()
+                .zIndex(1)
         }
         .navigationBarBackButtonHidden(true)
     }
+    
     private func formattedDate(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy.MM.dd"
@@ -138,6 +117,47 @@ struct PostDetailView: View {
     }
 }
 
+struct PostDetailHead: View {
+    @Environment(\.dismiss) private var dismiss
+    
+    var body: some View {
+        VStack {
+            HStack {
+                Button {
+                    dismiss()
+                } label: {
+                    Image("backbutton")
+                        .resizable()
+                        .frame(width: 11, height: 20)
+                        .padding(.leading, 30)
+                }
+                Spacer()
+            }
+        }
+        .padding(.bottom, 20)
+        .frame(maxWidth: .infinity)
+        .frame(height: 70)
+        .background(
+            ZStack {
+                Rectangle()
+                    .fill(
+                        LinearGradient(
+                            gradient: Gradient(colors: [.black.opacity(0.3), .clear]),
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+                Rectangle()
+                    .fill(.white)
+                    .padding(.bottom)
+                    .ignoresSafeArea()
+            }
+        )
+    }
+}
+
+
 #Preview {
-    PostDetailView(title: "d", date: Date(), nicname: "d", content: "d")
+    PostDetailView(title: "안드로이드 깃허브로 협업하는 방법에 대하여", date: Date(), nicname: "맛좋은 오징어", content: "지금 제가 전공이 안드로이드인데 팀 프로젝트를 하는건 처음이라서 잘 모르겠어요... 뭔가 깃허브로 학습하는 방식이 있던걸로 아는데 어떤 방식이 있는지 다 까먹었")
+//    PostDetailHead()
 }

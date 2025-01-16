@@ -29,16 +29,6 @@ struct CardLayout: View {
                 }
             }
             .frame(height: 140)
-//            HStack(spacing: 5) {
-//                ForEach(0..<3, id: \.self) { _ in
-//                    Hashtag(title: "SwiftUI")
-//                }
-//            }
-//            .frame(maxWidth: .infinity, maxHeight: 140)
-//            .background(
-//                RoundedCornerShape(corners: [.topLeft, .topRight], radius: 12)
-//                    .fill(.notimage)
-//            )
             HStack(alignment: .top) {
                 VStack(spacing: 3) {
                     Text(title)
