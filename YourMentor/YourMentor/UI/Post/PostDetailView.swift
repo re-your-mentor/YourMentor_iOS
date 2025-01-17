@@ -61,7 +61,7 @@ struct PostDetailView: View {
                         }
                     }
                     .frame(maxWidth: 300)
-                    .padding(.vertical, 30)
+                    .padding(.vertical, 25)
                     
                     Rectangle()
                         .frame(height: 7)
@@ -100,11 +100,11 @@ struct PostDetailView: View {
                         }
                     }
                     .frame(maxWidth: 300)
-                    .padding(.top, 30)
+                    .padding(.top, 25)
                 }
             }
             
-            PostDetailHead()
+            HeadView()
                 .zIndex(1)
         }
         .navigationBarBackButtonHidden(true)
@@ -116,46 +116,6 @@ struct PostDetailView: View {
         return formatter.string(from: date)
     }
 }
-
-struct PostDetailHead: View {
-    @Environment(\.dismiss) private var dismiss
-    
-    var body: some View {
-        VStack {
-            HStack {
-                Button {
-                    dismiss()
-                } label: {
-                    Image("backbutton")
-                        .resizable()
-                        .frame(width: 11, height: 20)
-                        .padding(.leading, 30)
-                }
-                Spacer()
-            }
-        }
-        .padding(.bottom, 20)
-        .frame(maxWidth: .infinity)
-        .frame(height: 70)
-        .background(
-            ZStack {
-                Rectangle()
-                    .fill(
-                        LinearGradient(
-                            gradient: Gradient(colors: [.black.opacity(0.3), .clear]),
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                    )
-                Rectangle()
-                    .fill(.white)
-                    .padding(.bottom)
-                    .ignoresSafeArea()
-            }
-        )
-    }
-}
-
 
 #Preview {
     PostDetailView(title: "안드로이드 깃허브로 협업하는 방법에 대하여", date: Date(), nicname: "맛좋은 오징어", content: "지금 제가 전공이 안드로이드인데 팀 프로젝트를 하는건 처음이라서 잘 모르겠어요... 뭔가 깃허브로 학습하는 방식이 있던걸로 아는데 어떤 방식이 있는지 다 까먹었")

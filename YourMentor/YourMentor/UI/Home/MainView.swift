@@ -111,7 +111,6 @@ struct MainView: View {
                     SearchView()
                 } else {
                     VStack {
-                        // Tab content
                         if selectedTab == 0 {
                             HomeView()
                                 .environmentObject(UserData())
