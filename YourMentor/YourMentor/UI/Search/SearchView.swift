@@ -8,18 +8,41 @@
 import SwiftUI
 
 struct SearchView: View {
+    @State var searchtext: String = ""
+    
     var body: some View {
-        ZStack {
-            Color.back
-                .ignoresSafeArea(edges: .all)
-            ScrollView(showsIndicators: false) {
-                VStack {
-                    ForEach(0..<4, id: \.self) { _ in
-                        PostCell(title: "안드로이드 깃허브로 협업하는 방법에 대하여", date: Date())
+        NavigationStack {
+                ZStack(alignment: .top) {
+                    Color.back
+                        .ignoresSafeArea(edges: .all)
+                    ScrollView(showsIndicators: false) {
+                        VStack {
+                            Spacer()
+                                .frame(height: 65)
+                            HStack {
+                                Image(systemName: "magnifyingglass")
+                                    .foregroundColor(.gray)
+                                TextField("검색어를 입력해주세요.", text: $searchtext)
+                                    .font(.system(size: 15))
+                            }
+                            .padding(.horizontal, 25)
+                            .padding(.vertical, 13)
+                            .frame(maxWidth: 295)
+                            .background(
+                                RoundedRectangle(cornerRadius: 20)
+                                    .fill(.white)
+                            )
+                            .padding(.top)
+                            .padding(.bottom, 30)
+                            ForEach(0..<4, id: \.self) { _ in
+                                PostCell(title: "안드로이드 깃허브로 협업하는 방법에 대하여", date: Date())
+                            }
+                        }
                     }
-                }
+                    HeadView()
             }
         }
+        .navigationBarBackButtonHidden(true)
     }
 }
 

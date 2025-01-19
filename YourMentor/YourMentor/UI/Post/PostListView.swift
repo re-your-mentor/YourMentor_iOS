@@ -15,19 +15,23 @@ struct PostListView: View {
                 .ignoresSafeArea()
             ScrollView(showsIndicators: false) {
                 VStack {
-                    HStack {
-                        Image(systemName: "magnifyingglass")
-                            .foregroundColor(.gray)
-                        TextField("검색어를 입력해주세요.", text: $searchtext)
-                            .font(.system(size: 15))
+                    NavigationLink(destination: SearchView()) {
+                        HStack(spacing: 10) {
+                            Image(systemName: "magnifyingglass")
+                                .foregroundColor(.gray)
+                            Text("검색어를 입력해주세요.")
+                                .font(.system(size: 15))
+                                .foregroundColor(.gray.opacity(0.7))
+                            Spacer()
+                        }
+                        .padding(.horizontal, 25)
+                        .padding(.vertical, 13)
+                        .frame(maxWidth: 295)
+                        .background(
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(.white)
+                        )
                     }
-                    .padding(.horizontal, 25)
-                    .padding(.vertical, 13)
-                    .frame(maxWidth: 295)
-                    .background(
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(.white)
-                    )
                     .padding(.top)
                     
                     TagList()
