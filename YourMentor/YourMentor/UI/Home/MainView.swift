@@ -122,6 +122,7 @@ struct MainView: View {
                             ChatListView()
                         } else if selectedTab == 4 {
                             MyView()
+                                .environmentObject(UserData())
                         }
                     }
                     CustomTabBar(selectedTab: $selectedTab)

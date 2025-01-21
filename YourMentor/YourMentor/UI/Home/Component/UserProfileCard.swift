@@ -14,7 +14,7 @@ struct UserProfileCard: View {
         VStack(spacing: 0) {
             VStack {
                 HStack {
-                    Text(userData.email)
+                    Text(verbatim: userData.email)
                         .font(.system(size: 15, weight: .bold))
                     Spacer()
                     NavigationLink(destination: MyView()){

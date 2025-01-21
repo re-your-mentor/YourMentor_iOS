@@ -23,7 +23,7 @@ struct Hashtag: View {
         .padding(.vertical, 6)
         .background(
             RoundedRectangle(cornerRadius: 30)
-                .fill(Color.white)
+                .fill(.white)
         )
         .overlay(
             RoundedRectangle(cornerRadius: 30)
@@ -49,11 +49,38 @@ struct UserHashtag: View {
         .padding(.vertical, 6)
         .background(
             RoundedRectangle(cornerRadius: 30)
-                .fill(Color.white)
+                .fill(.white)
         )
     }
 }
 
+struct MyProfileHashtag: View {
+    var title: String
+    
+    var body: some View {
+        VStack {
+            HStack(spacing: 0) {
+                Text("#")
+                Text(title)
+            }
+            .font(.system(size: 10))
+            .foregroundColor(.black)
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 6)
+        .background(
+            RoundedRectangle(cornerRadius: 30)
+                .fill(.white)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 30)
+                .stroke(lineWidth: 1)
+                .foregroundColor(.main)
+        )
+    }
+}
+
+
 #Preview {
-    UserHashtag(title: "ddd")
+    MyProfileHashtag(title: "ddd")
 }
