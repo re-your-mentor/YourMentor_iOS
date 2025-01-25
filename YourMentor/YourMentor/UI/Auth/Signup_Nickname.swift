@@ -8,12 +8,13 @@
 import SwiftUI
 
 class UserData: ObservableObject {
-    @Published var nicname: String = ""
+    @Published var nickname: String = ""
     @Published var email: String = ""
+    @Published var password: String = ""
     @Published var selectedTags: Set<String> = []
 }
 
-struct Signup_Nicname: View {
+struct Signup_Nickname: View {
     @EnvironmentObject var userData: UserData
     @Environment(\.dismiss) private var dismiss
     
@@ -27,7 +28,8 @@ struct Signup_Nicname: View {
                     Text("너의 멘토에서 사용하실 닉네임을 지정해주세요.")
                         .font(.system(size: 15.5, weight: .semibold))
                 }
-                TextField("닉네임을 작성해주세요!", text: $userData.nicname)
+                TextField("닉네임을 작성해주세요!", text: $userData.nickname)
+                    .autocapitalization(.none)
                     .font(.system(size: 14))
                     .padding(.leading)
                     .padding(.bottom, 7)
@@ -39,7 +41,7 @@ struct Signup_Nicname: View {
                     )
                     .padding(.horizontal, 50)
                 ZStack {
-                    if !userData.nicname.isEmpty {
+                    if !userData.nickname.isEmpty {
                         NavigationLink(destination: Signup_Email()
                             .environmentObject(userData)) {
                             Text("다음")
@@ -79,5 +81,5 @@ struct Signup_Nicname: View {
 }
 
 #Preview {
-    Signup_Nicname()
+    Signup_Nickname()
 }

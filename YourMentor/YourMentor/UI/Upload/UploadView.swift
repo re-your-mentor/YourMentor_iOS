@@ -45,6 +45,7 @@ struct UploadView: View {
                         VStack(alignment: .leading, spacing: 30) {
                             VStack(alignment: .leading) {
                                 TextField("제목을 입력해주세요.", text: $title)
+                                    .autocapitalization(.none)
                                     .font(.system(size: 17))
                                 Text("\(title.count)/40자")
                                     .foregroundColor(title.count > 40 ? .red : .gray.opacity(0.7))
@@ -60,6 +61,7 @@ struct UploadView: View {
                             }
                             Divider()
                             TextField("내용을 입력해주세요.", text: $content)
+                                .autocapitalization(.none)
                                 .font(.system(size: 15, weight: .medium))
                         }
                         .frame(maxWidth: 300)

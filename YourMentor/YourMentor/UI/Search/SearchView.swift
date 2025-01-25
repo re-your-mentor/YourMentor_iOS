@@ -23,6 +23,7 @@ struct SearchView: View {
                                 Image(systemName: "magnifyingglass")
                                     .foregroundColor(.gray)
                                 TextField("검색어를 입력해주세요.", text: $searchtext)
+                                    .autocapitalization(.none)
                                     .font(.system(size: 15))
                             }
                             .padding(.horizontal, 25)

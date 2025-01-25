@@ -21,7 +21,7 @@ struct HomeView: View {
                         Text("안녕하세요!")
                             .font(.system(size: 18, weight: .regular))
                             .foregroundColor(.subfont)
-                        Text(userData.nicname+"님")
+                        Text(userData.nickname+"님")
                             .font(.system(size: 21, weight: .bold))
                     }
                     Spacer()
@@ -68,7 +68,7 @@ struct HomeView: View {
                             NavigationLink(destination: PostDetailView(
                                 title: "안드로이드 깃허브로 협업하는 방법에 대하여",
                                 date: Date(),
-                                nicname: "맛좋은 오징어",
+                                nickname: "맛좋은 오징어",
                                 content: "지금 제가 정공이 안드로이드이라도 알려주실 분 구합니다.")) {
                                     CardLayout(title: "안드로이드 깃허브로 협업하는 방법에 대하여", date: Date())
                                 }

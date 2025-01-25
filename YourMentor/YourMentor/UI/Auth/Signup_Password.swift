@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct Signup_Password: View {
-    @State private var pass: String = ""
     @State private var passcheck: String = ""
     @State private var showpass = false
     @State private var showpasscheck = false
@@ -24,10 +23,11 @@ struct Signup_Password: View {
                 HStack {
                     Group {
                         if showpass {
-                            TextField("비밀번호를 작성해주세요!", text: $pass)
+                            TextField("비밀번호를 작성해주세요!", text: $userData.password)
+                                .autocapitalization(.none)
                                 .submitLabel(.done)
                         } else {
-                            SecureField("비밀번호를 작성해주세요!", text: $pass)
+                            SecureField("비밀번호를 작성해주세요!", text: $userData.password)
                                 .submitLabel(.done)
                         }
                     }
@@ -52,11 +52,12 @@ struct Signup_Password: View {
                 )
                 .padding(.horizontal, 50)
                 ZStack {
-                    if !pass.isEmpty {
+                    if !userData.password.isEmpty {
                         HStack {
                             Group {
                                 if showpasscheck {
                                     TextField("비밀번호를 확인해주세요!", text: $passcheck)
+                                        .autocapitalization(.none)
                                         .submitLabel(.done)
                                 } else {
                                     SecureField("비밀번호를 확인해주세요!", text: $passcheck)

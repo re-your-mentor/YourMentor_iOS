@@ -8,9 +8,12 @@
 import SwiftUI
 
 struct LoginView: View {
-    @State private var id: String = ""
+    @State private var email: String = ""
     @State private var password: String = ""
     @StateObject var userData = UserData()
+    @State private var showAlert = false
+    @State private var alertMessage = ""
+    @State private var isLoginSuccess = false
     
     var body: some View {
         NavigationStack {
@@ -18,7 +21,7 @@ struct LoginView: View {
                 VStack {
                     HStack {
                         Spacer()
-                        NavigationLink(destination: Signup_Nicname()
+                        NavigationLink(destination: Signup_Nickname()
                             .environmentObject(userData)) {
                             ChangeButton(auth: "Sign Up")
                                 .padding(.trailing)
@@ -34,21 +37,25 @@ struct LoginView: View {
                             .fontWeight(.semibold)
                     }
                     VStack(spacing: 30) {
-                        AuthTextField(text: $id, placeholder: "아이디를 입력해주세요.", imageName: "person", title: "ID")
+                        AuthTextField(text: $email, placeholder: "이메일을 입력해주세요.", imageName: "person", title: "Emaill")
                         AuthTextField(text: $password, placeholder: "비밀번호를 입력해주세요.", imageName: "lock", title: "Password")
                     }
                     VStack(spacing: 20) {
-                        AuthButton(text: "Login")
-                        Button {
-                            
-                        } label: {
+                        Button(action: {
+                            Login()
+                        }) {
+                            AuthButton(text: "Login")
+                        }
+                        Button(action: {
+                            GoogleLogin()
+                        }) {
                             Text("or continue with")
                                 .font(.system(size: 17, weight: .medium))
                                 .foregroundStyle(.gray)
                         }
-                        Button {
-                            
-                        } label: {
+                        Button(action: {
+                            KakaoLogin()
+                        }) {
                             KakaoButton()
                                 .padding(.top)
                         }
@@ -57,8 +64,84 @@ struct LoginView: View {
             }
             .background(Image("loginback"))
             .padding(.horizontal, 7)
+            
+            NavigationLink(destination: MainView(), isActive: $isLoginSuccess) {
+                EmptyView()
+            }
         }
         .navigationBarBackButtonHidden(true)
+    }
+    
+    private func Login() {
+        AuthService.shared.login(
+            email: email,
+            password: password
+        ) { result in
+            switch result {
+            case .success(let loginResponse):
+                if let response = loginResponse as? LoginResponse {
+                    print("\(response.message)\nUser\n ID: \(response.user.id)")
+                    print(" Email: \(response.user.email)\n Nick: \(response.user.nick)\nToken: \(response.token)")
+                } else {
+                    print("Failed to cast loginResponse to LoginResponse")
+                }
+                isLoginSuccess = true
+            case .requestErr(let message):
+                alertMessage = message as? String ?? "오류가 발생했습니다."
+                showAlert = true
+            case .pathErr:
+                alertMessage = "잘못된 경로 요청입니다."
+                showAlert = true
+            case .serverErr:
+                alertMessage = "서버 오류가 발생했습니다."
+                showAlert = true
+            case .networkFail:
+                alertMessage = "네트워크 연결에 실패했습니다."
+                showAlert = true
+            }
+        }
+    }
+    
+    private func GoogleLogin() {
+        AuthService.shared.googlelogin() { result in
+            switch result {
+            case .success:
+                isLoginSuccess = true
+            case .requestErr(let message):
+                alertMessage = message as? String ?? "오류가 발생했습니다."
+                showAlert = true
+            case .pathErr:
+                alertMessage = "잘못된 경로 요청입니다."
+                showAlert = true
+            case .serverErr:
+                alertMessage = "서버 오류가 발생했습니다."
+                showAlert = true
+            case .networkFail:
+                alertMessage = "네트워크 연결에 실패했습니다."
+                showAlert = true
+            }
+        }
+    }
+    
+    private func KakaoLogin() {
+        AuthService.shared.kakaologin() { result in
+            switch result {
+            case .success:
+                isLoginSuccess = true
+            case .requestErr(let message):
+                alertMessage = message as? String ?? "오류가 발생했습니다."
+                showAlert = true
+            case .pathErr:
+                alertMessage = "잘못된 경로 요청입니다."
+                showAlert = true
+            case .serverErr:
+                alertMessage = "서버 오류가 발생했습니다."
+                showAlert = true
+            case .networkFail:
+                alertMessage = "네트워크 연결에 실패했습니다."
+                showAlert = true
+            }
+        }
     }
 }
 

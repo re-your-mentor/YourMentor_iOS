@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MyEditView: View {
-    @State var newnicname: String = ""
+    @State var newnickname: String = ""
     @State private var selectedHashtags: Set<String> = []
     
     var body: some View {
@@ -26,7 +26,8 @@ struct MyEditView: View {
                 VStack(alignment: .leading) {
                     Text("닉네임 작성")
                         .font(.system(size: 16, weight: .semibold))
-                    TextField("이름을 입력해주세요.", text: $newnicname)
+                    TextField("이름을 입력해주세요.", text: $newnickname)
+                        .autocapitalization(.none)
                         .padding(.leading)
                     Rectangle()
                         .frame(maxWidth: .infinity)

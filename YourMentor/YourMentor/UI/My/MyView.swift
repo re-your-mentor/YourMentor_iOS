@@ -9,6 +9,9 @@ import SwiftUI
 
 struct MyView: View {
     @EnvironmentObject var userData: UserData
+    @State private var isLogoutSuccess = false
+    @State private var showAlert = false
+    @State private var alertMessage = ""
     
     var body: some View {
         VStack(spacing: 0) {
@@ -49,9 +52,9 @@ struct MyView: View {
                         }
                     }
                     Spacer()
-                    Button {
-                        
-                    } label: {
+                    Button(action: {
+                        logout()
+                    }) {
                         Image(systemName: "rectangle.portrait.and.arrow.right")
                             .resizable()
                             .frame(width: 22, height: 20)
@@ -85,7 +88,7 @@ struct MyView: View {
                             NavigationLink(destination: PostDetailView(
                                 title: "안드로이드 깃허브로 협업하는 방법에 대하여",
                                 date: Date(),
-                                nicname: "맛좋은 오징어",
+                                nickname: "맛좋은 오징어",
                                 content: "알아보게 혹시 협업 방식 명이라도 알려주실 분 구합니다.")) {
                                     PostCell(title: "안드로이드 깃허브로 협업하는 방법에 대하여", date: Date())
                                 }
@@ -93,6 +96,30 @@ struct MyView: View {
                     }
                     .padding(.top, 30)
                 }
+            }
+            NavigationLink(destination: LoginView(), isActive: $isLogoutSuccess) {
+                EmptyView()
+            }
+        }
+    }
+    
+    func logout() {
+        AuthService.shared.logout { result in
+            switch result {
+            case .success(let message):
+                isLogoutSuccess = true
+            case .requestErr(let message):
+                alertMessage = message as? String ?? "오류가 발생했습니다."
+                showAlert = true
+            case .pathErr:
+                alertMessage = "잘못된 경로 요청입니다."
+                showAlert = true
+            case .serverErr:
+                alertMessage = "서버 오류가 발생했습니다."
+                showAlert = true
+            case .networkFail:
+                alertMessage = "네트워크 연결에 실패했습니다."
+                showAlert = true
             }
         }
     }

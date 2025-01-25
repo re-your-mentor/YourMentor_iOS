@@ -15,9 +15,11 @@ struct Signup_Email: View {
         NavigationStack {
             VStack(spacing: 45) {
                 Image("loudspeaker")
-                Text("너의 멘토에서 \(userData.nicname)님에게\n어떤 이메일로 연락을 드리면 될까요?")
+                Text("너의 멘토에서 \(userData.nickname)님에게\n어떤 이메일로 연락을 드리면 될까요?")
                     .font(.system(size: 21, weight: .semibold))
                 TextField("이메일을 작성해주세요!", text: $userData.email)
+                    .keyboardType(.emailAddress)
+                    .autocapitalization(.none)
                     .font(.system(size: 14))
                     .padding(.leading)
                     .padding(.bottom, 7)

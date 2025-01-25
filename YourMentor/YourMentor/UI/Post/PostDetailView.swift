@@ -10,7 +10,7 @@ import SwiftUI
 struct PostDetailView: View {
     var title: String
     var date: Date
-    var nicname: String
+    var nickname: String
     var content: String
     @State private var c_text: String = ""
     
@@ -50,7 +50,7 @@ struct PostDetailView: View {
                         }
                         VStack(alignment: .leading, spacing: 5) {
                             HStack {
-                                Text(nicname + "님의 작성글")
+                                Text(nickname + "님의 작성글")
                                     .font(.system(size: 14, weight: .medium))
                                 Spacer()
                             }
@@ -74,6 +74,7 @@ struct PostDetailView: View {
                                 .padding(.leading)
                             ZStack {
                                 TextField("댓글을 작성해주세요.", text: $c_text)
+                                    .autocapitalization(.none)
                                     .font(.system(size: 14, weight: .medium))
                                     .frame(height: 45)
                                     .padding(.leading)
@@ -118,6 +119,6 @@ struct PostDetailView: View {
 }
 
 #Preview {
-    PostDetailView(title: "안드로이드 깃허브로 협업하는 방법에 대하여", date: Date(), nicname: "맛좋은 오징어", content: "지금 제가 전공이 안드로이드인데 팀 프로젝트를 하는건 처음이라서 잘 모르겠어요... 뭔가 깃허브로 학습하는 방식이 있던걸로 아는데 어떤 방식이 있는지 다 까먹었")
+    PostDetailView(title: "안드로이드 깃허브로 협업하는 방법에 대하여", date: Date(), nickname: "맛좋은 오징어", content: "지금 제가 전공이 안드로이드인데 팀 프로젝트를 하는건 처음이라서 잘 모르겠어요... 뭔가 깃허브로 학습하는 방식이 있던걸로 아는데 어떤 방식이 있는지 다 까먹었")
 //    PostDetailHead()
 }
