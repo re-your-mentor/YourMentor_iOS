@@ -6,42 +6,55 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct UploadView: View {
     @State private var tag: String = ""
     @State private var title: String = ""
     @State private var content: String = ""
     @State private var selectedHashtags: Set<String> = []
-
     
+    @State private var selectedImage: UIImage?
+    @State private var showingImagePicker = false
+    @State private var uploadedImageURL: String?
+    
+    @State private var showAlert = false
+    @State private var alertMessage = ""
+
     var body: some View {
         VStack {
             ZStack(alignment: .top) {
                 ScrollView(showsIndicators: false) {
                     VStack {
                         VStack(spacing: 0) {
-                            Spacer()
-                                .frame(height: 55)
+                            Spacer().frame(height: 55)
+                            
                             Button {
-                                
+                                showingImagePicker = true
                             } label: {
-                                VStack {
-                                    Image(systemName: "photo.badge.plus")
+                                if let selectedImage = selectedImage {
+                                    Image(uiImage: selectedImage)
                                         .resizable()
-                                        .frame(maxWidth: 105, maxHeight: 75)
-                                    Text("이미지 업로드하기")
-                                        .fontWeight(.bold)
+                                        .scaledToFill()
+                                        .frame(height: 200)
+                                        .clipped()
+                                        .cornerRadius(10)
+                                } else {
+                                    VStack {
+                                        Image(systemName: "photo.badge.plus")
+                                            .resizable()
+                                            .frame(maxWidth: 105, maxHeight: 75)
+                                        Text("이미지 업로드하기")
+                                            .fontWeight(.bold)
+                                    }
+                                    .foregroundColor(.gray.opacity(0.5))
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 200)
+                                    .background(Rectangle().foregroundColor(.gray.opacity(0.3)))
                                 }
-                                .foregroundColor(.gray.opacity(0.5))
-                                .frame(maxWidth: .infinity)
-                                .frame(height: 200)
-                                .background(
-                                    Rectangle()
-                                        .foregroundColor(.gray.opacity(0.3))
-                                )
                             }
                         }
-                        
+
                         VStack(alignment: .leading, spacing: 30) {
                             VStack(alignment: .leading) {
                                 TextField("제목을 입력해주세요.", text: $title)
@@ -52,6 +65,7 @@ struct UploadView: View {
                                     .font(.system(size: 14))
                             }
                             .fontWeight(.bold)
+                            
                             VStack(alignment: .leading) {
                                 Text("#태그를 선택해주세요.")
                                     .font(.system(size: 15, weight: .semibold))
@@ -71,9 +85,11 @@ struct UploadView: View {
                 }
                 HeadView()
             }
+            
             Spacer()
+            
             Button {
-                
+                ImgUpload()
             } label: {
                 Text("업로드 하기")
                     .font(.system(size: 15, weight: .bold))
@@ -82,11 +98,36 @@ struct UploadView: View {
                     .frame(height: 50)
                     .background(
                         RoundedRectangle(cornerRadius: 30)
-                            .fill(.email)
+                            .fill(.main)
                     )
             }
             .padding(.bottom)
             .frame(maxWidth: 300)
+        }
+        .sheet(isPresented: $showingImagePicker) {
+            ImagePicker(image: $selectedImage)
+        }
+    }
+    
+    private func ImgUpload() {
+        guard let image = selectedImage else { return }
+        Service.shared.uploadimage(image) { result in
+            switch result {
+            case .success(let imageName):
+                uploadedImageURL = imageName
+            case .requestErr(let message):
+                alertMessage = message as? String ?? "오류가 발생했습니다."
+                showAlert = true
+            case .pathErr:
+                alertMessage = "잘못된 경로 요청입니다."
+                showAlert = true
+            case .serverErr:
+                alertMessage = "서버 오류가 발생했습니다."
+                showAlert = true
+            case .networkFail:
+                alertMessage = "네트워크 연결에 실패했습니다."
+                showAlert = true
+            }
         }
     }
 }

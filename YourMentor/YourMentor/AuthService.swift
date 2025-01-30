@@ -89,6 +89,10 @@ class AuthService {
                         let decoder = JSONDecoder()
                         let decodedData = try decoder.decode(LoginResponse.self, from: data)
                         
+                        if let token = decodedData.token as? String{
+                            self.savetokentokeychain(token)
+                        }
+                        
                         completion(.success(decodedData))
                     } catch {
                         completion(.pathErr)
@@ -107,6 +111,7 @@ class AuthService {
             }
         }
     }
+
     
     func logout(completion: @escaping (NetworkResult<Any>) -> Void) {
         let url = APIConstants.logoutURL
@@ -191,4 +196,34 @@ class AuthService {
             }
         }
     }
+    
+    func savetokentokeychain(_ token: String) {
+        let keychainQuery: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: "jwtToken",
+            kSecValueData as String: token.data(using: .utf8)!
+        ]
+        
+        var itemCopy: AnyObject?
+        let status = SecItemCopyMatching(keychainQuery as CFDictionary, &itemCopy)
+        
+        if status == errSecSuccess {
+            let updateQuery: [String: Any] = [
+                kSecValueData as String: token.data(using: .utf8)!
+            ]
+            
+            let updateStatus = SecItemUpdate(keychainQuery as CFDictionary, updateQuery as CFDictionary)
+            
+            if updateStatus != errSecSuccess {
+                print("Keychain update failed with status: \(updateStatus)")
+            }
+        } else {
+            let addStatus = SecItemAdd(keychainQuery as CFDictionary, nil)
+            
+            if addStatus != errSecSuccess {
+                print("Keychain add failed with status: \(addStatus)")
+            }
+        }
+    }
+
 }

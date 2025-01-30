@@ -37,6 +37,9 @@ struct APIConstants {
     // 게시물
     static let postURL = baseURL + "/post"
     
+    // 이미지 업로드
+    static let imguploadURL = postURL + "/imag"
+    
     // 댓글 생성
     static func comment(teacherId: String, id: String) -> String {
         return postURL + "/teacher=\(teacherId)/\(id)"
