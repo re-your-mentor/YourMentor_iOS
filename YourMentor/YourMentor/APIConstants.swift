@@ -34,11 +34,11 @@ struct APIConstants {
     // 구글 로그인 콜백
     static let googlecallbackURL = googleURL + "/callback"
     
-    // 게시물
+    // 게시물 작성
     static let postURL = baseURL + "/post"
     
     // 이미지 업로드
-    static let imguploadURL = postURL + "/imag"
+    static let imguploadURL = postURL + "/img"
     
     // 댓글 생성
     static func comment(teacherId: String, id: String) -> String {

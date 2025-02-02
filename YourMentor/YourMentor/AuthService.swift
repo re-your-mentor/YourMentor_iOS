@@ -198,18 +198,22 @@ class AuthService {
     }
     
     func savetokentokeychain(_ token: String) {
+        guard let tokenData = token.data(using: .utf8) else {
+            print("토큰을 Data로 변환하는 데 실패했습니다.")
+            return
+        }
+        
         let keychainQuery: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrAccount as String: "jwtToken",
-            kSecValueData as String: token.data(using: .utf8)!
+            kSecValueData as String: tokenData
         ]
         
-        var itemCopy: AnyObject?
-        let status = SecItemCopyMatching(keychainQuery as CFDictionary, &itemCopy)
+        let status = SecItemCopyMatching(keychainQuery as CFDictionary, nil)
         
         if status == errSecSuccess {
             let updateQuery: [String: Any] = [
-                kSecValueData as String: token.data(using: .utf8)!
+                kSecValueData as String: tokenData
             ]
             
             let updateStatus = SecItemUpdate(keychainQuery as CFDictionary, updateQuery as CFDictionary)

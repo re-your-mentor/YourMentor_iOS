@@ -20,7 +20,7 @@ struct UploadView: View {
     
     @State private var showAlert = false
     @State private var alertMessage = ""
-
+    
     var body: some View {
         VStack {
             ZStack(alignment: .top) {
@@ -54,7 +54,7 @@ struct UploadView: View {
                                 }
                             }
                         }
-
+                        
                         VStack(alignment: .leading, spacing: 30) {
                             VStack(alignment: .leading) {
                                 TextField("제목을 입력해주세요.", text: $title)
@@ -89,7 +89,7 @@ struct UploadView: View {
             Spacer()
             
             Button {
-                ImgUpload()
+                uploadImageAndCreatePost()
             } label: {
                 Text("업로드 하기")
                     .font(.system(size: 15, weight: .bold))
@@ -107,16 +107,58 @@ struct UploadView: View {
         .sheet(isPresented: $showingImagePicker) {
             ImagePicker(image: $selectedImage)
         }
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("오류"), message: Text(alertMessage), dismissButton: .default(Text("확인")))
+        }
     }
     
-    private func ImgUpload() {
-        guard let image = selectedImage else { return }
-        Service.shared.uploadimage(image) { result in
+    private func uploadImageAndCreatePost() {
+        guard let token = Service.shared.loadtokenfromkeychain() else {
+            alertMessage = "토큰을 찾을 수 없습니다."
+            showAlert = true
+            return
+        }
+        
+        if let image = selectedImage {
+            Service.shared.uploadimage(image, token: token) { result in
+                switch result {
+                case .success(let imageURL):
+                    uploadedImageURL = imageURL as? String
+                    createPost(imageURL: uploadedImageURL)
+                case .requestErr,
+                     .pathErr,
+                     .serverErr,
+                     .networkFail:
+                    alertMessage = "이미지 업로드 실패"
+                    showAlert = true
+                }
+            }
+        } else {
+            createPost(imageURL: nil)
+        }
+    }
+    
+    private func createPost(imageURL: String?) {
+        guard let token = Service.shared.loadtokenfromkeychain() else {
+            alertMessage = "토큰을 찾을 수 없습니다."
+            showAlert = true
+            return
+        }
+        
+        let hashtagsContent = selectedHashtags.map { "#\($0)" }.joined(separator: " ")
+        let fullContent = hashtagsContent + " " + content
+        
+        Service.shared.createPost(
+            title: title,
+            content: fullContent,
+            image: imageURL != nil ? loadImageFromURL(imageURL!) : nil,
+            token: token
+        ) { result in
             switch result {
-            case .success(let imageName):
-                uploadedImageURL = imageName
+            case .success(let response):
+                print("게시물 생성 성공: \(response)")
             case .requestErr(let message):
-                alertMessage = message as? String ?? "오류가 발생했습니다."
+                alertMessage = message as? String ?? "게시물 생성 실패"
                 showAlert = true
             case .pathErr:
                 alertMessage = "잘못된 경로 요청입니다."
@@ -129,6 +171,13 @@ struct UploadView: View {
                 showAlert = true
             }
         }
+    }
+    
+    private func loadImageFromURL(_ urlString: String) -> UIImage? {
+        guard let url = URL(string: urlString), let data = try? Data(contentsOf: url) else {
+            return nil
+        }
+        return UIImage(data: data)
     }
 }
 
