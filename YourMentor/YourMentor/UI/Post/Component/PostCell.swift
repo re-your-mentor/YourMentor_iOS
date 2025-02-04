@@ -13,7 +13,7 @@ struct PostCell: View {
     
     @State private var showMenu: Bool = false
     @State private var showAlert: Bool = false
-    @State private var isSheetPresented: Bool = false // Bottom sheet 트리거
+    @State private var isSheetPresented: Bool = false
     
     var body: some View {
         VStack(spacing: 10) {

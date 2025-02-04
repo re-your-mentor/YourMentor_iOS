@@ -21,6 +21,8 @@ struct UploadView: View {
     @State private var showAlert = false
     @State private var alertMessage = ""
     
+    @State private var isUploadSuccess = false
+    
     var body: some View {
         VStack {
             ZStack(alignment: .top) {
@@ -103,6 +105,10 @@ struct UploadView: View {
             }
             .padding(.bottom)
             .frame(maxWidth: 300)
+            
+            NavigationLink(destination: MainView(), isActive: $isUploadSuccess) {
+                EmptyView()
+            }
         }
         .sheet(isPresented: $showingImagePicker) {
             ImagePicker(image: $selectedImage)
@@ -113,17 +119,17 @@ struct UploadView: View {
     }
     
     private func uploadImageAndCreatePost() {
-        guard let token = Service.shared.loadtokenfromkeychain() else {
+        guard let token = PostService.shared.LoadtokenFromKeychain() else {
             alertMessage = "토큰을 찾을 수 없습니다."
             showAlert = true
             return
         }
-        
+
         if let image = selectedImage {
-            Service.shared.uploadimage(image, token: token) { result in
+            PostService.shared.Imageupload(image, token: token) { result in
                 switch result {
                 case .success(let imageURL):
-                    uploadedImageURL = imageURL as? String
+                    uploadedImageURL = imageURL as! String
                     createPost(imageURL: uploadedImageURL)
                 case .requestErr,
                      .pathErr,
@@ -137,9 +143,9 @@ struct UploadView: View {
             createPost(imageURL: nil)
         }
     }
-    
+
     private func createPost(imageURL: String?) {
-        guard let token = Service.shared.loadtokenfromkeychain() else {
+        guard let token = PostService.shared.LoadtokenFromKeychain() else {
             alertMessage = "토큰을 찾을 수 없습니다."
             showAlert = true
             return
@@ -148,15 +154,21 @@ struct UploadView: View {
         let hashtagsContent = selectedHashtags.map { "#\($0)" }.joined(separator: " ")
         let fullContent = hashtagsContent + " " + content
         
-        Service.shared.createPost(
+        var imageToSend: UIImage? = nil
+        if let imageURL = imageURL, let url = URL(string: imageURL), let data = try? Data(contentsOf: url) {
+            imageToSend = UIImage(data: data)
+        }
+
+        PostService.shared.Postcreate(
             title: title,
             content: fullContent,
-            image: imageURL != nil ? loadImageFromURL(imageURL!) : nil,
+            image: imageToSend,
             token: token
         ) { result in
             switch result {
             case .success(let response):
                 print("게시물 생성 성공: \(response)")
+                isUploadSuccess = true
             case .requestErr(let message):
                 alertMessage = message as? String ?? "게시물 생성 실패"
                 showAlert = true
@@ -172,13 +184,14 @@ struct UploadView: View {
             }
         }
     }
+
     
-    private func loadImageFromURL(_ urlString: String) -> UIImage? {
-        guard let url = URL(string: urlString), let data = try? Data(contentsOf: url) else {
-            return nil
-        }
-        return UIImage(data: data)
-    }
+//    private func loadImageFromURL(_ urlString: String) -> UIImage? {
+//        guard let url = URL(string: urlString), let data = try? Data(contentsOf: url) else {
+//            return nil
+//        }
+//        return UIImage(data: data)
+//    }
 }
 
 #Preview {

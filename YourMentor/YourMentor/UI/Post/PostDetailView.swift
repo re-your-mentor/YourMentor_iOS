@@ -12,6 +12,9 @@ struct PostDetailView: View {
     var date: Date
     var nickname: String
     var content: String
+    var hashtag: String
+    var img: String?
+    
     @State private var c_text: String = ""
     
     var body: some View {
@@ -20,8 +23,29 @@ struct PostDetailView: View {
                 VStack(spacing: 0) {
                     Spacer()
                         .frame(height: 55)
-                    Color.notimage
-                        .frame(height: 200)
+                    if let img = img, !img.isEmpty, let url = URL(string: img) {
+                        AsyncImage(url: url) { phase in
+                            switch phase {
+                            case .empty:
+                                ProgressView()
+                                    .frame(height: 200)
+                            case .success(let image):
+                                image
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(height: 200)
+                            case .failure:
+                                Color.notimage
+                                    .frame(height: 200)
+                            @unknown default:
+                                Color.notimage
+                                    .frame(height: 200)
+                            }
+                        }
+                    } else {
+                        Color.notimage
+                            .frame(height: 200)
+                    }
                     
                     VStack(spacing: 15) {
                         VStack {
@@ -42,7 +66,7 @@ struct PostDetailView: View {
                             HStack {
                                 HStack(spacing: 5) {
                                     ForEach(0..<3, id: \.self) { _ in
-                                        Hashtag(title: "SwiftUI")
+                                        Hashtag(title: hashtag)
                                     }
                                 }
                                 Spacer()
@@ -55,7 +79,7 @@ struct PostDetailView: View {
                                 Spacer()
                             }
                             Divider()
-                                .padding(.bottom)
+                                .padding(.bottom, 10)
                             Text(content)
                                 .font(.system(size: 15, weight: .medium))
                         }
@@ -118,7 +142,7 @@ struct PostDetailView: View {
     }
 }
 
-#Preview {
-    PostDetailView(title: "안드로이드 깃허브로 협업하는 방법에 대하여", date: Date(), nickname: "맛좋은 오징어", content: "지금 제가 전공이 안드로이드인데 팀 프로젝트를 하는건 처음이라서 잘 모르겠어요... 뭔가 깃허브로 학습하는 방식이 있던걸로 아는데 어떤 방식이 있는지 다 까먹었")
-//    PostDetailHead()
-}
+//#Preview {
+//    PostDetailView(title: "안드로이드 깃허브로 협업하는 방법에 대하여", date: Date(), nickname: "맛좋은 오징어", content: "지금 제가 전공이 안드로이드인데 팀 프로젝트를 하는건 처음이라서 잘 모르겠어요... 뭔가 깃허브로 학습하는 방식이 있던걸로 아는데 어떤 방식이 있는지 다 까먹었")
+////    PostDetailHead()
+//}

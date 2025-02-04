@@ -62,7 +62,7 @@ struct CommentCell: View {
                 .font(.system(size: 13, weight: .medium))
                 .foregroundColor(.black.opacity(0.8))
         }
-        .frame(width: .infinity)
+        .frame(maxWidth: .infinity)
     }
 }
 
@@ -91,9 +91,7 @@ struct TextFieldView: View {
     }
 }
 
-#Preview {
-//    CommentCell(c_nicname: "오징어 튀김 학살자", c_content: "저도 잘 모르겠는데요... 제가 아는 선배 분들 중에 협업 많이 하시는걸로 유명한 선배있는데 컨택해드릴까요?")
-//    CommentSection()
-//    TextFieldView()
-    PostDetailView(title: "안드로이드 깃허브로 협업하는 방법에 대하여", date: Date(), nickname: "맛좋은 오징어", content: "지금 제가 전공이 안드로이드인데 팀 프로젝트를 하는건 처음이라서 잘 모르겠어요... 뭔가 깃허브로 학습하는 방식이 있던걸로 아는데 어떤 방식이 있는지 다 까먹었")
-}
+//#Preview {
+////    Comment
+//    PostDetailView(title: "안드로이드 깃허브로 협업하는 방법에 대하여", date: Date(), nickname: "맛좋은 오징어", content: "지금 제가 전공이 안드로이드인데 팀 프로젝트를 하는건 처음이라서 잘 모르겠어요... 뭔가 깃허브로 학습하는 방식이 있던걸로 아는데 어떤 방식이 있는지 다 까먹었")
+//}

@@ -9,12 +9,12 @@ import Foundation
 import Alamofire
 import UIKit
 
-class Service {
+class PostService {
     
-    static let shared = Service()
+    static let shared = PostService()
     private init() {}
     
-    func uploadimage(_ image: UIImage, token: String, completion: @escaping (NetworkResult<Any>) -> Void) {
+    func Imageupload(_ image: UIImage, token: String, completion: @escaping (NetworkResult<Any>) -> Void) {
         let url = APIConstants.imguploadURL
         let header: HTTPHeaders = [
             "Content-Type": "multipart/form-data",
@@ -75,7 +75,7 @@ class Service {
         }
     }
     
-    func createPostWithoutImage(title: String, content: String, token: String, completion: @escaping (NetworkResult<PostResponse>) -> Void) {
+    func PostcreateWithoutImage(title: String, content: String, token: String, completion: @escaping (NetworkResult<PostCreateResponse>) -> Void) {
         let url = APIConstants.postURL
         let header: HTTPHeaders = [
             "Content-Type": "application/json",
@@ -91,7 +91,6 @@ class Service {
             .responseData { response in
                 switch response.result {
                 case .success(let data):
-                    // 서버 응답 로그 출력
                     print("서버 응답: \(String(data: data, encoding: .utf8) ?? "데이터 없음")")
                     
                     guard let statusCode = response.response?.statusCode else {
@@ -102,7 +101,7 @@ class Service {
                     if (200...299).contains(statusCode) {
                         do {
                             let decoder = JSONDecoder()
-                            let responseData = try decoder.decode(PostResponse.self, from: data)
+                            let responseData = try decoder.decode(PostCreateResponse.self, from: data)
                             completion(.success(responseData))
                         } catch {
                             print("JSON 디코딩 오류: \(error)")
@@ -118,8 +117,8 @@ class Service {
             }
     }
 
-    func createPostWithImage(title: String, content: String, image: UIImage, token: String, completion: @escaping (NetworkResult<PostResponse>) -> Void) {
-        uploadimage(image, token: token) { result in
+    func PostcreateWithImage(title: String, content: String, image: UIImage, token: String, completion: @escaping (NetworkResult<PostCreateResponse>) -> Void) {
+        Imageupload(image, token: token) { result in
             switch result {
             case .success(let imgURL):
                 let url = APIConstants.postURL
@@ -138,7 +137,6 @@ class Service {
                     .responseData { response in
                         switch response.result {
                         case .success(let data):
-                            // 서버 응답 로그 출력
                             print("서버 응답: \(String(data: data, encoding: .utf8) ?? "데이터 없음")")
                             
                             guard let statusCode = response.response?.statusCode else {
@@ -149,10 +147,13 @@ class Service {
                             if (200...299).contains(statusCode) {
                                 do {
                                     let decoder = JSONDecoder()
-                                    let responseData = try decoder.decode(PostResponse.self, from: data)
+                                    let responseData = try decoder.decode(PostCreateResponse.self, from: data)
                                     completion(.success(responseData))
                                 } catch {
                                     print("JSON 디코딩 오류: \(error)")
+                                    if let jsonString = String(data: data, encoding: .utf8) {
+                                        print("원본 JSON: \(jsonString)")
+                                    }
                                     completion(.pathErr)
                                 }
                             } else {
@@ -176,15 +177,15 @@ class Service {
         }
     }
     
-    func createPost(title: String, content: String, image: UIImage?, token: String, completion: @escaping (NetworkResult<PostResponse>) -> Void) {
+    func Postcreate(title: String, content: String, image: UIImage?, token: String, completion: @escaping (NetworkResult<PostCreateResponse>) -> Void) {
         if let image = image {
-            createPostWithImage(title: title, content: content, image: image, token: token, completion: completion)
+            PostcreateWithImage(title: title, content: content, image: image, token: token, completion: completion)
         } else {
-            createPostWithoutImage(title: title, content: content, token: token, completion: completion)
+            PostcreateWithoutImage(title: title, content: content, token: token, completion: completion)
         }
     }
     
-    func loadtokenfromkeychain() -> String? {
+    func LoadtokenFromKeychain() -> String? {
         let keychainQuery: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrAccount as String: "jwtToken",
@@ -200,5 +201,39 @@ class Service {
         }
         return nil
     }
+    
+    
+    func Postlist(completion: @escaping (NetworkResult<[Posts]>) -> Void) {
+        let url = APIConstants.postlistURL
+        let header: HTTPHeaders = ["Content-Type": "application/json"]
 
+        AF.request(url, method: .get, headers: header).responseDecodable(of: [Posts].self) { response in
+            switch response.result {
+            case .success(let postList):
+                completion(.success(postList))
+            case .failure(let error):
+                if let data = response.data, let jsonString = String(data: data, encoding: .utf8) {
+                    print("서버 응답 JSON: \(jsonString)")
+                }
+                print("게시물 목록 조회 실패: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    func fetchPostDetail(postid: Int, completion: @escaping (NetworkResult<PostResponse>) -> Void) {
+        let url = APIConstants.postdetailURL(id: postid)
+        let header: HTTPHeaders = ["Content-Type": "application/json"]
+
+        AF.request(url, method: .get, headers: header).responseDecodable(of: PostResponse.self) { response in
+            switch response.result {
+            case .success(let postDetail):
+                completion(.success(postDetail))
+            case .failure(let error):
+                print("\(error.localizedDescription)")
+//                completion("error")
+            }
+        }
+    }
+    
+    
 }

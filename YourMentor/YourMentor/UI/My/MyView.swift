@@ -89,7 +89,8 @@ struct MyView: View {
                                 title: "안드로이드 깃허브로 협업하는 방법에 대하여",
                                 date: Date(),
                                 nickname: "맛좋은 오징어",
-                                content: "알아보게 혹시 협업 방식 명이라도 알려주실 분 구합니다.")) {
+                                content: "알아보게 혹시 협업 방식 명이라도 알려주실 분 구합니다.",
+                                hashtag: "d")) {
                                     PostCell(title: "안드로이드 깃허브로 협업하는 방법에 대하여", date: Date())
                                 }
                         }

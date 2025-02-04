@@ -9,7 +9,8 @@ import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject var userData: UserData
-//    @State var searchtext: String = ""
+    @Binding var posts: [Posts]
+    //    @State var searchtext: String = ""
     
     var body: some View {
         ZStack {
@@ -64,13 +65,21 @@ struct HomeView: View {
                         Text("업로드 목록")
                             .font(.system(size: 17, weight: .semibold))
                             .padding(.leading)
-                        ForEach(0..<10, id: \.self) { _ in
+                        ForEach(posts) { post in
                             NavigationLink(destination: PostDetailView(
-                                title: "안드로이드 깃허브로 협업하는 방법에 대하여",
-                                date: Date(),
-                                nickname: "맛좋은 오징어",
-                                content: "지금 제가 정공이 안드로이드이라도 알려주실 분 구합니다.")) {
-                                    CardLayout(title: "안드로이드 깃허브로 협업하는 방법에 대하여", date: Date())
+                                title: post.title,
+                                date: post.createdAt.toDate() ?? Date(),
+                                nickname: post.user.nick,
+                                content: post.content,
+                                hashtag: "nil",
+                                img: post.img.map { "http://3.136.244.4:8000/img/\($0)" }
+                            )) {
+                                    CardLayout(
+                                        title: post.title,
+                                        date: post.createdAt.toDate() ?? Date(),
+                                        hashtag: "ex",
+                                        img: post.img.map { "http://3.136.244.4:8000/img/\($0)" }
+                                    )
                                 }
                                 .frame(maxWidth: 295)
                                 .frame(height: 190)
@@ -82,6 +91,16 @@ struct HomeView: View {
         }
     }
 }
+    
+extension String {
+    func toDate() -> Date? {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        return formatter.date(from: self)
+    }
+}
+
 
 struct TagList: View {
     @State private var selectedHashtag: String? = "전체"
@@ -118,6 +137,6 @@ struct TagList: View {
 }
 
 #Preview {
-    HomeView()
+    HomeView(posts: .constant([]))
         .environmentObject(UserData())
 }

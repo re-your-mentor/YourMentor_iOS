@@ -101,6 +101,7 @@ struct MainView: View {
     @State private var selectedTab = 0
     @State private var isSearchActive = false
     @EnvironmentObject var userData: UserData
+    @State private var posts: [Posts] = []
 
     var body: some View {
         NavigationView {
@@ -112,7 +113,8 @@ struct MainView: View {
                 } else {
                     VStack {
                         if selectedTab == 0 {
-                            HomeView()
+                            HomeView(posts: $posts)
+                                .onAppear { fetchPosts() }
                                 .environmentObject(UserData())
                         } else if selectedTab == 1 {
                             PostListView()
@@ -131,6 +133,28 @@ struct MainView: View {
         }
         .navigationBarBackButtonHidden()
     }
+    
+//    private func fetchPosts() {
+//            PostService.shared.Postlist() { result in
+//                switch result {
+//                case .success(let postList):
+//                    self.post = postList
+//                default:
+//                    print("게시물 가져오기 실패")
+//                }
+//            }
+//        }
+    
+    private func fetchPosts() {
+        PostService.shared.Postlist { result in
+                switch result {
+                case .success(let fetchedPosts):
+                    self.posts = fetchedPosts
+                default:
+                    print("게시물 목록 조회 실패")
+                }
+            }
+        }
 }
 
 //struct MainHeaderView: View {
