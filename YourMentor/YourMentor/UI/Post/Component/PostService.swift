@@ -14,59 +14,48 @@ class PostService {
     static let shared = PostService()
     private init() {}
     
-    func Imageupload(_ image: UIImage, token: String, completion: @escaping (NetworkResult<Any>) -> Void) {
+    func Imageupload(_ image: UIImage, token: String, completion: @escaping (NetworkResult<String>) -> Void) {
         let url = APIConstants.imguploadURL
         let header: HTTPHeaders = [
             "Content-Type": "multipart/form-data",
             "Authorization": "Bearer \(token)"
         ]
+
+        guard let imageData = image.jpegData(compressionQuality: 0.8) else {
+            completion(.pathErr)
+            return
+        }
+        
+        let tempDirectory = FileManager.default.temporaryDirectory
+        let fileURL = tempDirectory.appendingPathComponent("upload.jpg")
+        
+        do {
+            try imageData.write(to: fileURL)
+        } catch {
+            print("이미지 파일 저장 오류: \(error)")
+            completion(.pathErr)
+            return
+        }
         
         AF.upload(multipartFormData: { multipartFormData in
-            if let imageData = image.jpegData(compressionQuality: 0.8) {
-                multipartFormData.append(imageData,
-                                         withName: "img",
-                                         fileName: "img.jpg",
-                                         mimeType: "img/jpeg")
-            }
+            multipartFormData.append(fileURL, withName: "img", fileName: "upload.jpg", mimeType: "image/jpeg")
         }, to: url, headers: header)
-        .responseData { response in
+        .responseDecodable(of: ImageUploadResponse.self) { response in
             switch response.result {
-            case .success(let data):
-                guard let statusCode = response.response?.statusCode else {
-                    completion(.pathErr)
-                    return
-                }
-                
-                if (200...299).contains(statusCode) {
-                    do {
-                        let decoder = JSONDecoder()
-                        let decodedData = try decoder.decode(ImageUploadResponse.self, from: data)
-                        if decodedData.success {
-                            completion(.success(decodedData.img))
-                        } else {
-                            completion(.requestErr("이미지 업로드 실패"))
-                        }
-                    } catch {
-                        completion(.pathErr)
-                    }
+            case .success(let decodedData):
+                if decodedData.success {
+                    completion(.success(decodedData.img))
                 } else {
+                    completion(.requestErr("이미지 업로드 실패"))
+                }
+            case .failure(let error):
+                print("네트워크 오류: \(error.localizedDescription)")
+                if let data = response.data {
                     do {
-                        let decoder = JSONDecoder()
-                        let decodedError = try decoder.decode(ErrorResponse.self, from: data)
+                        let decodedError = try JSONDecoder().decode(ErrorResponse.self, from: data)
                         completion(.requestErr(decodedError.message))
                     } catch {
                         completion(.pathErr)
-                    }
-                }
-
-            case .failure(let error):
-                if let errorResponse = response.data {
-                    do {
-                        let decoder = JSONDecoder()
-                        let decodedError = try decoder.decode(ErrorResponse.self, from: errorResponse)
-                        completion(.requestErr(decodedError.message))
-                    } catch {
-                        completion(.networkFail)
                     }
                 } else {
                     completion(.networkFail)
@@ -74,7 +63,7 @@ class PostService {
             }
         }
     }
-    
+
     func PostcreateWithoutImage(title: String, content: String, token: String, completion: @escaping (NetworkResult<PostCreateResponse>) -> Void) {
         let url = APIConstants.postURL
         let header: HTTPHeaders = [

@@ -16,7 +16,6 @@ struct UploadView: View {
     
     @State private var selectedImage: UIImage?
     @State private var showingImagePicker = false
-    @State private var uploadedImageURL: String?
     
     @State private var showAlert = false
     @State private var alertMessage = ""
@@ -91,7 +90,7 @@ struct UploadView: View {
             Spacer()
             
             Button {
-                uploadImageAndCreatePost()
+                uploadPost()
             } label: {
                 Text("업로드 하기")
                     .font(.system(size: 15, weight: .bold))
@@ -118,51 +117,51 @@ struct UploadView: View {
         }
     }
     
-    private func uploadImageAndCreatePost() {
-        guard let token = PostService.shared.LoadtokenFromKeychain() else {
-            alertMessage = "토큰을 찾을 수 없습니다."
-            showAlert = true
-            return
-        }
-
-        if let image = selectedImage {
-            PostService.shared.Imageupload(image, token: token) { result in
-                switch result {
-                case .success(let imageURL):
-                    uploadedImageURL = imageURL as! String
-                    createPost(imageURL: uploadedImageURL)
-                case .requestErr,
-                     .pathErr,
-                     .serverErr,
-                     .networkFail:
-                    alertMessage = "이미지 업로드 실패"
-                    showAlert = true
-                }
-            }
-        } else {
-            createPost(imageURL: nil)
-        }
-    }
-
-    private func createPost(imageURL: String?) {
+    private func uploadPost() {
         guard let token = PostService.shared.LoadtokenFromKeychain() else {
             alertMessage = "토큰을 찾을 수 없습니다."
             showAlert = true
             return
         }
         
+        if let image = selectedImage {
+            Imageupload(image: image, token: token)
+        } else {
+            createPostWithImage(imageFileName: nil, image: nil, token: token)
+        }
+    }
+    
+    private func Imageupload(image: UIImage, token: String) {
+        PostService.shared.Imageupload(image, token: token) { result in
+            switch result {
+            case .success(let imageFileName):
+                print("이미지 업로드 성공: \(imageFileName)")
+                createPostWithImage(imageFileName: imageFileName, image: image, token: token)
+                
+            case .requestErr(let message):
+                alertMessage = "이미지 업로드 요청 오류: \(message ?? "알 수 없는 오류")"
+                showAlert = true
+            case .pathErr:
+                alertMessage = "파일 경로가 잘못되었습니다."
+                showAlert = true
+            case .serverErr:
+                alertMessage = "서버에서 오류가 발생했습니다."
+                showAlert = true
+            case .networkFail:
+                alertMessage = "네트워크 문제로 업로드에 실패했습니다."
+                showAlert = true
+            }
+        }
+    }
+    
+    private func createPostWithImage(imageFileName: String?, image: UIImage?, token: String) {
         let hashtagsContent = selectedHashtags.map { "#\($0)" }.joined(separator: " ")
         let fullContent = hashtagsContent + " " + content
         
-        var imageToSend: UIImage? = nil
-        if let imageURL = imageURL, let url = URL(string: imageURL), let data = try? Data(contentsOf: url) {
-            imageToSend = UIImage(data: data)
-        }
-
         PostService.shared.Postcreate(
             title: title,
             content: fullContent,
-            image: imageToSend,
+            image: image,
             token: token
         ) { result in
             switch result {
@@ -184,14 +183,6 @@ struct UploadView: View {
             }
         }
     }
-
-    
-//    private func loadImageFromURL(_ urlString: String) -> UIImage? {
-//        guard let url = URL(string: urlString), let data = try? Data(contentsOf: url) else {
-//            return nil
-//        }
-//        return UIImage(data: data)
-//    }
 }
 
 #Preview {
