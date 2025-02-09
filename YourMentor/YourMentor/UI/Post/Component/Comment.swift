@@ -90,8 +90,3 @@ struct TextFieldView: View {
 //        .padding(.horizontal)
     }
 }
-
-//#Preview {
-////    Comment
-//    PostDetailView(title: "안드로이드 깃허브로 협업하는 방법에 대하여", date: Date(), nickname: "맛좋은 오징어", content: "지금 제가 전공이 안드로이드인데 팀 프로젝트를 하는건 처음이라서 잘 모르겠어요... 뭔가 깃허브로 학습하는 방식이 있던걸로 아는데 어떤 방식이 있는지 다 까먹었")
-//}

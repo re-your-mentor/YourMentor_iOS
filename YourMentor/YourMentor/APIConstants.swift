@@ -8,8 +8,8 @@
 import Foundation
 
 struct APIConstants {
-    static let baseURL = "http://3.136.244.4:8000"
-//    static let baseURL = "http://10.80.161.255:8000"
+//    static let baseURL = "http://3.136.244.4:8000"
+    static let baseURL = "http://3.148.49.139:8000"
     
     // auth
     static let authURL = baseURL + "/auth"
@@ -43,6 +43,11 @@ struct APIConstants {
     
     // 전체 게시물 리스트
     static let postlistURL = baseURL + "/"
+    
+    // 게시물 이미지 조회
+    static func postimageURL(img: String) -> String {
+        return postURL + "/img/\(img)"
+    }
     
     // 게시물 상세(get) & 수정(put) & 삭제(del)
     static func postdetailURL(id: Int) -> String {

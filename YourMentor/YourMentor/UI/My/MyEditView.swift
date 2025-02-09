@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MyEditView: View {
     @State var newnickname: String = ""
-    @State private var selectedHashtags: Set<String> = []
+    @State private var selectedHashtags: Set<Int> = []
     
     var body: some View {
         ZStack(alignment: .top) {

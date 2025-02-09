@@ -10,6 +10,7 @@ import SwiftUI
 struct HomeView: View {
     @EnvironmentObject var userData: UserData
     @Binding var posts: [Posts]
+    let service = "http://3.148.49.139:8000/img/"
     //    @State var searchtext: String = ""
     
     var body: some View {
@@ -71,14 +72,15 @@ struct HomeView: View {
                                 date: post.createdAt.toDate() ?? Date(),
                                 nickname: post.user.nick,
                                 content: post.content,
-                                hashtag: "nil",
-                                img: post.img.map { "http://3.136.244.4:8000/img/\($0)" }
+                                hashtag: post.hashtags.map { $0.name },
+                                img: post.img.map { service+"\($0)" }
                             )) {
                                     CardLayout(
+                                        id: post.id,
                                         title: post.title,
                                         date: post.createdAt.toDate() ?? Date(),
-                                        hashtag: "ex",
-                                        img: post.img.map { "http://3.136.244.4:8000/img/\($0)" }
+                                        hashtag: post.hashtags.map { $0.name },
+                                        img: post.img.map { service+"\($0)" }
                                     )
                                 }
                                 .frame(maxWidth: 295)

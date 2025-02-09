@@ -20,7 +20,7 @@ class PostService {
             "Content-Type": "multipart/form-data",
             "Authorization": "Bearer \(token)"
         ]
-
+        
         guard let imageData = image.jpegData(compressionQuality: 0.8) else {
             completion(.pathErr)
             return
@@ -63,8 +63,8 @@ class PostService {
             }
         }
     }
-
-    func PostcreateWithoutImage(title: String, content: String, token: String, completion: @escaping (NetworkResult<PostCreateResponse>) -> Void) {
+    
+    func PostcreateWithoutImage(title: String, content: String, token: String, hashtags: [Int], completion: @escaping (NetworkResult<PostCreateResponse>) -> Void) {
         let url = APIConstants.postURL
         let header: HTTPHeaders = [
             "Content-Type": "application/json",
@@ -73,7 +73,8 @@ class PostService {
         
         let body: [String: Any] = [
             "title": title,
-            "content": content
+            "content": content,
+            "hashtags": hashtags
         ]
         
         AF.request(url, method: .post, parameters: body, encoding: JSONEncoding.default, headers: header)
@@ -86,7 +87,7 @@ class PostService {
                         completion(.pathErr)
                         return
                     }
-
+                    
                     if (200...299).contains(statusCode) {
                         do {
                             let decoder = JSONDecoder()
@@ -105,8 +106,8 @@ class PostService {
                 }
             }
     }
-
-    func PostcreateWithImage(title: String, content: String, image: UIImage, token: String, completion: @escaping (NetworkResult<PostCreateResponse>) -> Void) {
+    
+    func PostcreateWithImage(title: String, content: String, image: UIImage, token: String, hashtags: [Int], completion: @escaping (NetworkResult<PostCreateResponse>) -> Void) {
         Imageupload(image, token: token) { result in
             switch result {
             case .success(let imgURL):
@@ -119,7 +120,8 @@ class PostService {
                 let body: [String: Any] = [
                     "title": title,
                     "content": content,
-                    "img": imgURL
+                    "img": imgURL,
+                    "hashtags": hashtags
                 ]
                 
                 AF.request(url, method: .post, parameters: body, encoding: JSONEncoding.default, headers: header)
@@ -132,7 +134,7 @@ class PostService {
                                 completion(.pathErr)
                                 return
                             }
-
+                            
                             if (200...299).contains(statusCode) {
                                 do {
                                     let decoder = JSONDecoder()
@@ -153,7 +155,7 @@ class PostService {
                             completion(.networkFail)
                         }
                     }
-
+                
             case .requestErr(let message):
                 completion(.requestErr(message))
             case .pathErr:
@@ -166,11 +168,11 @@ class PostService {
         }
     }
     
-    func Postcreate(title: String, content: String, image: UIImage?, token: String, completion: @escaping (NetworkResult<PostCreateResponse>) -> Void) {
+    func Postcreate(title: String, content: String, image: UIImage?, token: String, hashtags: [Int], completion: @escaping (NetworkResult<PostCreateResponse>) -> Void) {
         if let image = image {
-            PostcreateWithImage(title: title, content: content, image: image, token: token, completion: completion)
+            PostcreateWithImage(title: title, content: content, image: image, token: token, hashtags: hashtags, completion: completion)
         } else {
-            PostcreateWithoutImage(title: title, content: content, token: token, completion: completion)
+            PostcreateWithoutImage(title: title, content: content, token: token, hashtags: hashtags, completion: completion)
         }
     }
     
@@ -181,10 +183,10 @@ class PostService {
             kSecReturnData as String: kCFBooleanTrue!,
             kSecMatchLimit as String: kSecMatchLimitOne
         ]
-
+        
         var dataTypeRef: AnyObject?
         let status = SecItemCopyMatching(keychainQuery as CFDictionary, &dataTypeRef)
-
+        
         if status == errSecSuccess, let retrievedData = dataTypeRef as? Data {
             return String(data: retrievedData, encoding: .utf8)
         }
@@ -195,11 +197,12 @@ class PostService {
     func Postlist(completion: @escaping (NetworkResult<[Posts]>) -> Void) {
         let url = APIConstants.postlistURL
         let header: HTTPHeaders = ["Content-Type": "application/json"]
-
+        
         AF.request(url, method: .get, headers: header).responseDecodable(of: [Posts].self) { response in
             switch response.result {
             case .success(let postList):
-                completion(.success(postList))
+                let sortedPosts = postList.sorted { $0.createdAt > $1.createdAt }
+                completion(.success(sortedPosts))
             case .failure(let error):
                 if let data = response.data, let jsonString = String(data: data, encoding: .utf8) {
                     print("서버 응답 JSON: \(jsonString)")
@@ -212,17 +215,132 @@ class PostService {
     func fetchPostDetail(postid: Int, completion: @escaping (NetworkResult<PostResponse>) -> Void) {
         let url = APIConstants.postdetailURL(id: postid)
         let header: HTTPHeaders = ["Content-Type": "application/json"]
-
+        
         AF.request(url, method: .get, headers: header).responseDecodable(of: PostResponse.self) { response in
             switch response.result {
             case .success(let postDetail):
                 completion(.success(postDetail))
             case .failure(let error):
                 print("\(error.localizedDescription)")
-//                completion("error")
             }
         }
     }
     
+    func Postedit(postID: Int, title: String, content: String, image: UIImage?, token: String, hashtags: [Int], completion: @escaping (NetworkResult<PostCreateResponse>) -> Void) {
+        let updatePost: (String?) -> Void = { imageUrl in
+            let url = "\(APIConstants.baseURL)/post/\(postID)"
+            let headers: HTTPHeaders = [
+                "Content-Type": "application/json",
+                "Authorization": "Bearer \(token)"
+            ]
+            
+            let body: [String: Any] = [
+                "title": title,
+                "content": content,
+                "img": imageUrl ?? NSNull(),
+                "hashtags": hashtags
+            ]
+            
+            AF.request(url, method: .put, parameters: body, encoding: JSONEncoding.default, headers: headers)
+                .responseData { response in
+                    switch response.result {
+                    case .success(let data):
+                        if let jsonString = String(data: data, encoding: .utf8) {
+                            print("서버 응답: \(jsonString)")
+                        }
+                        
+                        do {
+                            let decodedData = try JSONDecoder().decode(PostCreateResponse.self, from: data)
+                            completion(.success(decodedData))
+                        } catch {
+                            print("JSON 디코딩 오류: \(error.localizedDescription)")
+                            completion(.pathErr)
+                        }
+                    case .failure(let error):
+                        print("네트워크 오류: \(error.localizedDescription)")
+                        if let data = response.data {
+                            do {
+                                let decodedError = try JSONDecoder().decode(ErrorResponse.self, from: data)
+                                completion(.requestErr(decodedError.message))
+                            } catch {
+                                completion(.pathErr)
+                            }
+                        } else {
+                            completion(.networkFail)
+                        }
+                    }
+                }
+        }
+        
+        if let image = image {
+            Imageupload(image, token: token) { result in
+                switch result {
+                case .success(let imageUrl):
+                    updatePost(imageUrl)
+                default:
+                    completion(.requestErr("이미지 업로드 실패"))
+                }
+            }
+        } else {
+            updatePost(nil)
+        }
+    }
+    
+    
+    func Postdelete(postid: Int, token: String, completion: @escaping (NetworkResult<PostDeleteResponse>) -> Void) {
+        let url = APIConstants.postdetailURL(id: postid)
+        let header: HTTPHeaders = [
+            "Content-Type": "application/json",
+            "Authorization": "Bearer \(token)"
+        ]
+        
+        AF.request(url, method: .delete, headers: header).responseDecodable(of: PostDeleteResponse.self) { response in
+            if let statusCode = response.response?.statusCode {
+                print("응답 코드\n\(statusCode)")
+            } else {
+                print("응답 코드 없음")
+            }
+            
+            if let responseData = response.data {
+                let responseString = String(data: responseData, encoding: .utf8) ?? "응답 본문 디코딩 실패"
+                print("응답 본문\n\(responseString)")
+            } else {
+                print("응답 본문 없음")
+            }
+            
+            switch response.result {
+            case .success(let postDelete):
+                if !postDelete.success {
+                    print("삭제 실패\n\(postDelete.message)")
+                    completion(.requestErr(postDelete.message))
+                    return
+                }
+                print("삭제 성공\n\(postDelete)")
+                completion(.success(postDelete))
+                
+            case .failure(let error):
+                print("네트워크 요청 실패\n\(error.localizedDescription)")
+                
+                if let statusCode = response.response?.statusCode {
+                    switch statusCode {
+                    case 400:
+                        completion(.requestErr("잘못된 요청입니다."))
+                    case 401:
+                        completion(.requestErr("인증이 필요합니다."))
+                    case 403:
+                        completion(.requestErr("삭제 권한이 없습니다."))
+                    case 404:
+                        completion(.pathErr)
+                    case 500...599:
+                        completion(.serverErr)
+                    default:
+                        completion(.networkFail)
+                    }
+                } else {
+                    completion(.networkFail)
+                }
+            }
+        }
+    }
     
 }

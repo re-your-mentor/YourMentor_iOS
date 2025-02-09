@@ -10,7 +10,7 @@ import SwiftUI
 struct Signup_Tag: View {
     @EnvironmentObject var userData: UserData
     @Environment(\.dismiss) private var dismiss
-    @State private var selectedHashtags: Set<String> = []
+    @State private var selectedHashtags: Set<Int> = []
     @State private var showAlert = false
     @State private var alertMessage = ""
     @State private var isSignupSuccess = false
@@ -80,7 +80,7 @@ struct Signup_Tag: View {
     }
     
     private func Join() {
-        userData.selectedTags = selectedHashtags
+//        userData.selectedTags = selectedHashtags
         
         AuthService.shared.join(
             email: userData.email,

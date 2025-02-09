@@ -8,7 +8,10 @@
 import SwiftUI
 
 struct PostListView: View {
+    @Binding var posts: [Posts]
     @State var searchtext: String = ""
+    let service = "http://3.148.49.139:8000/img/"
+    
     var body: some View {
         ZStack {
             Color.back
@@ -43,36 +46,29 @@ struct PostListView: View {
                             .padding(.leading, 55)
                         
                         ScrollView(.horizontal, showsIndicators: false) {
-                            ScrollViewReader { proxy in
+//                            ScrollViewReader { proxy in
                                 HStack(spacing: 10) {
-                                    ForEach(0..<5, id: \.self) { index in
+                                    ForEach(posts) { post in
                                         NavigationLink(destination: PostDetailView(
-                                            title: "안드로이드 깃허브로 협업하는 방법에 대하여",
-                                            date: Date(),
-                                            nickname: "맛좋은 오징어",
-                                            content: """
-                                        지금 제가 전공이 안드로이드인데 팀 프로젝트를 하는 건 처음이라서 잘 모르겠어요...
-                                        뭔가 깃허브로 학습하는 방식이 있던 걸로 아는데 어떤 방식이 있는지 다 까먹어 버렸어요...
-                                        알아보게 혹시 협업 방식 명이라도 알려주실 분 구합니다.
-                                        """,
-                                            hashtag: "dded"
+                                            title: post.title,
+                                            date: post.createdAt.toDate() ?? Date(),
+                                            nickname: post.user.nick,
+                                            content: post.content,
+                                            hashtag: post.hashtags.map { $0.name },
+                                            img: post.img.map { service+"\($0)" }
                                         )) {
                                             CardLayout(
-                                                title: "안드로이드 깃허브로 협업하는 방법에 대하여",
-                                                date: Date(),
-                                                hashtag: "Dd"
+                                                id: post.id,
+                                                title: post.title,
+                                                date: post.createdAt.toDate() ?? Date(),
+                                                hashtag: post.hashtags.map { $0.name },
+                                                img: post.img.map { service+"\($0)" }
                                             )
                                         }
                                         .frame(width: 295, height: 190)
-                                        .id(index)
+//                                        .id(index)
                                     }
                                     
-                                }
-                                .onAppear {
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                                proxy.scrollTo(1, anchor: .center)
-                                            }
-                                        }
                                 
                             }
                             
@@ -83,15 +79,22 @@ struct PostListView: View {
                         Text("최근 업로드")
                             .padding(.leading, 7)
                             .font(.system(size: 17, weight: .semibold))
-                        ForEach(0..<10, id: \.self) { _ in
+                        ForEach(posts) { post in
                             NavigationLink(destination: PostDetailView (
-                                title: "안드로이드 깃허브로 협업하는 방법에 대하여",
-                                date: Date(),
-                                nickname: "맛좋은 오징어",
-                                content: "지금 제가 정공이 안드로이드인데 팀 프로젝트를 하는건 처음이라서 잘 모르겠어요...뭔가 깃허브로 학습하는 방식이 있던걸로 아는데 어떤 방식이 있는지 다 까먹어 버렸어요... 알아보게 혹시 협업 방식 명이라도 알려주실 분 구합니다.",
-                                hashtag: "dd"
+                                title: post.title,
+                                date: post.createdAt.toDate() ?? Date(),
+                                nickname: post.user.nick,
+                                content: post.content,
+                                hashtag: post.hashtags.map { $0.name },
+                                img: post.img.map { service+"\($0)" }
                             )) {
-                                    PostCell(title: "안드로이드 깃허브로 협업하는 방법에 대하여", date: Date())
+                                    PostCell(
+                                        id: post.id,
+                                        title: post.title,
+                                        date: post.createdAt.toDate() ?? Date(),
+                                        hashtag: post.hashtags.map { $0.name }
+                                    )
+//                                    .frame(height: 100)
                                 }
                         }
                     }
@@ -99,8 +102,4 @@ struct PostListView: View {
             }
         }
     }
-}
-
-#Preview {
-    PostListView()
 }

@@ -93,7 +93,6 @@ struct CustomTabBar: View {
                     .padding(.top)
             }
         )
-//        .shadow(color: .gray.opacity(0.1), radius: 3, x: 0, y: -5)
     }
 }
 
@@ -117,9 +116,10 @@ struct MainView: View {
                                 .onAppear { fetchPosts() }
                                 .environmentObject(UserData())
                         } else if selectedTab == 1 {
-                            PostListView()
+                            PostListView(posts: $posts)
+                                .onAppear { fetchPosts() }
                         } else if selectedTab == 2 {
-                            UploadView()
+                            PostUploadView(isEditing: .constant(false))
                         } else if selectedTab == 3 {
                             ChatListView()
                         } else if selectedTab == 4 {

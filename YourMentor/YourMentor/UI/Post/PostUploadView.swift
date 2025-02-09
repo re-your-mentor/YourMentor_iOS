@@ -8,11 +8,11 @@
 import SwiftUI
 import PhotosUI
 
-struct UploadView: View {
+struct PostUploadView: View {
     @State private var tag: String = ""
     @State private var title: String = ""
     @State private var content: String = ""
-    @State private var selectedHashtags: Set<String> = []
+    @State private var selectedHashtags: Set<Int> = []
     
     @State private var selectedImage: UIImage?
     @State private var showingImagePicker = false
@@ -21,6 +21,10 @@ struct UploadView: View {
     @State private var alertMessage = ""
     
     @State private var isUploadSuccess = false
+    @State private var isEditSuccess = false
+    
+    @Binding var isEditing: Bool
+    @State var postID: Int? = nil
     
     var body: some View {
         VStack {
@@ -90,9 +94,13 @@ struct UploadView: View {
             Spacer()
             
             Button {
-                uploadPost()
+                if isEditing, let postID = postID {
+                    Postupdate(postID: postID)
+                } else {
+                    Postupload()
+                }
             } label: {
-                Text("업로드 하기")
+                Text(isEditing ? "수정하기" : "업로드 하기")
                     .font(.system(size: 15, weight: .bold))
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
@@ -108,7 +116,12 @@ struct UploadView: View {
             NavigationLink(destination: MainView(), isActive: $isUploadSuccess) {
                 EmptyView()
             }
+            
+            NavigationLink(destination: MainView(), isActive: $isEditSuccess) {
+                EmptyView()
+            }
         }
+        .navigationBarBackButtonHidden()
         .sheet(isPresented: $showingImagePicker) {
             ImagePicker(image: $selectedImage)
         }
@@ -117,7 +130,7 @@ struct UploadView: View {
         }
     }
     
-    private func uploadPost() {
+    private func Postupload() {
         guard let token = PostService.shared.LoadtokenFromKeychain() else {
             alertMessage = "토큰을 찾을 수 없습니다."
             showAlert = true
@@ -155,14 +168,12 @@ struct UploadView: View {
     }
     
     private func createPostWithImage(imageFileName: String?, image: UIImage?, token: String) {
-        let hashtagsContent = selectedHashtags.map { "#\($0)" }.joined(separator: " ")
-        let fullContent = hashtagsContent + " " + content
-        
         PostService.shared.Postcreate(
             title: title,
-            content: fullContent,
+            content: content,
             image: image,
-            token: token
+            token: token,
+            hashtags: Array(selectedHashtags)
         ) { result in
             switch result {
             case .success(let response):
@@ -183,8 +194,43 @@ struct UploadView: View {
             }
         }
     }
+
+    private func Postupdate(postID: Int) {
+        guard let token = PostService.shared.LoadtokenFromKeychain() else {
+            alertMessage = "토큰을 찾을 수 없습니다."
+            showAlert = true
+            return
+        }
+        
+        PostService.shared.Postedit(
+            postID: postID,
+            title: title,
+            content: content,
+            image: selectedImage,
+            token: token,
+            hashtags: Array(selectedHashtags)
+        ) { result in
+            switch result {
+            case .success(let response):
+                print("게시물 수정 성공: \(response)")
+                isEditSuccess = true
+            case .requestErr(let message):
+                alertMessage = message as? String ?? "게시물 수정 실패"
+                showAlert = true
+            case .pathErr:
+                alertMessage = "잘못된 경로 요청입니다."
+                showAlert = true
+            case .serverErr:
+                alertMessage = "서버 오류가 발생했습니다."
+                showAlert = true
+            case .networkFail:
+                alertMessage = "네트워크 연결에 실패했습니다."
+                showAlert = true
+            }
+        }
+    }
 }
 
-#Preview {
-    UploadView()
-}
+//#Preview {
+//    PostUploadView(isEditing)
+//}

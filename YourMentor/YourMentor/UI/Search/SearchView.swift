@@ -36,7 +36,12 @@ struct SearchView: View {
                             .padding(.top)
                             .padding(.bottom, 30)
                             ForEach(0..<4, id: \.self) { _ in
-                                PostCell(title: "안드로이드 깃허브로 협업하는 방법에 대하여", date: Date())
+                                PostCell(
+                                    id: 1,
+                                    title: "안드로이드 깃허브로 협업하는 방법에 대하여",
+                                    date: Date(),
+                                    hashtag: ["post.hashtags.map { $0.name }"]
+                                )
                             }
                         }
                     }

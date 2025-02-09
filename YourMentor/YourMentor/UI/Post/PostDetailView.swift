@@ -12,7 +12,7 @@ struct PostDetailView: View {
     var date: Date
     var nickname: String
     var content: String
-    var hashtag: String
+    var hashtag: [String]
     var img: String?
     
     @State private var c_text: String = ""
@@ -30,10 +30,13 @@ struct PostDetailView: View {
                                 ProgressView()
                                     .frame(height: 200)
                             case .success(let image):
-                                image
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(height: 200)
+                                NavigationLink(destination: PostImageDetailView(img: img)) {
+                                    image
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(height: 200)
+                                        .clipped()
+                                }
                             case .failure:
                                 Color.notimage
                                     .frame(height: 200)
@@ -65,8 +68,8 @@ struct PostDetailView: View {
                             }
                             HStack {
                                 HStack(spacing: 5) {
-                                    ForEach(0..<3, id: \.self) { _ in
-                                        Hashtag(title: hashtag)
+                                    ForEach(hashtag, id: \.self) { tag in
+                                        Hashtag(title: tag)
                                     }
                                 }
                                 Spacer()
@@ -140,9 +143,6 @@ struct PostDetailView: View {
         formatter.dateFormat = "yyyy.MM.dd"
         return formatter.string(from: date)
     }
+    
 }
 
-//#Preview {
-//    PostDetailView(title: "안드로이드 깃허브로 협업하는 방법에 대하여", date: Date(), nickname: "맛좋은 오징어", content: "지금 제가 전공이 안드로이드인데 팀 프로젝트를 하는건 처음이라서 잘 모르겠어요... 뭔가 깃허브로 학습하는 방식이 있던걸로 아는데 어떤 방식이 있는지 다 까먹었")
-////    PostDetailHead()
-//}

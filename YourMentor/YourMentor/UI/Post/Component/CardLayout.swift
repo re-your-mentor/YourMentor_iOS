@@ -8,14 +8,22 @@
 import SwiftUI
 
 struct CardLayout: View {
+    var id: Int
     var title: String
     var date: Date
-    var hashtag: String
+    var hashtag: [String]
     var img: String?
+
+    @State private var isSheetPresented = false
+    @State private var showMenu = false
+    @State private var showDeleteAlert = false
     
-    @State private var showMenu: Bool = false
-    @State private var showAlert: Bool = false
-    @State private var isSheetPresented: Bool = false
+    @State private var alertMessage = ""
+    @State private var showAlert = false
+    
+    @State private var isEditing = false
+
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         VStack(spacing: 0) {
@@ -32,7 +40,8 @@ struct CardLayout: View {
                                 .frame(height: 140)
                                 .clipShape(
                                     RoundedCornerShape(
-                                        corners: [.topLeft, .topRight], radius: 12
+                                        corners: [.topLeft, .topRight],
+                                        radius: 12
                                     )
                                 )
                                 .clipped()
@@ -49,8 +58,8 @@ struct CardLayout: View {
                 VStack {
                     Spacer()
                     HStack(spacing: 5) {
-                        ForEach(0..<3, id: \.self) { _ in
-                            Hashtag(title: hashtag)
+                        ForEach(hashtag, id: \.self) { tag in
+                            Hashtag(title: tag)
                         }
                         Spacer()
                     }
@@ -59,14 +68,14 @@ struct CardLayout: View {
                 }
             }
             .frame(height: 140)
-            
+
             HStack(alignment: .top) {
                 VStack(spacing: 3) {
                     HStack {
                         Text(title)
                             .font(.system(size: 15, weight: .semibold))
                             .frame(maxWidth: .infinity, alignment: .leading)
-                        
+
                         Button(action: {
                             isSheetPresented.toggle()
                         }) {
@@ -99,29 +108,39 @@ struct CardLayout: View {
                 )
                 .foregroundColor(.white)
             )
+            NavigationLink(destination: PostUploadView(isEditing: .constant(true), postID: id), isActive: $isEditing) {
+                EmptyView()
+            }
         }
         .foregroundColor(.black)
         .frame(maxWidth: 295)
         .sheet(isPresented: $isSheetPresented) {
-                VStack {
-                    Button("수정하기") {
-                    }
-                    .padding(7)
-                    Divider()
-                    Button("삭제하기") {
-                        showAlert = true
-                    }
-                    .padding(7)
+            VStack {
+                Button("수정하기") {
+                    isSheetPresented = false
+                    isEditing = true
                 }
-                .foregroundColor(.gray)
-                .presentationDetents([.height(100)])
+                .padding(7)
+                Divider()
+                Button("삭제하기") {
+                    showDeleteAlert = true
+                }
+                .padding(7)
             }
-        .alert("정말로 게시물을 삭제하시겠습니까?", isPresented: $showAlert) {
+            .foregroundColor(.gray)
+            .presentationDetents([.height(100)])
+        }
+        .alert("정말로 게시물을 삭제하시겠습니까?", isPresented: $showDeleteAlert) {
             Button("네", role: .destructive) {
-                
+                PostDelete(postid: id)
             }
             Button("아니요", role: .cancel) {
-                
+                dismiss()
+            }
+        }
+        .alert(alertMessage, isPresented: $showAlert) {
+            Button("확인", role: .cancel) {
+                dismiss()
             }
         }
     }
@@ -139,6 +158,37 @@ struct CardLayout: View {
         formatter.dateFormat = "yyyy.MM.dd"
         return formatter.string(from: date)
     }
+
+    private func PostDelete(postid: Int) {
+        guard let token = PostService.shared.LoadtokenFromKeychain() else {
+            alertMessage = "토큰을 찾을 수 없습니다."
+            showAlert = true
+            return
+        }
+
+        PostService.shared.Postdelete(postid: postid, token: token) { result in
+            switch result {
+            case .success:
+                print("게시물 삭제 성공")
+                alertMessage = "게시물이 성공적으로 삭제되었습니다."
+                showAlert = true
+
+            case .requestErr(let message):
+                alertMessage = "오류:\n\(message ?? "알 수 없는 오류")"
+                showAlert = true
+            case .pathErr:
+                alertMessage = "게시물을 찾을 수 없습니다."
+                showAlert = true
+            case .serverErr:
+                alertMessage = "서버에서 오류가 발생했습니다."
+                showAlert = true
+            case .networkFail:
+                alertMessage = "네트워크 문제로 삭제에 실패했습니다."
+                showAlert = true
+            }
+        }
+    }
+
 }
 
 struct RoundedCornerShape: Shape {
@@ -154,7 +204,7 @@ struct RoundedCornerShape: Shape {
         return Path(path.cgPath)
     }
 }
-
-#Preview {
-    CardLayout(title: "안드로이드 깃허브로 협업하는 방법에 대하여", date: Date(), hashtag: "sw")
-}
+//
+//#Preview {
+//    CardLayout(title: "안드로이드 깃허브로 협업하는 방법에 대하여", date: Date(), hashtag: "sw")
+//}
