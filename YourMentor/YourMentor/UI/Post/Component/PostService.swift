@@ -212,19 +212,24 @@ class PostService {
         }
     }
     
-    func fetchPostDetail(postid: Int, completion: @escaping (NetworkResult<PostResponse>) -> Void) {
+    func PostDetail(postid: Int, completion: @escaping (NetworkResult<PostResponse>) -> Void) {
         let url = APIConstants.postdetailURL(id: postid)
         let header: HTTPHeaders = ["Content-Type": "application/json"]
-        
+
         AF.request(url, method: .get, headers: header).responseDecodable(of: PostResponse.self) { response in
             switch response.result {
             case .success(let postDetail):
+                print("Post\n\(postDetail)")
                 completion(.success(postDetail))
             case .failure(let error):
-                print("\(error.localizedDescription)")
+                print("error: \(error.localizedDescription)")
+                if let data = response.data {
+                    print("Response Data: \(String(data: data, encoding: .utf8) ?? "No Data")")
+                }
             }
         }
     }
+
     
     func Postedit(postID: Int, title: String, content: String, image: UIImage?, token: String, hashtags: [Int], completion: @escaping (NetworkResult<PostCreateResponse>) -> Void) {
         let updatePost: (String?) -> Void = { imageUrl in

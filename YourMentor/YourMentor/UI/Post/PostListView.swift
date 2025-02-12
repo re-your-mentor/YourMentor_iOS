@@ -9,6 +9,8 @@ import SwiftUI
 
 struct PostListView: View {
     @Binding var posts: [Posts]
+//    @State private var postdetail: [PostDetail] = []
+    
     @State var searchtext: String = ""
     let service = "http://3.148.49.139:8000/img/"
     
@@ -46,10 +48,10 @@ struct PostListView: View {
                             .padding(.leading, 55)
                         
                         ScrollView(.horizontal, showsIndicators: false) {
-//                            ScrollViewReader { proxy in
                                 HStack(spacing: 10) {
                                     ForEach(posts) { post in
                                         NavigationLink(destination: PostDetailView(
+                                            id: post.id,
                                             title: post.title,
                                             date: post.createdAt.toDate() ?? Date(),
                                             nickname: post.user.nick,
@@ -66,10 +68,7 @@ struct PostListView: View {
                                             )
                                         }
                                         .frame(width: 295, height: 190)
-//                                        .id(index)
                                     }
-                                    
-                                
                             }
                             
                         }
@@ -81,6 +80,7 @@ struct PostListView: View {
                             .font(.system(size: 17, weight: .semibold))
                         ForEach(posts) { post in
                             NavigationLink(destination: PostDetailView (
+                                id: post.id,
                                 title: post.title,
                                 date: post.createdAt.toDate() ?? Date(),
                                 nickname: post.user.nick,
@@ -94,7 +94,6 @@ struct PostListView: View {
                                         date: post.createdAt.toDate() ?? Date(),
                                         hashtag: post.hashtags.map { $0.name }
                                     )
-//                                    .frame(height: 100)
                                 }
                         }
                     }

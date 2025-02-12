@@ -8,12 +8,16 @@
 import SwiftUI
 
 struct PostDetailView: View {
+    var id: Int
     var title: String
     var date: Date
     var nickname: String
     var content: String
     var hashtag: [String]
     var img: String?
+    
+    @State private var postdetail: PostDetail?
+    @State private var comments: [Comment] = []
     
     @State private var c_text: String = ""
     
@@ -124,7 +128,7 @@ struct PostDetailView: View {
                             }
                         }
                         VStack(spacing: 25) {
-                            CommentSection()
+                            CommentSection(comments: comments)
                         }
                     }
                     .frame(maxWidth: 300)
@@ -136,6 +140,7 @@ struct PostDetailView: View {
                 .zIndex(1)
         }
         .navigationBarBackButtonHidden(true)
+        .onAppear { fetchPostDetail() }
     }
     
     private func formattedDate(_ date: Date) -> String {
@@ -144,5 +149,21 @@ struct PostDetailView: View {
         return formatter.string(from: date)
     }
     
+    private func fetchPostDetail() {
+        PostService.shared.PostDetail(postid: id) { result in
+            switch result {
+            case .success(let fetchedPostResponse):
+                if let postDetail = fetchedPostResponse.post {
+                    self.comments = postDetail.comments
+                } else {
+                    print("PostDetail이 없습니다.")
+                }
+            default:
+                print("게시물 목록 조회 실패")
+            }
+        }
+    }
+
+
 }
 

@@ -68,6 +68,7 @@ struct HomeView: View {
                             .padding(.leading)
                         ForEach(posts) { post in
                             NavigationLink(destination: PostDetailView(
+                                id: post.id,
                                 title: post.title,
                                 date: post.createdAt.toDate() ?? Date(),
                                 nickname: post.user.nick,

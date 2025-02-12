@@ -56,7 +56,7 @@ struct hashtags: Codable, Hashable {
 
 struct PostResponse: Codable {
     let success: Bool
-    let post: PostDetail
+    let post: PostDetail?
 }
 
 struct PostDetail: Codable, Identifiable {
@@ -77,8 +77,17 @@ struct user: Codable {
     let img: String?
 }
 
-struct Comment: Codable {
-    // 댓글 모델 추가 필요
+struct Comment: Codable, Identifiable {
+    let id: Int
+    let reply_to: Int?
+    let content: String
+    let createdAt: String
+    let user: CommentUser
+}
+
+struct CommentUser: Codable {
+    let id: Int
+    let nick: String
 }
 
 struct PostEditResponse: Codable {
