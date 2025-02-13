@@ -90,6 +90,21 @@ struct CommentUser: Codable {
     let nick: String
 }
 
+struct CommentResponse: Codable {
+    let message: String
+    let comment: CommentCreated
+}
+
+struct CommentCreated: Codable, Identifiable {
+    let id: Int
+    let content: String
+    let postId: Int
+    let reply_to: Int?
+    let user_nick: String
+    let createdAt: String
+    let updatedAt: String
+}
+
 struct PostEditResponse: Codable {
     let post: [PostEdit]
 }

@@ -348,4 +348,50 @@ class PostService {
         }
     }
     
+    func Commentcreate(postId: Int, content: String, replyTo: Int? = nil, token: String, completion: @escaping (NetworkResult<CommentResponse>) -> Void) {
+        let url = APIConstants.commentURL
+        let header: HTTPHeaders = [
+            "Content-Type": "application/json",
+            "Authorization": "Bearer \(token)"
+        ]
+        
+        var body: [String: Any] = [
+            "postId": postId,
+            "content": content
+        ]
+        
+        if let replyTo = replyTo {
+            body["reply_to"] = replyTo
+        }
+        
+        AF.request(url, method: .post, parameters: body, encoding: JSONEncoding.default, headers: header)
+            .responseData { response in
+                switch response.result {
+                case .success(let data):
+                    print("서버 응답: \(String(data: data, encoding: .utf8) ?? "데이터 없음")")
+                    
+                    guard let statusCode = response.response?.statusCode else {
+                        completion(.pathErr)
+                        return
+                    }
+                    
+                    if (200...299).contains(statusCode) {
+                        do {
+                            let decoder = JSONDecoder()
+                            let responseData = try decoder.decode(CommentResponse.self, from: data)
+                            completion(.success(responseData))
+                        } catch {
+                            print("JSON 디코딩 오류: \(error)")
+                            completion(.pathErr)
+                        }
+                    } else {
+                        completion(.requestErr("서버 오류: \(statusCode)"))
+                    }
+                case .failure(let error):
+                    print("네트워크 요청 실패: \(error.localizedDescription)")
+                    completion(.networkFail)
+                }
+            }
+    }
+
 }

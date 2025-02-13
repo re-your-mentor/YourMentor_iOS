@@ -8,44 +8,123 @@
 import SwiftUI
 
 struct CommentSection: View {
-    @State private var isReplyVisible: [Bool] = Array(repeating: false, count: 3)
-    @State private var replyText: String = ""
+    
+    @State private var isReplyVisible: [Int: Bool] = [:]
+    @State private var replyComments: [Int: String] = [:]
     
     var comments: [Comment]
+    var postId: Int
+    var fetchPostDetail: () -> Void
+    
+    let token = PostService.shared.LoadtokenFromKeychain()
+    
+    @State private var showAlert = false
+    @State private var alertMessage = ""
     
     var body: some View {
         VStack(spacing: 20) {
-            ForEach(comments) { comment in
+            ForEach(comments.filter { $0.reply_to == nil }) { comment in
                 VStack(alignment: .leading, spacing: 10) {
                     CommentCell(
                         nickname: comment.user.nick,
                         content: comment.content
                     )
-//                    HStack {
-//                        Button(action: {
-//                            isReplyVisible[comment.count].toggle()
-//                        }) {
-//                            HStack(spacing: 5) {
-//                                Image(systemName: isReplyVisible[comment.count] ? "chevron.up" : "chevron.down")
-//                                    .resizable()
-//                                    .frame(width: 10, height: 5)
-//                                Text("답글 2개")
-//                                    .font(.system(size: 12, weight: .medium))
-//                            }
-//                            .foregroundColor(.black.opacity(0.7))
-//                        }
-//                    }
-//                    if isReplyVisible[comment.count] {
-//                        VStack(alignment: .leading, spacing: 10) {
-//                            TextFieldView()
-//                                .padding(.top)
-//                            ForEach(0..<2, id: \.self) { index in
-//                                CommentCell(nickname: "ㅇㅇ", content: "ㅇㅇㅇ")
-//                            }
-//                        }
-//                        .padding(.leading)
-//                    }
+                    .padding(.leading, 5)
+                    
+                    let replies = getReplies(for: comment.id)
+                    
+                    HStack {
+                        Button(action: toggleReplyVisibility(for: comment.id)) {
+                            HStack(spacing: 5) {
+                                Image(systemName: isReplyVisible[comment.id] == true ? "chevron.up" : "chevron.down")
+                                    .resizable()
+                                    .frame(width: 10, height: 5)
+                                Text("답글 \(replies.count)개")
+                                    .font(.system(size: 12, weight: .medium))
+                            }
+                            .foregroundColor(.gray.opacity(0.7))
+                        }
+                    }
+                    
+                    if isReplyVisible[comment.id] == true {
+                        VStack(alignment: .leading, spacing: 10) {
+                            HStack {
+                                TextField("답글을 작성해보세요!", text: Binding(
+                                    get: { replyComments[comment.id] ?? "" },
+                                    set: { replyComments[comment.id] = $0 }
+                                ))
+                                .autocapitalization(.none)
+                                .font(.system(size: 13, weight: .medium))
+
+                                Spacer()
+                                Button {
+                                    CommentCreate(replyTo: comment.id)
+                                } label: {
+                                    Image(systemName: "paperplane")
+                                        .resizable()
+                                        .frame(width: 13, height: 13)
+                                        .foregroundColor(.gray)
+                                }
+                            }
+                            .padding(.horizontal)
+                            Rectangle()
+                                .frame(height: 1)
+                                .foregroundColor(.gray.opacity(0.7))
+                            
+                            ForEach(replies) { reply in
+                                CommentCell(
+                                    nickname: reply.user.nick,
+                                    content: reply.content
+                                )
+                            }
+                        }
+                        .padding(.leading, 10)
+                    }
                 }
+            }
+        }
+    }
+    
+    private func getReplies(for commentId: Int) -> [Comment] {
+        return comments.filter { $0.reply_to == commentId }
+    }
+    
+    private func toggleReplyVisibility(for commentId: Int) -> () -> Void {
+        return {
+            isReplyVisible[commentId] = !(isReplyVisible[commentId] ?? false)
+        }
+    }
+    
+    private func CommentCreate(replyTo: Int) {
+        guard let replyContent = replyComments[replyTo], !replyContent.isEmpty else {
+            alertMessage = "답글 내용을 입력해주세요."
+            showAlert = true
+            return
+        }
+        
+        PostService.shared.Commentcreate(
+            postId: postId,
+            content: replyContent,
+            replyTo: replyTo,
+            token: token!
+        ) { result in
+            switch result {
+            case .success(let response):
+                print("대댓글 생성 성공: \(response)")
+                replyComments[replyTo] = ""
+                fetchPostDetail()
+            case .requestErr(let message):
+                alertMessage = message as? String ?? "댓글 생성 실패"
+                showAlert = true
+            case .pathErr:
+                alertMessage = "잘못된 경로 요청입니다."
+                showAlert = true
+            case .serverErr:
+                alertMessage = "서버 오류가 발생했습니다."
+                showAlert = true
+            case .networkFail:
+                alertMessage = "네트워크 연결에 실패했습니다."
+                showAlert = true
             }
         }
     }
@@ -62,32 +141,8 @@ struct CommentCell: View {
                 .foregroundColor(.gray.opacity(0.7))
             Text(content)
                 .font(.system(size: 13, weight: .medium))
-                .foregroundColor(.black.opacity(0.8))
+                .foregroundColor(.black.opacity(0.7))
         }
-        .frame(maxWidth: .infinity)
-    }
-}
-
-struct TextFieldView: View {
-    @State private var replyText: String = ""
-    
-    var body: some View {
-        VStack {
-            HStack {
-                TextField("답글을 작성해보세요!", text: $replyText)
-                    .autocapitalization(.none)
-                    .font(.system(size: 13, weight: .medium))
-                Spacer()
-                Image(systemName: "paperplane")
-                    .resizable()
-                    .frame(width: 13, height: 13)
-                    .foregroundColor(.gray)
-            }
-            .padding(.horizontal)
-            Rectangle()
-                .frame(height: 1)
-                .foregroundColor(.gray.opacity(0.7))
-        }
-        .frame(maxWidth: 260)
+        .frame(maxWidth: 295, alignment: .leading)
     }
 }

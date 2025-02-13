@@ -55,7 +55,5 @@ struct APIConstants {
     }
     
     // 댓글 생성
-    static func commentURL(teacherId: String, id: String) -> String {
-        return postURL + "/teacher=\(teacherId)/\(id)"
-    }
+    static let commentURL = baseURL + "/comment"
 }

@@ -19,7 +19,12 @@ struct PostDetailView: View {
     @State private var postdetail: PostDetail?
     @State private var comments: [Comment] = []
     
-    @State private var c_text: String = ""
+    @State private var comment: String = ""
+    
+    @State private var showAlert = false
+    @State private var alertMessage = ""
+    
+    let token = PostService.shared.LoadtokenFromKeychain()
     
     var body: some View {
         ZStack(alignment: .top) {
@@ -104,7 +109,7 @@ struct PostDetailView: View {
                                 .font(.system(size: 13, weight: .medium))
                                 .padding(.leading)
                             ZStack {
-                                TextField("댓글을 작성해주세요.", text: $c_text)
+                                TextField("댓글을 작성해주세요.", text: $comment)
                                     .autocapitalization(.none)
                                     .font(.system(size: 14, weight: .medium))
                                     .frame(height: 45)
@@ -116,7 +121,7 @@ struct PostDetailView: View {
                                 HStack {
                                     Spacer()
                                     Button {
-                                        
+                                        CommentCreate()
                                     } label: {
                                         Image(systemName: "paperplane")
                                             .resizable()
@@ -127,8 +132,8 @@ struct PostDetailView: View {
                                 }
                             }
                         }
-                        VStack(spacing: 25) {
-                            CommentSection(comments: comments)
+                        VStack(alignment: .leading, spacing: 25) {
+                            CommentSection(comments: comments, postId: id, fetchPostDetail: fetchPostDetail)
                         }
                     }
                     .frame(maxWidth: 300)
@@ -138,6 +143,7 @@ struct PostDetailView: View {
             
             HeadView()
                 .zIndex(1)
+            
         }
         .navigationBarBackButtonHidden(true)
         .onAppear { fetchPostDetail() }
@@ -164,6 +170,31 @@ struct PostDetailView: View {
         }
     }
 
-
+    private func CommentCreate() {
+        PostService.shared.Commentcreate(
+            postId: id,
+            content: comment,
+            token: token!
+        ) { result in
+            switch result {
+            case .success(let response):
+                print("댓글 생성 성공: \(response)")
+                comment = ""
+                fetchPostDetail()
+            case .requestErr(let message):
+                alertMessage = message as? String ?? "댓글 생성 실패"
+                showAlert = true
+            case .pathErr:
+                alertMessage = "잘못된 경로 요청입니다."
+                showAlert = true
+            case .serverErr:
+                alertMessage = "서버 오류가 발생했습니다."
+                showAlert = true
+            case .networkFail:
+                alertMessage = "네트워크 연결에 실패했습니다."
+                showAlert = true
+            }
+        }
+    }
 }
 
