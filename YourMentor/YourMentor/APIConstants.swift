@@ -29,12 +29,6 @@ struct APIConstants {
     // 카카오톡 로그인 콜백
     static let kakaocallbackURL = kakaoURL + "/callback"
     
-    // 구글 로그인 요청
-    static let googleURL = authURL + "/google"
-    
-    // 구글 로그인 콜백
-    static let googlecallbackURL = googleURL + "/callback"
-    
     // 게시물 작성
     static let postURL = baseURL + "/post"
     

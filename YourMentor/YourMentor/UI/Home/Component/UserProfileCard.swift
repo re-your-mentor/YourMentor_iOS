@@ -17,9 +17,9 @@ struct UserProfileCard: View {
                     Text(verbatim: userData.email)
                         .font(.system(size: 15, weight: .bold))
                     Spacer()
-                    NavigationLink(destination: MyView()){
+//                    NavigationLink(destination: MyView()){
                         Image(systemName: "chevron.right")
-                    }
+//                    }
                 }
                 .padding(.bottom, 3)
                 Rectangle()

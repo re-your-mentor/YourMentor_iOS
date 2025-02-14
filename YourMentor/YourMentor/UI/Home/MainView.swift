@@ -123,7 +123,8 @@ struct MainView: View {
                         } else if selectedTab == 3 {
                             ChatListView()
                         } else if selectedTab == 4 {
-                            MyView()
+                            MyView(posts: $posts)
+                                .onAppear { fetchPosts() }
                                 .environmentObject(UserData())
                         }
                     }
@@ -133,17 +134,6 @@ struct MainView: View {
         }
         .navigationBarBackButtonHidden()
     }
-    
-//    private func fetchPosts() {
-//            PostService.shared.Postlist() { result in
-//                switch result {
-//                case .success(let postList):
-//                    self.post = postList
-//                default:
-//                    print("게시물 가져오기 실패")
-//                }
-//            }
-//        }
     
     private func fetchPosts() {
         PostService.shared.Postlist { result in

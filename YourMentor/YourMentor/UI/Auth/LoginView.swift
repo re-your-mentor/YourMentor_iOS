@@ -47,13 +47,6 @@ struct LoginView: View {
                             AuthButton(text: "Login")
                         }
                         Button(action: {
-                            GoogleLogin()
-                        }) {
-                            Text("or continue with")
-                                .font(.system(size: 17, weight: .medium))
-                                .foregroundStyle(.gray)
-                        }
-                        Button(action: {
                             KakaoLogin()
                         }) {
                             KakaoButton()
@@ -85,27 +78,6 @@ struct LoginView: View {
                 } else {
                     print("Failed to cast loginResponse to LoginResponse")
                 }
-                isLoginSuccess = true
-            case .requestErr(let message):
-                alertMessage = message as? String ?? "오류가 발생했습니다."
-                showAlert = true
-            case .pathErr:
-                alertMessage = "잘못된 경로 요청입니다."
-                showAlert = true
-            case .serverErr:
-                alertMessage = "서버 오류가 발생했습니다."
-                showAlert = true
-            case .networkFail:
-                alertMessage = "네트워크 연결에 실패했습니다."
-                showAlert = true
-            }
-        }
-    }
-    
-    private func GoogleLogin() {
-        AuthService.shared.googlelogin() { result in
-            switch result {
-            case .success:
                 isLoginSuccess = true
             case .requestErr(let message):
                 alertMessage = message as? String ?? "오류가 발생했습니다."

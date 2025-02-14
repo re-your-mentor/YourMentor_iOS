@@ -8,6 +8,10 @@
 import SwiftUI
 
 struct MyView: View {
+    
+    @Binding var posts: [Posts]
+    let service = "http://3.148.49.139:8000/img/"
+    
     @EnvironmentObject var userData: UserData
     @State private var isLogoutSuccess = false
     @State private var showAlert = false
@@ -77,34 +81,35 @@ struct MyView: View {
                 .padding(.top, 30)
             }
             
-//            ZStack {
-//                Color.back.ignoresSafeArea()
-//                ScrollView(showsIndicators: false) {
-//                    VStack(alignment: .leading,spacing: 10) {
-//                        Text("총 4개")
-//                            .font(.system(size: 12, weight: .medium))
-//                            .foregroundColor(.gray)
-//                        ForEach(0..<4, id: \.self) { _ in
-//                            NavigationLink(destination: PostDetailView(
-//                                id: 3,
-//                                title: "안드로이드 깃허브로 협업하는 방법에 대하여",
-//                                date: Date(),
-//                                nickname: "맛좋은 오징어",
-//                                content: "알아보게 혹시 협업 방식 명이라도 알려주실 분 구합니다.",
-//                                hashtag: ["D"]
-//                            )) {
-//                                    PostCell(
-//                                        id: 1,
-//                                        title: "안드로이드 깃허브로 협업하는 방법에 대하여",
-//                                        date: Date(),
-//                                        hashtag: ["d"]
-//                                    )
-//                                }
-//                        }
-//                    }
-//                    .padding(.top, 30)
-//                }
-//            }
+            ZStack {
+                Color.back.ignoresSafeArea()
+                ScrollView(showsIndicators: false) {
+                    VStack(alignment: .leading) {
+                        Text("최근 업로드")
+                            .padding(.leading, 7)
+                            .font(.system(size: 17, weight: .semibold))
+                        ForEach(posts) { post in
+                            NavigationLink(destination: PostDetailView (
+                                id: post.id,
+                                title: post.title,
+                                date: post.createdAt.toDate() ?? Date(),
+                                nickname: post.user.nick,
+                                content: post.content,
+                                hashtag: post.hashtags.map { $0.name },
+                                img: post.img.map { service+"\($0)" }
+                            )) {
+                                    PostCell(
+                                        id: post.id,
+                                        title: post.title,
+                                        date: post.createdAt.toDate() ?? Date(),
+                                        hashtag: post.hashtags.map { $0.name }
+                                    )
+                                }
+                        }
+                    }
+                    .padding(.top, 30)
+                }
+            }
             NavigationLink(destination: LoginView(), isActive: $isLogoutSuccess) {
                 EmptyView()
             }
@@ -134,7 +139,3 @@ struct MyView: View {
 }
 
 
-#Preview {
-    MyView()
-        .environmentObject(UserData())
-}

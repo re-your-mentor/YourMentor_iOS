@@ -72,7 +72,7 @@ struct CommentSection: View {
                                 .foregroundColor(.gray.opacity(0.7))
                             
                             ForEach(replies) { reply in
-                                CommentCell(
+                                ReplyCommentCell(
                                     nickname: reply.user.nick,
                                     content: reply.content
                                 )
@@ -131,6 +131,34 @@ struct CommentSection: View {
 }
 
 struct CommentCell: View {
+    var nickname: String
+    var content: String
+    
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 7) {
+                Text(nickname+"님")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(.gray.opacity(0.7))
+                Text(content)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(.black.opacity(0.7))
+            }
+            .frame(maxWidth: 295, alignment: .leading)
+            Spacer()
+            VStack {
+                Image(systemName: "ellipsis")
+                    .resizable()
+                    .frame(width: 11, height: 3)
+                    .rotationEffect(.degrees(90))
+                    .foregroundColor(.gray)
+                    .padding(2)
+            }
+        }
+    }
+}
+
+struct ReplyCommentCell: View {
     var nickname: String
     var content: String
     

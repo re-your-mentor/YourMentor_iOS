@@ -9,7 +9,6 @@ import SwiftUI
 
 struct PostListView: View {
     @Binding var posts: [Posts]
-//    @State private var postdetail: [PostDetail] = []
     
     @State var searchtext: String = ""
     let service = "http://3.148.49.139:8000/img/"
