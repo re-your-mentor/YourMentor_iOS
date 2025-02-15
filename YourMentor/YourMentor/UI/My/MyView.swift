@@ -9,10 +9,10 @@ import SwiftUI
 
 struct MyView: View {
     
-    @Binding var posts: [Posts]
+    @Binding var user: UserDetail?
     let service = "http://3.148.49.139:8000/img/"
     
-    @EnvironmentObject var userData: UserData
+//    @EnvironmentObject var userData: UserJoinData
     @State private var isLogoutSuccess = false
     @State private var showAlert = false
     @State private var alertMessage = ""
@@ -23,7 +23,7 @@ struct MyView: View {
                 HStack {
                     VStack(alignment: .leading, spacing: 7) {
                         HStack {
-                            Text("이다경님")
+                            Text((user?.nick ?? "")+"님")
                                 .font(.system(size: 22, weight: .bold))
                             NavigationLink(destination: MyEditView()) {
                                 Image(systemName: "pencil")
@@ -38,8 +38,15 @@ struct MyView: View {
                             .foregroundColor(.subfont)
                     }
                     Spacer()
-                    MyProfile()
-                        .frame(maxWidth: 85)
+                    let url = URL(string: service + (user?.profile_pic ?? ""))
+                    AsyncImage(url: url) { image in
+                        image.resizable()
+                            .scaledToFill()
+                            .clipShape(Circle())
+                            .frame(width: 56, height: 56)
+                    } placeholder: {
+                        ProgressView()
+                    }
                 }
                 .frame(maxWidth: 295)
                 .padding(.top)
@@ -88,31 +95,31 @@ struct MyView: View {
                         Text("최근 업로드")
                             .padding(.leading, 7)
                             .font(.system(size: 17, weight: .semibold))
-                        ForEach(posts) { post in
-                            NavigationLink(destination: PostDetailView (
-                                id: post.id,
-                                title: post.title,
-                                date: post.createdAt.toDate() ?? Date(),
-                                nickname: post.user.nick,
-                                content: post.content,
-                                hashtag: post.hashtags.map { $0.name },
-                                img: post.img.map { service+"\($0)" }
-                            )) {
-                                    PostCell(
-                                        id: post.id,
-                                        title: post.title,
-                                        date: post.createdAt.toDate() ?? Date(),
-                                        hashtag: post.hashtags.map { $0.name }
-                                    )
-                                }
-                        }
+//                        ForEach(user.posts) { post in
+//                            NavigationLink(destination: PostDetailView (
+//                                id: post.id,
+//                                title: post.title,
+//                                date: post.createdAt.toDate() ?? Date(),
+//                                nickname: post.User.nick,
+//                                content: post.content,
+//                                hashtag: post.Hashtags.map { $0.name },
+//                                img: post.img.map { service+"\($0)" }
+//                            )) {
+//                                    PostCell(
+//                                        id: post.id,
+//                                        title: post.title,
+//                                        date: post.createdAt.toDate() ?? Date(),
+//                                        hashtag: post.Hashtags.map { $0.name }
+//                                    )
+//                                }
+//                        }
                     }
                     .padding(.top, 30)
                 }
             }
-            NavigationLink(destination: LoginView(), isActive: $isLogoutSuccess) {
-                EmptyView()
-            }
+//            NavigationLink(destination: LoginView(), isActive: $isLogoutSuccess) {
+//                EmptyView()
+//            }
         }
     }
     

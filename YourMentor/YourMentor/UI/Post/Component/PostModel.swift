@@ -21,10 +21,11 @@ struct PostCreated: Codable, Identifiable {
     let id: Int
     let title: String
     let content: String
+    let likeCount: Int
     let img: String?
+    let userId: Int
     let createdAt: String
     let updatedAt: String?
-    let deletedAt: String?
     let Hashtags: [PostCreateHashtags]
 }
 
@@ -36,6 +37,7 @@ struct PostCreateHashtags: Codable {
 }
 
 struct PostListResponse: Codable {
+    let count: Int
     let posts: [Posts]
 }
 
@@ -43,15 +45,25 @@ struct Posts: Codable, Identifiable {
     let id: Int
     let title: String
     let content: String
+    let likeCount: Int
     let img: String?
+    let userId: Int
     let createdAt: String
-    let user: user
-    let hashtags: [hashtags]
+    let updatedAt: String
+    let likesCount: Int
+    let User: user
+    let Hashtags: [hashtags]
 }
 
 struct hashtags: Codable, Hashable {
     let id: Int
     let name: String
+}
+
+struct user: Codable {
+    let id: Int
+    let nick: String
+//    let img: String?
 }
 
 struct PostResponse: Codable {
@@ -69,12 +81,6 @@ struct PostDetail: Codable, Identifiable {
     let user: user
     let hashtags: [hashtags]
     let comments: [Comment]
-}
-
-struct user: Codable {
-    let id: Int
-    let nick: String
-    let img: String?
 }
 
 struct Comment: Codable, Identifiable {

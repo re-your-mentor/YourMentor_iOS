@@ -194,15 +194,14 @@ class PostService {
     }
     
     
-    func Postlist(completion: @escaping (NetworkResult<[Posts]>) -> Void) {
+    func Postlist(completion: @escaping (NetworkResult<PostListResponse>) -> Void) {
         let url = APIConstants.postlistURL
         let header: HTTPHeaders = ["Content-Type": "application/json"]
         
-        AF.request(url, method: .get, headers: header).responseDecodable(of: [Posts].self) { response in
+        AF.request(url, method: .get, headers: header).responseDecodable(of: PostListResponse.self) { response in
             switch response.result {
             case .success(let postList):
-                let sortedPosts = postList.sorted { $0.createdAt > $1.createdAt }
-                completion(.success(sortedPosts))
+                completion(.success(postList))
             case .failure(let error):
                 if let data = response.data, let jsonString = String(data: data, encoding: .utf8) {
                     print("서버 응답 JSON: \(jsonString)")

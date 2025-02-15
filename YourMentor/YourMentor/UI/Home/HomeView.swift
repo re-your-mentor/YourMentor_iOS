@@ -8,11 +8,10 @@
 import SwiftUI
 
 struct HomeView: View {
-    @EnvironmentObject var userData: UserData
+    @EnvironmentObject var userData: UserJoinData
     @Binding var posts: [Posts]
     let service = "http://3.148.49.139:8000/img/"
-    //    @State var searchtext: String = ""
-    
+
     var body: some View {
         ZStack {
             Color.back
@@ -23,7 +22,7 @@ struct HomeView: View {
                         Text("안녕하세요!")
                             .font(.system(size: 18, weight: .regular))
                             .foregroundColor(.subfont)
-                        Text(userData.nickname+"님")
+                        Text("님")
                             .font(.system(size: 21, weight: .bold))
                     }
                     Spacer()
@@ -35,9 +34,10 @@ struct HomeView: View {
                 }
                 .padding(.horizontal, 50)
                 .padding(.top)
+                
                 VStack {
                     UserProfileCard()
-                        .environmentObject(UserData())
+//                        .environmentObject(UserData())
                         .frame(height: 150)
                         .padding(.bottom, 20)
                     
@@ -62,30 +62,36 @@ struct HomeView: View {
                     TagList()
                         .padding(.bottom, 20)
                     
-                    VStack(alignment: .leading){
+                    VStack(alignment: .leading) {
                         Text("업로드 목록")
                             .font(.system(size: 17, weight: .semibold))
                             .padding(.leading)
+                        
                         ForEach(posts) { post in
+                            let postDate = post.createdAt.toDate() ?? Date()
+                            let postHashtags = post.Hashtags.map { $0.name }
+                            let postImageUrl = post.img.map { service + "\($0)" }
+                            let postNick = post.User.nick
+
                             NavigationLink(destination: PostDetailView(
                                 id: post.id,
                                 title: post.title,
-                                date: post.createdAt.toDate() ?? Date(),
-                                nickname: post.user.nick,
+                                date: postDate,
+                                nickname: postNick,
                                 content: post.content,
-                                hashtag: post.hashtags.map { $0.name },
-                                img: post.img.map { service+"\($0)" }
+                                hashtag: postHashtags,
+                                img: postImageUrl
                             )) {
-                                    CardLayout(
-                                        id: post.id,
-                                        title: post.title,
-                                        date: post.createdAt.toDate() ?? Date(),
-                                        hashtag: post.hashtags.map { $0.name },
-                                        img: post.img.map { service+"\($0)" }
-                                    )
-                                }
-                                .frame(maxWidth: 295)
-                                .frame(height: 190)
+                                CardLayout(
+                                    id: post.id,
+                                    title: post.title,
+                                    date: postDate,
+                                    hashtag: postHashtags,
+                                    img: postImageUrl
+                                )
+                            }
+                            .frame(maxWidth: 295)
+                            .frame(height: 190)
                         }
                         .padding(.horizontal)
                     }
@@ -94,7 +100,7 @@ struct HomeView: View {
         }
     }
 }
-    
+
 extension String {
     func toDate() -> Date? {
         let formatter = DateFormatter()
@@ -141,5 +147,5 @@ struct TagList: View {
 
 #Preview {
     HomeView(posts: .constant([]))
-        .environmentObject(UserData())
+        .environmentObject(UserJoinData())
 }

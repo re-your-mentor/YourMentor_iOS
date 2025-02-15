@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-class UserData: ObservableObject {
+class UserJoinData: ObservableObject {
     @Published var nickname: String = ""
     @Published var email: String = ""
     @Published var password: String = ""
@@ -15,7 +15,7 @@ class UserData: ObservableObject {
 }
 
 struct Signup_Nickname: View {
-    @EnvironmentObject var userData: UserData
+    @EnvironmentObject var userData: UserJoinData
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {

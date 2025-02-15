@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct Signup_Email: View {
-    @EnvironmentObject var userData: UserData
+    @EnvironmentObject var userData: UserJoinData
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
@@ -72,5 +72,5 @@ struct Signup_Email: View {
 
 #Preview {
     Signup_Email()
-        .environmentObject(UserData())
+        .environmentObject(UserJoinData())
 }

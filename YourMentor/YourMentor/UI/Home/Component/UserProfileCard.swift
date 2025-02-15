@@ -8,13 +8,13 @@
 import SwiftUI
 
 struct UserProfileCard: View {
-    @EnvironmentObject var userData: UserData
+    @EnvironmentObject var userData: UserJoinData
     
     var body: some View {
         VStack(spacing: 0) {
             VStack {
                 HStack {
-                    Text(verbatim: userData.email)
+                    Text(verbatim: "")
                         .font(.system(size: 15, weight: .bold))
                     Spacer()
 //                    NavigationLink(destination: MyView()){
@@ -58,5 +58,5 @@ struct UserProfileCard: View {
 
 #Preview {
     UserProfileCard()
-        .environmentObject(UserData())
+        .environmentObject(UserJoinData())
 }

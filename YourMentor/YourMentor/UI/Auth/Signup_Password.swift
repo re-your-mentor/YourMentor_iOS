@@ -12,7 +12,7 @@ struct Signup_Password: View {
     @State private var showpass = false
     @State private var showpasscheck = false
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var userData: UserData
+    @EnvironmentObject var userData: UserJoinData
     
     var body: some View {
         NavigationStack {

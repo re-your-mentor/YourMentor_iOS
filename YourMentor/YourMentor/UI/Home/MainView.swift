@@ -99,8 +99,11 @@ struct CustomTabBar: View {
 struct MainView: View {
     @State private var selectedTab = 0
     @State private var isSearchActive = false
-    @EnvironmentObject var userData: UserData
+//    @EnvironmentObject var userData: UserJoinData
     @State private var posts: [Posts] = []
+    @State private var user: UserDetail?
+    
+    var userId: Int?
 
     var body: some View {
         NavigationView {
@@ -114,7 +117,7 @@ struct MainView: View {
                         if selectedTab == 0 {
                             HomeView(posts: $posts)
                                 .onAppear { fetchPosts() }
-                                .environmentObject(UserData())
+//                                .environmentObject(UserData())
                         } else if selectedTab == 1 {
                             PostListView(posts: $posts)
                                 .onAppear { fetchPosts() }
@@ -123,9 +126,9 @@ struct MainView: View {
                         } else if selectedTab == 3 {
                             ChatListView()
                         } else if selectedTab == 4 {
-                            MyView(posts: $posts)
-                                .onAppear { fetchPosts() }
-                                .environmentObject(UserData())
+                            MyView(user: $user)
+                                .onAppear { fetchUser() }
+//                                .environmentObject(UserData())
                         }
                     }
                     CustomTabBar(selectedTab: $selectedTab)
@@ -139,7 +142,18 @@ struct MainView: View {
         PostService.shared.Postlist { result in
                 switch result {
                 case .success(let fetchedPosts):
-                    self.posts = fetchedPosts
+                    self.posts = fetchedPosts.posts
+                default:
+                    print("게시물 목록 조회 실패")
+                }
+            }
+        }
+    
+    private func fetchUser() {
+        UserService.shared.UserDetail(userId: userId) { result in
+                switch result {
+                case .success(let fetchedUser):
+                    self.user = fetchedUser
                 default:
                     print("게시물 목록 조회 실패")
                 }
@@ -171,7 +185,3 @@ struct MainView: View {
 //        .frame(height: 50)
 //    }
 //}
-
-#Preview {
-    MainView()
-}

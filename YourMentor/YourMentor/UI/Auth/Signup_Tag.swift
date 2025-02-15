@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct Signup_Tag: View {
-    @EnvironmentObject var userData: UserData
+    @EnvironmentObject var userData: UserJoinData
     @Environment(\.dismiss) private var dismiss
     @State private var selectedHashtags: Set<Int> = []
     @State private var showAlert = false
@@ -115,5 +115,5 @@ struct Signup_Tag: View {
 
 #Preview {
     Signup_Tag()
-        .environmentObject(UserData())
+        .environmentObject(UserJoinData())
 }

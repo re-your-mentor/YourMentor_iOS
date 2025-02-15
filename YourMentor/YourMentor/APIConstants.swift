@@ -33,7 +33,7 @@ struct APIConstants {
     static let postURL = baseURL + "/post"
     
     // 이미지 업로드
-    static let imguploadURL = postURL + "/img"
+    static let imguploadURL = baseURL + "/upload/img"
     
     // 전체 게시물 리스트
     static let postlistURL = baseURL + "/"
@@ -50,4 +50,12 @@ struct APIConstants {
     
     // 댓글 생성
     static let commentURL = baseURL + "/comment"
+    
+    // 유저
+    static let userURL = baseURL + "/user"
+    
+    // 유저 조회
+    static func userdetailURL(userId: Int?) -> String {
+        return userURL + "/profile/\(userId)"
+    }
 }

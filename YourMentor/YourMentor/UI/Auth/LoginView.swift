@@ -10,10 +10,12 @@ import SwiftUI
 struct LoginView: View {
     @State private var email: String = ""
     @State private var password: String = ""
-    @StateObject var userData = UserData()
+    @StateObject var userData = UserJoinData()
     @State private var showAlert = false
     @State private var alertMessage = ""
     @State private var isLoginSuccess = false
+    
+    @State private var userId: Int?
     
     var body: some View {
         NavigationStack {
@@ -58,7 +60,7 @@ struct LoginView: View {
             .background(Image("loginback"))
             .padding(.horizontal, 7)
             
-            NavigationLink(destination: MainView(), isActive: $isLoginSuccess) {
+            NavigationLink(destination: MainView(userId: userId), isActive: $isLoginSuccess) {
                 EmptyView()
             }
         }
@@ -75,10 +77,12 @@ struct LoginView: View {
                 if let response = loginResponse as? LoginResponse {
                     print("\(response.message)\nUser\n ID: \(response.user.id)")
                     print(" Email: \(response.user.email)\n Nick: \(response.user.nick)\nToken: \(response.token)")
+                    
+                    self.userId = response.user.id
+                    self.isLoginSuccess = true
                 } else {
                     print("Failed to cast loginResponse to LoginResponse")
                 }
-                isLoginSuccess = true
             case .requestErr(let message):
                 alertMessage = message as? String ?? "오류가 발생했습니다."
                 showAlert = true
@@ -115,8 +119,4 @@ struct LoginView: View {
             }
         }
     }
-}
-
-#Preview {
-    LoginView()
 }

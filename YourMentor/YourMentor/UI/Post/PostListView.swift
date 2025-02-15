@@ -9,7 +9,6 @@ import SwiftUI
 
 struct PostListView: View {
     @Binding var posts: [Posts]
-    
     @State var searchtext: String = ""
     let service = "http://3.148.49.139:8000/img/"
     
@@ -53,16 +52,16 @@ struct PostListView: View {
                                             id: post.id,
                                             title: post.title,
                                             date: post.createdAt.toDate() ?? Date(),
-                                            nickname: post.user.nick,
+                                            nickname: post.User.nick,
                                             content: post.content,
-                                            hashtag: post.hashtags.map { $0.name },
+                                            hashtag: post.Hashtags.map { $0.name },
                                             img: post.img.map { service+"\($0)" }
                                         )) {
                                             CardLayout(
                                                 id: post.id,
                                                 title: post.title,
                                                 date: post.createdAt.toDate() ?? Date(),
-                                                hashtag: post.hashtags.map { $0.name },
+                                                hashtag: post.Hashtags.map { $0.name },
                                                 img: post.img.map { service+"\($0)" }
                                             )
                                         }
@@ -82,16 +81,16 @@ struct PostListView: View {
                                 id: post.id,
                                 title: post.title,
                                 date: post.createdAt.toDate() ?? Date(),
-                                nickname: post.user.nick,
+                                nickname: post.User.nick,
                                 content: post.content,
-                                hashtag: post.hashtags.map { $0.name },
+                                hashtag: post.Hashtags.map { $0.name },
                                 img: post.img.map { service+"\($0)" }
                             )) {
                                     PostCell(
                                         id: post.id,
                                         title: post.title,
                                         date: post.createdAt.toDate() ?? Date(),
-                                        hashtag: post.hashtags.map { $0.name }
+                                        hashtag: post.Hashtags.map { $0.name }
                                     )
                                 }
                         }
