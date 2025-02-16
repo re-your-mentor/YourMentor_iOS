@@ -10,17 +10,16 @@ import Foundation
 struct UserDetail: Codable {
     let profile_pic: String
     let nick: String
+    let email: String
     let createdAt: String
+    let user_hashtags: [hashtags]
     let posts: [UserPosts]
+    let pagination: pagination
 }
 
-struct UserPosts: Codable, Identifiable {
-    let id: Int
-    let title: String
-    let content: String
-    let likeCount: Int
-    let img: String?
-    let userId: Int
-    let createdAt: String
-    let updatedAt: String
+struct pagination: Codable {
+    let totalItems: Int
+    let totalPages: Int
+    let currentPage: Int
+    let pageSize: Int
 }

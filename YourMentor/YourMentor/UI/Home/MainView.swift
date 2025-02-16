@@ -103,7 +103,7 @@ struct MainView: View {
     @State private var posts: [Posts] = []
     @State private var user: UserDetail?
     
-    var userId: Int?
+    var userId: Int!
 
     var body: some View {
         NavigationView {
@@ -150,15 +150,19 @@ struct MainView: View {
         }
     
     private func fetchUser() {
+        print("fetchUser 호출")
         UserService.shared.UserDetail(userId: userId) { result in
-                switch result {
-                case .success(let fetchedUser):
-                    self.user = fetchedUser
-                default:
-                    print("게시물 목록 조회 실패")
-                }
+            switch result {
+            case .success(let fetchedUser):
+                print("사용자 데이터: \(fetchedUser)")
+                self.user = fetchedUser
+            default:
+                print("게시물 목록 조회 실패")
             }
         }
+    }
+
+
 }
 
 //struct MainHeaderView: View {

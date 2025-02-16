@@ -15,7 +15,7 @@ struct LoginView: View {
     @State private var alertMessage = ""
     @State private var isLoginSuccess = false
     
-    @State private var userId: Int?
+    @State private var userId: Int!
     
     var body: some View {
         NavigationStack {

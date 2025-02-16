@@ -12,7 +12,6 @@ struct MyView: View {
     @Binding var user: UserDetail?
     let service = "http://3.148.49.139:8000/img/"
     
-//    @EnvironmentObject var userData: UserJoinData
     @State private var isLogoutSuccess = false
     @State private var showAlert = false
     @State private var alertMessage = ""
@@ -23,8 +22,11 @@ struct MyView: View {
                 HStack {
                     VStack(alignment: .leading, spacing: 7) {
                         HStack {
-                            Text((user?.nick ?? "")+"님")
+                            
+                            Text((user?.nick ?? "이름 없음") + "님")
+                            
                                 .font(.system(size: 22, weight: .bold))
+                            
                             NavigationLink(destination: MyEditView()) {
                                 Image(systemName: "pencil")
                                     .resizable()
@@ -33,7 +35,8 @@ struct MyView: View {
                                     .foregroundColor(.gray)
                             }
                         }
-                        Text(verbatim: "uoto716@dgsw.hs.kr")
+                        
+                        Text(verbatim: user?.email ?? "")
                             .font(.system(size: 18))
                             .foregroundColor(.subfont)
                     }
@@ -43,7 +46,7 @@ struct MyView: View {
                         image.resizable()
                             .scaledToFill()
                             .clipShape(Circle())
-                            .frame(width: 56, height: 56)
+                            .frame(width: 84, height: 84)
                     } placeholder: {
                         ProgressView()
                     }
@@ -57,8 +60,8 @@ struct MyView: View {
                             .font(.system(size: 14, weight: .semibold))
                             .foregroundColor(.black.opacity(0.8))
                         HStack(spacing: 5) {
-                            ForEach(0..<3, id: \.self) { _ in
-                                MyProfileHashtag(title: "Server")
+                            ForEach(user?.user_hashtags ?? []) { hashtag in
+                                MyProfileHashtag(title: hashtag.name)
                             }
                         }
                     }
@@ -95,24 +98,29 @@ struct MyView: View {
                         Text("최근 업로드")
                             .padding(.leading, 7)
                             .font(.system(size: 17, weight: .semibold))
-//                        ForEach(user.posts) { post in
-//                            NavigationLink(destination: PostDetailView (
-//                                id: post.id,
-//                                title: post.title,
-//                                date: post.createdAt.toDate() ?? Date(),
-//                                nickname: post.User.nick,
-//                                content: post.content,
-//                                hashtag: post.Hashtags.map { $0.name },
-//                                img: post.img.map { service+"\($0)" }
-//                            )) {
-//                                    PostCell(
-//                                        id: post.id,
-//                                        title: post.title,
-//                                        date: post.createdAt.toDate() ?? Date(),
-//                                        hashtag: post.Hashtags.map { $0.name }
-//                                    )
-//                                }
-//                        }
+                        ForEach(user?.posts ?? []) { post in
+                            if let user = user {
+                                NavigationLink(destination: PostDetailView(
+                                    id: post.id,
+                                    title: post.title,
+                                    date: post.createdAt.toDate() ?? Date(),
+                                    nickname: user.nick,
+                                    content: post.content,
+                                    hashtag: post.hashtags.map { $0.name },
+                                    img: nil
+                                )) {
+                                    PostCell(
+                                        id: post.id,
+                                        title: post.title,
+                                        date: post.createdAt.toDate() ?? Date(),
+                                        hashtag: post.hashtags.map { $0.name }
+                                    )
+                                }
+                            } else {
+                                Text("사용자 정보 로딩 중...")
+                            }
+                        }
+
                     }
                     .padding(.top, 30)
                 }
@@ -144,5 +152,3 @@ struct MyView: View {
         }
     }
 }
-
-

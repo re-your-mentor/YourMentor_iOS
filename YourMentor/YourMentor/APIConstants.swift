@@ -55,7 +55,7 @@ struct APIConstants {
     static let userURL = baseURL + "/user"
     
     // 유저 조회
-    static func userdetailURL(userId: Int?) -> String {
+    static func userdetailURL(userId: Int) -> String {
         return userURL + "/profile/\(userId)"
     }
 }
