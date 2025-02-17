@@ -97,13 +97,13 @@ struct CustomTabBar: View {
 }
 
 struct MainView: View {
-    @State private var selectedTab = 0
+    @State var selectedTab: Int
     @State private var isSearchActive = false
 //    @EnvironmentObject var userData: UserJoinData
     @State private var posts: [Posts] = []
     @State private var user: UserDetail?
     
-    var userId: Int!
+    var userId: Int?
 
     var body: some View {
         NavigationView {
@@ -115,8 +115,9 @@ struct MainView: View {
                 } else {
                     VStack {
                         if selectedTab == 0 {
-                            HomeView(posts: $posts)
+                            HomeView(posts: $posts, user: $user)
                                 .onAppear { fetchPosts() }
+                                .onAppear { fetchUser() }
 //                                .environmentObject(UserData())
                         } else if selectedTab == 1 {
                             PostListView(posts: $posts)
@@ -151,7 +152,7 @@ struct MainView: View {
     
     private func fetchUser() {
         print("fetchUser 호출")
-        UserService.shared.UserDetail(userId: userId) { result in
+        UserService.shared.UserDetail(userId: userId ?? 0) { result in
             switch result {
             case .success(let fetchedUser):
                 print("사용자 데이터: \(fetchedUser)")

@@ -109,6 +109,10 @@ struct CommentCreated: Codable, Identifiable {
     let updatedAt: String
 }
 
+struct CommentDeleteResponse: Codable {
+    let message: String
+}
+
 struct PostEditResponse: Codable {
     let post: [PostEdit]
 }
@@ -130,7 +134,14 @@ struct UserPosts: Codable, Identifiable {
     let id: Int
     let title: String
     let content: String
+    let img: String?
     let likesCount: Int
     let hashtags: [hashtags]
     let createdAt: String
+}
+
+struct UserTagResponse: Codable {
+    let success: Bool
+    let user: User
+    let addedHashtags: [hashtags]
 }

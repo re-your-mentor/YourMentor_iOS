@@ -393,4 +393,37 @@ class PostService {
             }
     }
 
+    func Commentdelete(id: Int, token: String, completion: @escaping (NetworkResult<CommentDeleteResponse>) -> Void) {
+        let url = APIConstants.commentdeleteURL(commentId: id)
+        let header: HTTPHeaders = [
+            "Content-Type": "application/json",
+            "Authorization": "Bearer \(token)"
+        ]
+
+        AF.request(url, method: .delete, encoding: JSONEncoding.default, headers: header)
+            .responseData { response in
+                switch response.result {
+                case .success(let data):
+                    print("서버 응답: \(String(data: data, encoding: .utf8) ?? "데이터 없음")")
+                    
+                    do {
+                        let decodedResponse = try JSONDecoder().decode(CommentDeleteResponse.self, from: data)
+                        
+                        if decodedResponse.message == "Comment and its replies deleted successfully!" {
+                            completion(.success(decodedResponse))
+                        } else {
+                            completion(.requestErr(decodedResponse.message))
+                        }
+                    } catch {
+                        print("디코딩 실패: \(error.localizedDescription)")
+                        completion(.pathErr)
+                    }
+                    
+                case .failure(let error):
+                    print("네트워크 요청 실패: \(error.localizedDescription)")
+                    completion(.networkFail)
+                }
+            }
+    }
+
 }

@@ -60,7 +60,7 @@ struct LoginView: View {
             .background(Image("loginback"))
             .padding(.horizontal, 7)
             
-            NavigationLink(destination: MainView(userId: userId), isActive: $isLoginSuccess) {
+            NavigationLink(destination: MainView(selectedTab: 0, userId: userId), isActive: $isLoginSuccess) {
                 EmptyView()
             }
         }

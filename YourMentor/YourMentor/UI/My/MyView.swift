@@ -107,7 +107,7 @@ struct MyView: View {
                                     nickname: user.nick,
                                     content: post.content,
                                     hashtag: post.hashtags.map { $0.name },
-                                    img: nil
+                                    img: post.img.map { service+"\($0)" }
                                 )) {
                                     PostCell(
                                         id: post.id,

@@ -8,17 +8,18 @@
 import SwiftUI
 
 struct UserProfileCard: View {
-    @EnvironmentObject var userData: UserJoinData
+//    @EnvironmentObject var userData: UserJoinData
+    @Binding var user: UserDetail?
     
     var body: some View {
         VStack(spacing: 0) {
             VStack {
                 HStack {
-                    Text(verbatim: "")
+                    Text(verbatim: user?.email ?? "")
                         .font(.system(size: 15, weight: .bold))
                     Spacer()
-//                    NavigationLink(destination: MyView()){
-                        Image(systemName: "chevron.right")
+//                    NavigationLink(destination: MainView(selectedTab: 4, user)){
+//                        Image(systemName: "chevron.right")
 //                    }
                 }
                 .padding(.bottom, 3)
@@ -40,7 +41,13 @@ struct UserProfileCard: View {
                         .padding(.vertical, 10)
                     Spacer()
                 }
-                UserHashtag(title: "SwiftUI")
+                HStack(spacing: 3) {
+                    ForEach(user?.user_hashtags ?? []) { hashtag in
+                        UserHashtag(title: hashtag.name)
+                    }
+                    Spacer()
+                }
+                .frame(maxWidth: 290, maxHeight: 50)
             }
             .padding(.top, 5)
             .padding(.bottom, 25)
@@ -54,9 +61,4 @@ struct UserProfileCard: View {
         .foregroundColor(.white)
         .frame(maxWidth: 265)
     }
-}
-
-#Preview {
-    UserProfileCard()
-        .environmentObject(UserJoinData())
 }

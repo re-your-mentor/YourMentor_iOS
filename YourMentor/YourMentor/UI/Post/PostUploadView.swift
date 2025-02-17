@@ -113,11 +113,11 @@ struct PostUploadView: View {
             .padding(.bottom)
             .frame(maxWidth: 300)
             
-            NavigationLink(destination: MainView(), isActive: $isUploadSuccess) {
+            NavigationLink(destination: MainView(selectedTab: 0), isActive: $isUploadSuccess) {
                 EmptyView()
             }
             
-            NavigationLink(destination: MainView(), isActive: $isEditSuccess) {
+            NavigationLink(destination: MainView(selectedTab: 0), isActive: $isEditSuccess) {
                 EmptyView()
             }
         }

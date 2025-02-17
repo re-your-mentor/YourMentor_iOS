@@ -10,6 +10,7 @@ import SwiftUI
 struct HomeView: View {
     @EnvironmentObject var userData: UserJoinData
     @Binding var posts: [Posts]
+    @Binding var user: UserDetail?
     let service = "http://3.148.49.139:8000/img/"
 
     var body: some View {
@@ -22,7 +23,7 @@ struct HomeView: View {
                         Text("안녕하세요!")
                             .font(.system(size: 18, weight: .regular))
                             .foregroundColor(.subfont)
-                        Text("님")
+                        Text((user?.nick ?? "") + "님")
                             .font(.system(size: 21, weight: .bold))
                     }
                     Spacer()
@@ -36,7 +37,7 @@ struct HomeView: View {
                 .padding(.top)
                 
                 VStack {
-                    UserProfileCard()
+                    UserProfileCard(user: $user)
 //                        .environmentObject(UserData())
                         .frame(height: 150)
                         .padding(.bottom, 20)
@@ -143,9 +144,4 @@ struct TagList: View {
             }
         }
     }
-}
-
-#Preview {
-    HomeView(posts: .constant([]))
-        .environmentObject(UserJoinData())
 }

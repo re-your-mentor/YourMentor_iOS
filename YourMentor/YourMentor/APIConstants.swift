@@ -51,6 +51,11 @@ struct APIConstants {
     // 댓글 생성
     static let commentURL = baseURL + "/comment"
     
+    // 댓글 삭제
+    static func commentdeleteURL(commentId: Int) -> String {
+        return commentURL + "/\(commentId)"
+    }
+    
     // 유저
     static let userURL = baseURL + "/user"
     
@@ -58,4 +63,7 @@ struct APIConstants {
     static func userdetailURL(userId: Int) -> String {
         return userURL + "/profile/\(userId)"
     }
+    
+    // 유저 태그 추가 & 삭제
+    static let usertagURL = userURL + "/tag"
 }
