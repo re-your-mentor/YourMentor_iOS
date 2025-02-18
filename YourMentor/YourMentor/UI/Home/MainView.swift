@@ -118,7 +118,6 @@ struct MainView: View {
                             HomeView(posts: $posts, user: $user)
                                 .onAppear { fetchPosts() }
                                 .onAppear { fetchUser() }
-//                                .environmentObject(UserData())
                         } else if selectedTab == 1 {
                             PostListView(posts: $posts)
                                 .onAppear { fetchPosts() }
@@ -129,7 +128,6 @@ struct MainView: View {
                         } else if selectedTab == 4 {
                             MyView(user: $user)
                                 .onAppear { fetchUser() }
-//                                .environmentObject(UserData())
                         }
                     }
                     CustomTabBar(selectedTab: $selectedTab)

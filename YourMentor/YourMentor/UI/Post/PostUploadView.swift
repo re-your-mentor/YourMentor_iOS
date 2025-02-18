@@ -13,19 +13,21 @@ struct PostUploadView: View {
     @State private var title: String = ""
     @State private var content: String = ""
     @State private var selectedHashtags: Set<Int> = []
-    
+
     @State private var selectedImage: UIImage?
     @State private var showingImagePicker = false
-    
+
     @State private var showAlert = false
     @State private var alertMessage = ""
-    
+
     @State private var isUploadSuccess = false
     @State private var isEditSuccess = false
-    
+
     @Binding var isEditing: Bool
     @State var postID: Int? = nil
     
+    @State private var userId: Int = 0
+
     var body: some View {
         VStack {
             ZStack(alignment: .top) {
@@ -113,11 +115,11 @@ struct PostUploadView: View {
             .padding(.bottom)
             .frame(maxWidth: 300)
             
-            NavigationLink(destination: MainView(selectedTab: 0), isActive: $isUploadSuccess) {
+            NavigationLink(destination: MainView(selectedTab: 0, userId: userId), isActive: $isUploadSuccess) {
                 EmptyView()
             }
             
-            NavigationLink(destination: MainView(selectedTab: 0), isActive: $isEditSuccess) {
+            NavigationLink(destination: MainView(selectedTab: 0, userId: userId), isActive: $isEditSuccess) {
                 EmptyView()
             }
         }
@@ -128,6 +130,40 @@ struct PostUploadView: View {
         .alert(isPresented: $showAlert) {
             Alert(title: Text("오류"), message: Text(alertMessage), dismissButton: .default(Text("확인")))
         }
+        .onAppear {
+            if isEditing, let postID = postID {
+                PostDataload(postID: postID)
+            }
+        }
+    }
+    
+    private func PostDataload(postID: Int) {
+        PostService.shared.PostDetail(postid: postID) { result in
+            switch result {
+            case .success(let postResponse):
+                if let postDetail = postResponse.post {
+                    self.title = postDetail.title
+                    self.content = postDetail.content
+                    self.selectedHashtags = Set(postDetail.hashtags.map { $0.id })
+                    
+                    if let imgURL = postDetail.img, let url = URL(string: imgURL) {
+                        if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
+                            self.selectedImage = image
+                        }
+                    }
+                }
+            default:
+                alertMessage = "게시물 정보를 불러오는데 실패했습니다"
+                showAlert = true
+            }
+        }
+    }
+    
+    private func Imageload(from url: String) {
+        guard let imageURL = URL(string: url),
+              let imageData = try? Data(contentsOf: imageURL),
+              let uiImage = UIImage(data: imageData) else { return }
+        selectedImage = uiImage
     }
     
     private func Postupload() {
@@ -150,7 +186,6 @@ struct PostUploadView: View {
             case .success(let imageFileName):
                 print("이미지 업로드 성공: \(imageFileName)")
                 createPostWithImage(imageFileName: imageFileName, image: image, token: token)
-                
             case .requestErr(let message):
                 alertMessage = "이미지 업로드 요청 오류: \(message ?? "알 수 없는 오류")"
                 showAlert = true
@@ -178,6 +213,7 @@ struct PostUploadView: View {
             switch result {
             case .success(let response):
                 print("게시물 생성 성공: \(response)")
+                self.userId = response.post.userId
                 isUploadSuccess = true
             case .requestErr(let message):
                 alertMessage = message as? String ?? "게시물 생성 실패"
@@ -213,6 +249,7 @@ struct PostUploadView: View {
             switch result {
             case .success(let response):
                 print("게시물 수정 성공: \(response)")
+                self.userId = response.post.userId
                 isEditSuccess = true
             case .requestErr(let message):
                 alertMessage = message as? String ?? "게시물 수정 실패"

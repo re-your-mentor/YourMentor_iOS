@@ -38,7 +38,6 @@ struct HomeView: View {
                 
                 VStack {
                     UserProfileCard(user: $user)
-//                        .environmentObject(UserData())
                         .frame(height: 150)
                         .padding(.bottom, 20)
                     
