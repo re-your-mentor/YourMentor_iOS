@@ -12,7 +12,10 @@ struct PostUploadView: View {
     @State private var tag: String = ""
     @State private var title: String = ""
     @State private var content: String = ""
+    @State private var img: String? = nil
     @State private var selectedHashtags: Set<Int> = []
+    
+    let service = "http://3.148.49.139:8000/img/"
 
     @State private var selectedImage: UIImage?
     @State private var showingImagePicker = false
@@ -36,6 +39,7 @@ struct PostUploadView: View {
                         VStack(spacing: 0) {
                             Spacer().frame(height: 55)
                             
+                            if !isEditing || img?.isEmpty ?? true {
                             Button {
                                 showingImagePicker = true
                             } label: {
@@ -58,6 +62,23 @@ struct PostUploadView: View {
                                     .frame(maxWidth: .infinity)
                                     .frame(height: 200)
                                     .background(Rectangle().foregroundColor(.gray.opacity(0.3)))
+                                }
+                            }
+                        }
+                            else {
+                                if let img = img, !img.isEmpty, let url = URL(string: service + img) {
+                                    AsyncImage(url: url) { phase in
+                                        switch phase {
+                                        case .success(let image):
+                                            image
+                                                .resizable()
+                                                .scaledToFill()
+                                                .frame(height: 200)
+                                                .clipped()
+                                        default:
+                                            EmptyView()
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -145,11 +166,9 @@ struct PostUploadView: View {
                     self.title = postDetail.title
                     self.content = postDetail.content
                     self.selectedHashtags = Set(postDetail.hashtags.map { $0.id })
-                    
-                    if let imgURL = postDetail.img, let url = URL(string: imgURL) {
-                        if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
-                            self.selectedImage = image
-                        }
+
+                    if let imgURL = postDetail.img {
+                        self.img = postDetail.img
                     }
                 }
             default:
@@ -157,13 +176,6 @@ struct PostUploadView: View {
                 showAlert = true
             }
         }
-    }
-    
-    private func Imageload(from url: String) {
-        guard let imageURL = URL(string: url),
-              let imageData = try? Data(contentsOf: imageURL),
-              let uiImage = UIImage(data: imageData) else { return }
-        selectedImage = uiImage
     }
     
     private func Postupload() {
