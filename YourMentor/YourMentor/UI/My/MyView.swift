@@ -27,13 +27,18 @@ struct MyView: View {
                             
                                 .font(.system(size: 22, weight: .bold))
                             
-                            NavigationLink(destination: MyEditView()) {
+                            NavigationLink(destination: MyEditView(
+                                newnickname: user?.nick ?? "",
+                                selectedHashtags: Set(user?.user_hashtags.map { $0.id } ?? []),
+                                profileImageURL: service + (user?.profile_pic ?? "")
+                            )) {
                                 Image(systemName: "pencil")
                                     .resizable()
                                     .frame(width: 20, height: 20)
                                     .bold()
                                     .foregroundColor(.gray)
                             }
+
                         }
                         
                         Text(verbatim: user?.email ?? "")

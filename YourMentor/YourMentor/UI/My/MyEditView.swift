@@ -8,8 +8,21 @@
 import SwiftUI
 
 struct MyEditView: View {
-    @State var newnickname: String = ""
-    @State private var selectedHashtags: Set<Int> = []
+    var newnickname: String
+        var selectedHashtags: Set<Int>
+        var profileImageURL: String
+
+        @State private var editedNickname: String
+        @State private var editedHashtags: Set<Int>
+
+        init(newnickname: String, selectedHashtags: Set<Int>, profileImageURL: String) {
+            self.newnickname = newnickname
+            self.selectedHashtags = selectedHashtags
+            self.profileImageURL = profileImageURL
+            
+            _editedNickname = State(initialValue: newnickname)
+            _editedHashtags = State(initialValue: selectedHashtags)
+        }
     
     var body: some View {
         ZStack(alignment: .top) {
@@ -19,14 +32,50 @@ struct MyEditView: View {
                 
                 Spacer()
                     .frame(height: 55)
-                MyProfile()
-                    .frame(maxWidth: 135)
-                    .padding(.top, 45)
+                
+//                Button {
+//                    showingImagePicker = true
+//                } label: {
+//                    if let selectedImage = selectedImage {
+//                        Image(uiImage: selectedImage)
+//                            .resizable()
+//                            .scaledToFill()
+//                            .frame(height: 200)
+//                            .clipped()
+//                            .cornerRadius(10)
+//                    } else {
+//                        VStack {
+//                            Image(systemName: "photo.badge.plus")
+//                                .resizable()
+//                                .frame(maxWidth: 105, maxHeight: 75)
+//                            Text("이미지 업로드하기")
+//                                .fontWeight(.bold)
+//                        }
+//                        .foregroundColor(.gray.opacity(0.5))
+//                        .aspectRatio(contentMode: .fit)
+//                        .clipShape(Circle())
+//                        .background(Rectangle().foregroundColor(.gray.opacity(0.3)))
+//                    }
+//                }
+                
+                AsyncImage(url: URL(string: profileImageURL)) { image in
+                                   image.resizable()
+                                       .scaledToFill()
+                                       .clipShape(Circle())
+                                       .frame(width: 135, height: 135)
+                               } placeholder: {
+                                   ProgressView()
+                               }
+                               .frame(maxWidth: 135)
+                               .padding(.top, 45)
+//                MyProfile()
+//                    .frame(maxWidth: 135)
+//                    .padding(.top, 45)
                 
                 VStack(alignment: .leading) {
                     Text("닉네임 작성")
                         .font(.system(size: 16, weight: .semibold))
-                    TextField("이름을 입력해주세요.", text: $newnickname)
+                    TextField("이름을 입력해주세요.", text: $editedNickname)
                         .autocapitalization(.none)
                         .padding(.leading)
                     Rectangle()
@@ -41,7 +90,7 @@ struct MyEditView: View {
                     Text("내가 선택한 관심 태그")
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundColor(.gray.opacity(0.6))
-                    HashtagSelection(selectedHashtags: $selectedHashtags)
+                    HashtagSelection(selectedHashtags: $editedHashtags)
                         .frame(maxHeight: 200)
                 }
                 .frame(maxWidth: 295)
@@ -66,9 +115,20 @@ struct MyEditView: View {
             HeadView()
         }
         .navigationBarBackButtonHidden(true)
+//        .sheet(isPresented: $showingImagePicker) {
+//            ImagePicker(image: $selectedImage)
+//        }
     }
-}
-
-#Preview {
-    MyEditView()
+//    
+//    private func Imageload(from url: String) {
+//            guard let imageURL = URL(string: url) else { return }
+//            
+//            DispatchQueue.global(qos: .background).async {
+//                if let imageData = try? Data(contentsOf: imageURL), let uiImage = UIImage(data: imageData) {
+//                    DispatchQueue.main.async {
+//                        self.profileImage = uiImage
+//                    }
+//                }
+//            }
+//        }
 }
