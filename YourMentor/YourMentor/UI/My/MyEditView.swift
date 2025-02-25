@@ -6,71 +6,75 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct MyEditView: View {
     var newnickname: String
-        var selectedHashtags: Set<Int>
-        var profileImageURL: String
+    var selectedHashtags: Set<Int>
+    var profileImageURL: String
+    
+    @State private var showingImagePicker = false
+    @State private var selectedImage: UIImage?
 
-        @State private var editedNickname: String
-        @State private var editedHashtags: Set<Int>
+    @State private var editedNickname: String
+    @State private var editedHashtags: Set<Int>
+    @State private var isImageUpdated = false
+    @State private var isUpdating = false
 
-        init(newnickname: String, selectedHashtags: Set<Int>, profileImageURL: String) {
-            self.newnickname = newnickname
-            self.selectedHashtags = selectedHashtags
-            self.profileImageURL = profileImageURL
-            
-            _editedNickname = State(initialValue: newnickname)
-            _editedHashtags = State(initialValue: selectedHashtags)
-        }
+    init(newnickname: String, selectedHashtags: Set<Int>, profileImageURL: String) {
+        self.newnickname = newnickname
+        self.selectedHashtags = selectedHashtags
+        self.profileImageURL = profileImageURL
+        
+        _editedNickname = State(initialValue: newnickname)
+        _editedHashtags = State(initialValue: selectedHashtags)
+    }
     
     var body: some View {
         ZStack(alignment: .top) {
             Color.back.ignoresSafeArea()
             
             VStack {
+                Spacer().frame(height: 55)
                 
-                Spacer()
-                    .frame(height: 55)
+                if let selectedImage = selectedImage {
+                    Image(uiImage: selectedImage)
+                        .resizable()
+                        .scaledToFill()
+                        .clipShape(Circle())
+                        .frame(width: 135, height: 135)
+                } else {
+                    AsyncImage(url: URL(string: profileImageURL)) { image in
+                        image.resizable()
+                            .scaledToFill()
+                            .clipShape(Circle())
+                            .frame(width: 135, height: 135)
+                            .padding(.top, 45)
+                    } placeholder: {
+                        ProgressView()
+                            .frame(maxWidth: 135)
+                            .padding(.top, 45)
+                    }
+                }
                 
-//                Button {
-//                    showingImagePicker = true
-//                } label: {
-//                    if let selectedImage = selectedImage {
-//                        Image(uiImage: selectedImage)
-//                            .resizable()
-//                            .scaledToFill()
-//                            .frame(height: 200)
-//                            .clipped()
-//                            .cornerRadius(10)
-//                    } else {
-//                        VStack {
-//                            Image(systemName: "photo.badge.plus")
-//                                .resizable()
-//                                .frame(maxWidth: 105, maxHeight: 75)
-//                            Text("이미지 업로드하기")
-//                                .fontWeight(.bold)
-//                        }
-//                        .foregroundColor(.gray.opacity(0.5))
-//                        .aspectRatio(contentMode: .fit)
-//                        .clipShape(Circle())
-//                        .background(Rectangle().foregroundColor(.gray.opacity(0.3)))
-//                    }
-//                }
-                
-                AsyncImage(url: URL(string: profileImageURL)) { image in
-                                   image.resizable()
-                                       .scaledToFill()
-                                       .clipShape(Circle())
-                                       .frame(width: 135, height: 135)
-                               } placeholder: {
-                                   ProgressView()
-                               }
-                               .frame(maxWidth: 135)
-                               .padding(.top, 45)
-//                MyProfile()
-//                    .frame(maxWidth: 135)
-//                    .padding(.top, 45)
+                Button {
+                    if isImageUpdated {
+                        updateProfileImageToServer()
+                    } else {
+                        showingImagePicker = true
+                    }
+                } label: {
+                    Text(isImageUpdated ? "확인" : "이미지변경")
+                        .foregroundColor(.white)
+                        .font(.system(size: 13, weight: .semibold))
+                        .frame(height: 35)
+                        .padding(.horizontal, 15)
+                        .background(
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(Color.main)
+                        )
+                }
+                .disabled(isUpdating)
                 
                 VStack(alignment: .leading) {
                     Text("닉네임 작성")
@@ -99,7 +103,6 @@ struct MyEditView: View {
                 Spacer()
                 
                 Button {
-                    
                 } label: {
                     Text("수정하기")
                         .foregroundColor(.white)
@@ -108,27 +111,33 @@ struct MyEditView: View {
                         .frame(height: 50)
                         .background(
                             RoundedRectangle(cornerRadius: 30)
-                                .fill(.main)
+                                .fill(Color.main)
                         )
                 }
             }
             HeadView()
         }
         .navigationBarBackButtonHidden(true)
-//        .sheet(isPresented: $showingImagePicker) {
-//            ImagePicker(image: $selectedImage)
-//        }
+        .sheet(isPresented: $showingImagePicker) {
+            ImagePicker(image: $selectedImage)
+        }
+        .onChange(of: selectedImage) { newImage in
+            if newImage != nil {
+                isImageUpdated = true
+            }
+        }
     }
-//    
-//    private func Imageload(from url: String) {
-//            guard let imageURL = URL(string: url) else { return }
-//            
-//            DispatchQueue.global(qos: .background).async {
-//                if let imageData = try? Data(contentsOf: imageURL), let uiImage = UIImage(data: imageData) {
-//                    DispatchQueue.main.async {
-//                        self.profileImage = uiImage
-//                    }
-//                }
-//            }
-//        }
+    
+    private func updateProfileImageToServer() {
+        guard let selectedImage = selectedImage else { return }
+        isUpdating = true
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            let success = Bool.random()
+            if success {
+                isImageUpdated = false
+            }
+            isUpdating = false
+        }
+    }
 }
