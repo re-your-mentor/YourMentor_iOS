@@ -20,6 +20,8 @@ struct MyEditView: View {
     @State private var editedHashtags: Set<Int>
     @State private var isImageUpdated = false
     @State private var isUpdating = false
+    
+    let token = PostService.shared.LoadtokenFromKeychain()
 
     init(newnickname: String, selectedHashtags: Set<Int>, profileImageURL: String) {
         self.newnickname = newnickname
@@ -43,6 +45,7 @@ struct MyEditView: View {
                         .scaledToFill()
                         .clipShape(Circle())
                         .frame(width: 135, height: 135)
+                        .padding(.top, 45)
                 } else {
                     AsyncImage(url: URL(string: profileImageURL)) { image in
                         image.resizable()
@@ -131,13 +134,19 @@ struct MyEditView: View {
     private func updateProfileImageToServer() {
         guard let selectedImage = selectedImage else { return }
         isUpdating = true
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            let success = Bool.random()
-            if success {
+
+        let profileImageFilename = "\(UUID().uuidString).jpg"
+
+        UserService.shared.UserProfileUpdate(token: token ?? "", profile_pic: profileImageFilename) { result in
+            switch result {
+            case .success(let response):
+                print("프로필 이미지 업데이트 성공: \(response)")
                 isImageUpdated = false
+            default:
+                print("프로필 이미지 업데이트 실패")
             }
             isUpdating = false
         }
     }
+
 }

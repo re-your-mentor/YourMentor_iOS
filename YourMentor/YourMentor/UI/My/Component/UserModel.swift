@@ -24,3 +24,8 @@ struct pagination: Codable {
     let pageSize: Int
 }
 
+struct UserprofileUpdateRespone: Codable {
+    let success: Bool
+    let message: String
+    let profile_pic: String?
+}

@@ -64,6 +64,9 @@ struct APIConstants {
         return userURL + "/profile/\(userId)"
     }
     
+    // 유저 프로필 업데이트
+    static let userprofileupdateURL = userURL + "/edit/profile"
+    
     // 유저 태그 추가 & 삭제
     static let usertagURL = userURL + "/tag"
 }

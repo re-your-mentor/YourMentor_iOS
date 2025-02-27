@@ -48,4 +48,40 @@ class UserService {
             }
         }
     }
+    
+    func UserProfileUpdate(token: String, profile_pic: String, completion: @escaping (NetworkResult<UserprofileUpdateRespone>) -> Void) {
+        let url = APIConstants.userprofileupdateURL
+        let header: HTTPHeaders = [
+            "Content-Type": "application/json",
+            "Authorization": "Bearer \(token)"
+        ]
+        
+        let body: [String: Any] = [
+            "profile_pic": profile_pic
+        ]
+        
+        AF.request(url, method: .put, parameters: body, encoding: JSONEncoding.default, headers: header)
+            .responseData { response in
+                switch response.result {
+                case .success(let data):
+                    if let jsonString = String(data: data, encoding: .utf8) {
+                        print("서버 응답 JSON: \(jsonString)")
+                    }
+                    
+                    do {
+                        let decodedData = try JSONDecoder().decode(UserprofileUpdateRespone.self, from: data)
+                        completion(.success(decodedData))
+                    } catch {
+                        print("JSON 디코딩 오류: \(error.localizedDescription)")
+                    }
+                    
+                case .failure(let error):
+                    print("서버 요청 실패: \(error.localizedDescription)")
+                    if let data = response.data, let jsonString = String(data: data, encoding: .utf8) {
+                        print("서버 응답 JSON: \(jsonString)")
+                    }
+                }
+            }
+    }
+
 }
