@@ -19,6 +19,7 @@ struct PostUploadView: View {
 
     @State private var selectedImage: UIImage?
     @State private var showingImagePicker = false
+    @State private var selectedImageFileName: String?
 
     @State private var showAlert = false
     @State private var alertMessage = ""
@@ -146,7 +147,7 @@ struct PostUploadView: View {
         }
         .navigationBarBackButtonHidden()
         .sheet(isPresented: $showingImagePicker) {
-            ImagePicker(image: $selectedImage)
+            ImagePicker(image: $selectedImage, fileName: $selectedImageFileName)
         }
         .alert(isPresented: $showAlert) {
             Alert(title: Text("오류"), message: Text(alertMessage), dismissButton: .default(Text("확인")))

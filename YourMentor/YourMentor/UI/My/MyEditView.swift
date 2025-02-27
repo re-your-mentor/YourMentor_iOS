@@ -15,7 +15,8 @@ struct MyEditView: View {
     
     @State private var showingImagePicker = false
     @State private var selectedImage: UIImage?
-
+    @State private var selectedImageFileName: String?
+    
     @State private var editedNickname: String
     @State private var editedHashtags: Set<Int>
     @State private var isImageUpdated = false
@@ -106,6 +107,7 @@ struct MyEditView: View {
                 Spacer()
                 
                 Button {
+                    // 수정하기 버튼에 대한 행동 추가
                 } label: {
                     Text("수정하기")
                         .foregroundColor(.white)
@@ -122,7 +124,7 @@ struct MyEditView: View {
         }
         .navigationBarBackButtonHidden(true)
         .sheet(isPresented: $showingImagePicker) {
-            ImagePicker(image: $selectedImage)
+            ImagePicker(image: $selectedImage, fileName: $selectedImageFileName)
         }
         .onChange(of: selectedImage) { newImage in
             if newImage != nil {
@@ -132,12 +134,10 @@ struct MyEditView: View {
     }
     
     private func updateProfileImageToServer() {
-        guard let selectedImage = selectedImage else { return }
+        guard let selectedImage = selectedImage, let fileName = selectedImageFileName else { return }
         isUpdating = true
 
-        let profileImageFilename = "\(UUID().uuidString).jpg"
-
-        UserService.shared.UserProfileUpdate(token: token ?? "", profile_pic: profileImageFilename) { result in
+        UserService.shared.UserProfileUpdate(token: token ?? "", profile_pic: fileName) { result in
             switch result {
             case .success(let response):
                 print("프로필 이미지 업데이트 성공: \(response)")
@@ -148,5 +148,4 @@ struct MyEditView: View {
             isUpdating = false
         }
     }
-
 }
