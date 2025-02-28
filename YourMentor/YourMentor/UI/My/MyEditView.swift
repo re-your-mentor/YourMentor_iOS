@@ -107,7 +107,7 @@ struct MyEditView: View {
                 Spacer()
                 
                 Button {
-                    // 수정하기 버튼에 대한 행동 추가
+                    
                 } label: {
                     Text("수정하기")
                         .foregroundColor(.white)

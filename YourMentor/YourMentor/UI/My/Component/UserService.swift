@@ -16,9 +16,9 @@ class UserService {
     func UserDetail(userId: Int, completion: @escaping (NetworkResult<UserDetail>) -> Void) {
         let url = APIConstants.userdetailURL(userId: userId)
         print("Request URL: \(url)")
-
+        
         let header: HTTPHeaders = ["Content-Type": "application/json"]
-
+        
         AF.request(url, method: .get, headers: header).responseData { response in
             switch response.result {
             case .success(let data):
@@ -27,7 +27,7 @@ class UserService {
                 } else {
                     print("응답 데이터를 문자열로 변환할 수 없습니다.")
                 }
-
+                
                 do {
                     let decoder = JSONDecoder()
                     let userDetail = try decoder.decode(YourMentor.UserDetail.self, from: data)
@@ -83,5 +83,37 @@ class UserService {
                 }
             }
     }
-
+    
+    func UserTagAdd(token: String, userId: Int, hashtags: [Int], completion: @escaping (NetworkResult<UsertagAddResponse>) -> Void) {
+        let url = APIConstants.usertagURL
+        let header: HTTPHeaders = [
+            "Content-Type": "application/json",
+            "Authorization": "Bearer \(token)"
+        ]
+        
+        let body: [String: Any] = [
+            "userId": userId,
+            "hashtags": hashtags
+        ]
+        
+        AF.request(url, method: .post, parameters: body, encoding: JSONEncoding.default, headers: header)
+            .responseData { response in
+                switch response.result {
+                case .success(let data):
+                    if let jsonString = String(data: data, encoding: .utf8) {
+                        print("서버 응답 JSON: \(jsonString)")
+                    }
+                    
+                    do {
+                        let decodedData = try JSONDecoder().decode(UsertagAddResponse.self, from: data)
+                        completion(.success(decodedData))
+                    } catch {
+                        print("JSON 디코딩 오류: \(error.localizedDescription)")
+                    }
+                    
+                case .failure(let error):
+                    print("네트워크 요청 실패: \(error.localizedDescription)")
+                }
+            }
+    }
 }

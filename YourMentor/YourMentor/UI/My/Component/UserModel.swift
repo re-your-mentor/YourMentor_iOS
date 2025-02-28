@@ -29,3 +29,9 @@ struct UserprofileUpdateRespone: Codable {
     let message: String
     let profile_pic: String?
 }
+
+struct UsertagAddResponse: Codable {
+    let success: Bool
+    let user: User
+    let addedHashtags: [hashtags]
+}
