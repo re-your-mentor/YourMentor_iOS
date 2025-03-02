@@ -149,7 +149,6 @@ struct MainView: View {
         }
     
     private func fetchUser() {
-        print("fetchUser 호출")
         UserService.shared.UserDetail(userId: userId ?? 0) { result in
             switch result {
             case .success(let fetchedUser):

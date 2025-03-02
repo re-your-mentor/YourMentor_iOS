@@ -12,6 +12,7 @@ struct MyEditView: View {
     var newnickname: String
     var selectedHashtags: Set<Int>
     var profileImageURL: String
+    var userId: Int?
     
     @State private var showingImagePicker = false
     @State private var selectedImage: UIImage?
@@ -21,13 +22,17 @@ struct MyEditView: View {
     @State private var editedHashtags: Set<Int>
     @State private var isImageUpdated = false
     @State private var isUpdating = false
+    @State private var isNickUpdate = false
+    
+    @State private var isTagSuccess = false
     
     let token = PostService.shared.LoadtokenFromKeychain()
 
-    init(newnickname: String, selectedHashtags: Set<Int>, profileImageURL: String) {
+    init(newnickname: String, selectedHashtags: Set<Int>, profileImageURL: String, userId: Int) {
         self.newnickname = newnickname
         self.selectedHashtags = selectedHashtags
         self.profileImageURL = profileImageURL
+        self.userId = userId
         
         _editedNickname = State(initialValue: newnickname)
         _editedHashtags = State(initialValue: selectedHashtags)
@@ -63,7 +68,7 @@ struct MyEditView: View {
                 
                 Button {
                     if isImageUpdated {
-                        updateProfileImageToServer()
+                        userprofileupdate()
                     } else {
                         showingImagePicker = true
                     }
@@ -83,9 +88,29 @@ struct MyEditView: View {
                 VStack(alignment: .leading) {
                     Text("닉네임 작성")
                         .font(.system(size: 16, weight: .semibold))
-                    TextField("이름을 입력해주세요.", text: $editedNickname)
-                        .autocapitalization(.none)
-                        .padding(.leading)
+                    HStack {
+                        if !isNickUpdate {
+                            Text(editedNickname)
+                        } else {
+                            TextField("이름을 입력해주세요.", text: $editedNickname)
+                                .foregroundColor(.black)
+                                .autocapitalization(.none)
+                                .padding(.leading)
+                        }
+                        Spacer()
+                        Button {
+                            isNickUpdate.toggle()
+                            if !isNickUpdate {
+                                usernickupdate()
+                            }
+                        } label: {
+                            Image(systemName: "pencil")
+                                .resizable()
+                                .frame(width: 20, height: 20)
+                                .bold()
+                                .foregroundColor(.gray)
+                        }
+                    }
                     Rectangle()
                         .frame(maxWidth: .infinity)
                         .frame(height: 1)
@@ -107,7 +132,7 @@ struct MyEditView: View {
                 Spacer()
                 
                 Button {
-                    
+                    usertags()
                 } label: {
                     Text("수정하기")
                         .foregroundColor(.white)
@@ -121,6 +146,10 @@ struct MyEditView: View {
                 }
             }
             HeadView()
+            
+            NavigationLink(destination: MainView(selectedTab: 4, userId: userId), isActive: $isTagSuccess) {
+                EmptyView()
+            }
         }
         .navigationBarBackButtonHidden(true)
         .sheet(isPresented: $showingImagePicker) {
@@ -133,7 +162,7 @@ struct MyEditView: View {
         }
     }
     
-    private func updateProfileImageToServer() {
+    private func userprofileupdate() {
         guard let selectedImage = selectedImage, let fileName = selectedImageFileName else { return }
         isUpdating = true
 
@@ -148,4 +177,45 @@ struct MyEditView: View {
             isUpdating = false
         }
     }
+    
+    private func usernickupdate() {
+        UserService.shared.UserNickUpdate(token: token ?? "", nick: editedNickname) { result in
+            switch result {
+            case .success(let response):
+                print("닉네임 변경 성공: \(response)")
+                isImageUpdated = false
+            default:
+                print("닉네임 변경 실패")
+            }
+        }
+    }
+    
+    private func usertags() {
+        guard let userId = userId else { return }
+        
+        let selectedHashtagsArray = Array(editedHashtags)
+        
+        let allHashtags = Set(1...13)
+        let unselectedHashtagsArray = Array(allHashtags.subtracting(editedHashtags))
+        
+        UserService.shared.UserTagAdd(token: token ?? "", userId: userId, hashtags: selectedHashtagsArray) { result in
+            switch result {
+            case .success(let response):
+                print("해시태그 추가 성공: \(response)")
+            default:
+                print("해시태그 추가 실패")
+            }
+        }
+        
+        UserService.shared.UserTagRemove(token: token ?? "", userId: userId, hashtags: unselectedHashtagsArray) { result in
+            switch result {
+            case .success(let response):
+                isTagSuccess = true
+                print("해시태그 삭제 성공: \(response)")
+            default:
+                print("해시태그 삭제 실패")
+            }
+        }
+    }
+
 }

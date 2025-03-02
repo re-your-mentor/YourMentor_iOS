@@ -84,6 +84,38 @@ class UserService {
             }
     }
     
+    func UserNickUpdate(token: String, nick: String, completion: @escaping (NetworkResult<UserNickUpdateRespone>) -> Void) {
+        let url = APIConstants.usernickupdateURL
+        let header: HTTPHeaders = [
+            "Content-Type": "application/json",
+            "Authorization": "Bearer \(token)"
+        ]
+        
+        let body: [String: Any] = [
+            "edit_nick": nick
+        ]
+        
+        AF.request(url, method: .put, parameters: body, encoding: JSONEncoding.default, headers: header)
+            .responseData { response in
+                switch response.result {
+                case .success(let data):
+                    if let jsonString = String(data: data, encoding: .utf8) {
+                        print("서버 응답 JSON: \(jsonString)")
+                    }
+                    
+                    do {
+                        let decodedData = try JSONDecoder().decode(UserNickUpdateRespone.self, from: data)
+                        completion(.success(decodedData))
+                    } catch {
+                        print("JSON 디코딩 오류: \(error.localizedDescription)")
+                    }
+                    
+                case .failure(let error):
+                    print("네트워크 요청 실패: \(error.localizedDescription)")
+                }
+            }
+    }
+    
     func UserTagAdd(token: String, userId: Int, hashtags: [Int], completion: @escaping (NetworkResult<UsertagAddResponse>) -> Void) {
         let url = APIConstants.usertagURL
         let header: HTTPHeaders = [
@@ -106,6 +138,39 @@ class UserService {
                     
                     do {
                         let decodedData = try JSONDecoder().decode(UsertagAddResponse.self, from: data)
+                        completion(.success(decodedData))
+                    } catch {
+                        print("JSON 디코딩 오류: \(error.localizedDescription)")
+                    }
+                    
+                case .failure(let error):
+                    print("네트워크 요청 실패: \(error.localizedDescription)")
+                }
+            }
+    }
+    
+    func UserTagRemove(token: String, userId: Int, hashtags: [Int], completion: @escaping (NetworkResult<UsertagRemoveResponse>) -> Void) {
+        let url = APIConstants.usertagURL
+        let header: HTTPHeaders = [
+            "Content-Type": "application/json",
+            "Authorization": "Bearer \(token)"
+        ]
+        
+        let body: [String: Any] = [
+            "userId": userId,
+            "hashtags": hashtags
+        ]
+        
+        AF.request(url, method: .delete, parameters: body, encoding: JSONEncoding.default, headers: header)
+            .responseData { response in
+                switch response.result {
+                case .success(let data):
+                    if let jsonString = String(data: data, encoding: .utf8) {
+                        print("서버 응답 JSON: \(jsonString)")
+                    }
+                    
+                    do {
+                        let decodedData = try JSONDecoder().decode(UsertagRemoveResponse.self, from: data)
                         completion(.success(decodedData))
                     } catch {
                         print("JSON 디코딩 오류: \(error.localizedDescription)")

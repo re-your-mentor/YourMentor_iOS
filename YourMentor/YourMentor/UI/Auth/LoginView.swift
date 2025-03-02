@@ -64,6 +64,9 @@ struct LoginView: View {
                 EmptyView()
             }
         }
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("오류"), message: Text(alertMessage), dismissButton: .default(Text("확인")))
+        }
         .navigationBarBackButtonHidden(true)
     }
     

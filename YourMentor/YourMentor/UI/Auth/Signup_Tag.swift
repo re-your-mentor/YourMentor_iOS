@@ -13,7 +13,10 @@ struct Signup_Tag: View {
     @State private var selectedHashtags: Set<Int> = []
     @State private var showAlert = false
     @State private var alertMessage = ""
-    @State private var isSignupSuccess = false
+    @State private var isAddTagSuccess = false
+    
+    let token = PostService.shared.LoadtokenFromKeychain()
+    var userId: Int?
     
     var body: some View {
         NavigationStack {
@@ -27,7 +30,7 @@ struct Signup_Tag: View {
                 ZStack {
                     if !selectedHashtags.isEmpty {
                         Button(action: {
-                            Join()
+                            addUserTags()
                         }) {
                             Text("다음")
                                 .font(.system(size: 15, weight: .black))
@@ -47,7 +50,7 @@ struct Signup_Tag: View {
                 }
                 .frame(height: 44)
                 
-                NavigationLink(destination: SignupSuccessView(), isActive: $isSignupSuccess) {
+                NavigationLink(destination: SignupSuccessView(userId: userId), isActive: $isAddTagSuccess) {
                     EmptyView()
                 }
             }
@@ -70,7 +73,8 @@ struct Signup_Tag: View {
                     message: Text(alertMessage),
                     dismissButton: .default(Text("확인")) {
                         if alertMessage.contains("성공") {
-                            isSignupSuccess = true
+                            isAddTagSuccess = true
+                            addUserTags()
                         }
                     }
                 )
@@ -79,41 +83,18 @@ struct Signup_Tag: View {
         .navigationBarBackButtonHidden(true)
     }
     
-    private func Join() {
-//        userData.selectedTags = selectedHashtags
+    private func addUserTags() {
+        guard let userId = userId else { return }
+        let hashtags = Array(selectedHashtags)
         
-        AuthService.shared.join(
-            email: userData.email,
-            nick: userData.nickname,
-            password: userData.password
-        ) { result in
+        UserService.shared.UserTagAdd(token: token ?? "", userId: userId, hashtags: hashtags) { result in
             switch result {
-            case .success(let joinResponse):
-                if let response = joinResponse as? JoinResponse {
-                    print("\(response.message)\nUser\n ID: \(response.user.id)")
-                    print(" Email: \(response.user.email)\n Nick: \(response.user.nick)\nToken: \(response.token)")
-                } else {
-                    print("Failed to cast loginResponse to LoginResponse")
-                }
-                isSignupSuccess = true
-            case .requestErr(let message):
-                alertMessage = message as? String ?? "오류가 발생했습니다."
-                showAlert = true
-            case .pathErr:
-                alertMessage = "잘못된 경로 요청입니다."
-                showAlert = true
-            case .serverErr:
-                alertMessage = "서버 오류가 발생했습니다."
-                showAlert = true
-            case .networkFail:
-                alertMessage = "네트워크 연결에 실패했습니다."
-                showAlert = true
+            case .success(let response):
+                isAddTagSuccess = true
+                print("해시태그 추가 성공")
+            default:
+                print("해시태그 추가 실패")
             }
         }
     }
-}
-
-#Preview {
-    Signup_Tag()
-        .environmentObject(UserJoinData())
 }

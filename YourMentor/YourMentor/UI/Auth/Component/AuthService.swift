@@ -42,6 +42,10 @@ class AuthService {
                         let decoder = JSONDecoder()
                         let decodedData = try decoder.decode(JoinResponse.self, from: data)
                         
+                        if let token = decodedData.token as? String{
+                            self.savetokentokeychain(token)
+                        }
+                        
                         completion(.success(decodedData))
                     } catch {
                         completion(.pathErr)

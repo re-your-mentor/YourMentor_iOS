@@ -29,8 +29,9 @@ struct MyView: View {
                             
                             NavigationLink(destination: MyEditView(
                                 newnickname: user?.nick ?? "",
-                                selectedHashtags: Set(user?.user_hashtags.map { $0.id } ?? []),
-                                profileImageURL: service + (user?.profile_pic ?? "")
+                                selectedHashtags: Set(user?.hashtags.map { $0.id } ?? []),
+                                profileImageURL: service + (user?.profile_pic ?? ""),
+                                userId: user?.user_id ?? 0
                             )) {
                                 Image(systemName: "pencil")
                                     .resizable()
@@ -65,7 +66,7 @@ struct MyView: View {
                             .font(.system(size: 14, weight: .semibold))
                             .foregroundColor(.black.opacity(0.8))
                         HStack(spacing: 5) {
-                            ForEach(user?.user_hashtags ?? []) { hashtag in
+                            ForEach(user?.hashtags ?? []) { hashtag in
                                 MyProfileHashtag(title: hashtag.name)
                             }
                         }

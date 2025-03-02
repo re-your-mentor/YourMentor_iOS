@@ -42,7 +42,7 @@ struct UserProfileCard: View {
                     Spacer()
                 }
                 HStack(spacing: 3) {
-                    ForEach(user?.user_hashtags ?? []) { hashtag in
+                    ForEach(user?.hashtags ?? []) { hashtag in
                         UserHashtag(title: hashtag.name)
                     }
                     Spacer()

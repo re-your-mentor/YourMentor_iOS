@@ -8,11 +8,12 @@
 import Foundation
 
 struct UserDetail: Codable {
+    let user_id: Int
     let profile_pic: String
     let nick: String
     let email: String
     let createdAt: String
-    let user_hashtags: [hashtags]
+    let hashtags: [hashtags]
     let posts: [UserPosts]
     let pagination: pagination
 }
@@ -30,8 +31,18 @@ struct UserprofileUpdateRespone: Codable {
     let profile_pic: String?
 }
 
+struct UserNickUpdateRespone: Codable {
+    let message: String
+}
+
 struct UsertagAddResponse: Codable {
     let success: Bool
     let user: User
     let addedHashtags: [hashtags]
+}
+
+struct UsertagRemoveResponse: Codable {
+    let success: Bool
+    let user: User
+    let currentHashtags: [hashtags]
 }

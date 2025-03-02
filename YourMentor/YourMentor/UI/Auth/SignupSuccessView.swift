@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct SignupSuccessView: View {
+    var userId: Int?
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -30,7 +32,7 @@ struct SignupSuccessView: View {
                                 .fontWeight(.semibold)
                         }
                     }
-                    NavigationLink(destination: MainView(selectedTab: 0)) {
+                    NavigationLink(destination: MainView(selectedTab: 0, userId: userId)) {
                         AuthButton(text: "Start")
                     }
                 }
