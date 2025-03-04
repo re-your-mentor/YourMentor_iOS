@@ -11,7 +11,7 @@ struct HomeView: View {
     @EnvironmentObject var userData: UserJoinData
     @Binding var posts: [Posts]
     @Binding var user: UserDetail?
-    let service = "http://3.148.49.139:8000/img/"
+    let service = APIConstants.baseURL+"/img/"
 
     var body: some View {
         ZStack {
@@ -41,7 +41,7 @@ struct HomeView: View {
                         .frame(height: 150)
                         .padding(.bottom, 20)
                     
-                    NavigationLink(destination: SearchView()) {
+                    NavigationLink(destination: SearchView(posts: $posts)) {
                         HStack(spacing: 10) {
                             Image(systemName: "magnifyingglass")
                                 .foregroundColor(.gray)

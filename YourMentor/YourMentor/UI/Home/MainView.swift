@@ -111,7 +111,7 @@ struct MainView: View {
 //                MainHeaderView(isSearchActive: $isSearchActive)
                 
                 if isSearchActive {
-                    SearchView()
+                    SearchView(posts: $posts)
                 } else {
                     VStack {
                         if selectedTab == 0 {

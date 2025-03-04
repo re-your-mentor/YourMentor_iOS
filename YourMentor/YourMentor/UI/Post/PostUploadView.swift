@@ -15,7 +15,7 @@ struct PostUploadView: View {
     @State private var img: String? = nil
     @State private var selectedHashtags: Set<Int> = []
     
-    let service = "http://3.148.49.139:8000/img/"
+    let service = APIConstants.baseURL+"/img/"
 
     @State private var selectedImage: UIImage?
     @State private var showingImagePicker = false

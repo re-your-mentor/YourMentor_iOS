@@ -10,7 +10,7 @@ import SwiftUI
 struct MyView: View {
     
     @Binding var user: UserDetail?
-    let service = "http://3.148.49.139:8000/img/"
+    let service = APIConstants.baseURL+"/img/"
     
     @State private var isLogoutSuccess = false
     @State private var showAlert = false
