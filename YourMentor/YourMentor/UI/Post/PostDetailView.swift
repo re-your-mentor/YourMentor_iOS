@@ -24,6 +24,7 @@ struct PostDetailView: View {
     @State private var showAlert = false
     @State private var alertMessage = ""
     
+    @State private var heartclick = false
     let token = PostService.shared.LoadtokenFromKeychain()
     
     var body: some View {
@@ -82,6 +83,21 @@ struct PostDetailView: View {
                                     }
                                 }
                                 Spacer()
+                                Button {
+                                    heartclick.toggle()
+                                    saveHeartState()
+                                    if heartclick {
+                                        heartfill()
+                                    } else {
+                                        heartempty()
+                                    }
+                                } label: {
+                                    if !heartclick {
+                                        Image("emptyheart")
+                                    } else {
+                                        Image("fillheart")
+                                    }
+                                }
                             }
                         }
                         VStack(alignment: .leading, spacing: 5) {
@@ -121,7 +137,7 @@ struct PostDetailView: View {
                                 HStack {
                                     Spacer()
                                     Button {
-                                        CommentCreate()
+                                        commentcreate()
                                     } label: {
                                         Image(systemName: "paperplane")
                                             .resizable()
@@ -146,7 +162,10 @@ struct PostDetailView: View {
             
         }
         .navigationBarBackButtonHidden(true)
-        .onAppear { fetchPostDetail() }
+        .onAppear {
+            loadHeartState()
+            fetchPostDetail()
+        }
     }
     
     private func formattedDate(_ date: Date) -> String {
@@ -169,8 +188,58 @@ struct PostDetailView: View {
             }
         }
     }
+    
+    private func saveHeartState() {
+        UserDefaults.standard.set(heartclick, forKey: "heartState_\(id)")
+    }
 
-    private func CommentCreate() {
+    private func loadHeartState() {
+        heartclick = UserDefaults.standard.bool(forKey: "heartState_\(id)")
+    }
+    
+    private func heartfill() {
+        PostService.shared.Heartfill(postId: id, token: token!) { result in
+            switch result {
+            case .success(let response):
+                print("좋아요 추가됨: \(response)")
+            case .requestErr(let message):
+                alertMessage = message as? String ?? "댓글 생성 실패"
+                showAlert = true
+            case .pathErr:
+                alertMessage = "잘못된 경로 요청입니다."
+                showAlert = true
+            case .serverErr:
+                alertMessage = "서버 오류가 발생했습니다."
+                showAlert = true
+            case .networkFail:
+                alertMessage = "네트워크 연결에 실패했습니다."
+                showAlert = true
+            }
+        }
+    }
+    
+    private func heartempty() {
+        PostService.shared.Heartempty(postId: id, token: token!) { result in
+            switch result {
+            case .success(let response):
+                print("좋아요 삭제됨: \(response)")
+            case .requestErr(let message):
+                alertMessage = message as? String ?? "댓글 생성 실패"
+                showAlert = true
+            case .pathErr:
+                alertMessage = "잘못된 경로 요청입니다."
+                showAlert = true
+            case .serverErr:
+                alertMessage = "서버 오류가 발생했습니다."
+                showAlert = true
+            case .networkFail:
+                alertMessage = "네트워크 연결에 실패했습니다."
+                showAlert = true
+            }
+        }
+    }
+
+    private func commentcreate() {
         PostService.shared.Commentcreate(
             postId: id,
             content: comment,
@@ -197,4 +266,3 @@ struct PostDetailView: View {
         }
     }
 }
-

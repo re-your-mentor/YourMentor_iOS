@@ -44,12 +44,12 @@ struct LoginView: View {
                     }
                     VStack(spacing: 20) {
                         Button(action: {
-                            Login()
+                            login()
                         }) {
                             AuthButton(text: "Login")
                         }
                         Button(action: {
-                            KakaoLogin()
+                            kakaologin()
                         }) {
                             KakaoButton()
                                 .padding(.top)
@@ -70,7 +70,7 @@ struct LoginView: View {
         .navigationBarBackButtonHidden(true)
     }
     
-    private func Login() {
+    private func login() {
         AuthService.shared.login(
             email: email,
             password: password
@@ -102,7 +102,7 @@ struct LoginView: View {
         }
     }
     
-    private func KakaoLogin() {
+    private func kakaologin() {
         AuthService.shared.kakaologin() { result in
             switch result {
             case .success:

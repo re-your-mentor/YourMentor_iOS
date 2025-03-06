@@ -99,7 +99,7 @@ struct PostCell: View {
             }
         .alert("정말로 게시물을 삭제하시겠습니까?", isPresented: $showDeleteAlert) {
             Button("네", role: .destructive) {
-                PostDelete(postid: id)
+                postdelete(postid: id)
             }
             Button("아니요", role: .cancel) {
                 dismiss()
@@ -118,7 +118,7 @@ struct PostCell: View {
         return formatter.string(from: date)
     }
     
-    private func PostDelete(postid: Int) {
+    private func postdelete(postid: Int) {
         guard let token = PostService.shared.LoadtokenFromKeychain() else {
             alertMessage = "토큰을 찾을 수 없습니다."
             showAlert = true

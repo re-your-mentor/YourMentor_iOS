@@ -100,7 +100,7 @@ struct Signup_Password: View {
                 ZStack {
                     if !passcheck.isEmpty {
                         Button {
-                            Join()
+                            join()
                         } label: {
                             Text("다음")
                                 .font(.system(size: 15, weight: .black))
@@ -147,7 +147,7 @@ struct Signup_Password: View {
         .navigationBarBackButtonHidden(true)
     }
     
-    private func Join() {
+    private func join() {
         if userData.password != passcheck {
             alertMessage = "비밀번호가 일치하지 않습니다."
             showAlert = true

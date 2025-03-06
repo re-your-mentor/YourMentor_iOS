@@ -48,6 +48,10 @@ struct APIConstants {
         return postURL + "/\(id)"
     }
     
+    static func heartclick(postId: Int) -> String {
+        return postURL + "/\(postId)/like"
+    }
+    
     // 댓글 생성
     static let commentURL = baseURL + "/comment"
     

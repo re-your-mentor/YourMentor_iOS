@@ -119,9 +119,9 @@ struct PostUploadView: View {
             
             Button {
                 if isEditing, let postID = postID {
-                    Postupdate(postID: postID)
+                    postupdate(postID: postID)
                 } else {
-                    Postupload()
+                    postupload()
                 }
             } label: {
                 Text(isEditing ? "수정하기" : "업로드 하기")
@@ -154,12 +154,12 @@ struct PostUploadView: View {
         }
         .onAppear {
             if isEditing, let postID = postID {
-                PostDataload(postID: postID)
+                postdataload(postID: postID)
             }
         }
     }
     
-    private func PostDataload(postID: Int) {
+    private func postdataload(postID: Int) {
         PostService.shared.PostDetail(postid: postID) { result in
             switch result {
             case .success(let postResponse):
@@ -179,7 +179,7 @@ struct PostUploadView: View {
         }
     }
     
-    private func Postupload() {
+    private func postupload() {
         guard let token = PostService.shared.LoadtokenFromKeychain() else {
             alertMessage = "토큰을 찾을 수 없습니다."
             showAlert = true
@@ -187,18 +187,18 @@ struct PostUploadView: View {
         }
         
         if let image = selectedImage {
-            Imageupload(image: image, token: token)
+            imageupload(image: image, token: token)
         } else {
-            createPostWithImage(imageFileName: nil, image: nil, token: token)
+            postcreatewithimage(imageFileName: nil, image: nil, token: token)
         }
     }
     
-    private func Imageupload(image: UIImage, token: String) {
+    private func imageupload(image: UIImage, token: String) {
         PostService.shared.Imageupload(image, token: token) { result in
             switch result {
             case .success(let imageFileName):
                 print("이미지 업로드 성공: \(imageFileName)")
-                createPostWithImage(imageFileName: imageFileName, image: image, token: token)
+                postcreatewithimage(imageFileName: imageFileName, image: image, token: token)
             case .requestErr(let message):
                 alertMessage = "이미지 업로드 요청 오류: \(message ?? "알 수 없는 오류")"
                 showAlert = true
@@ -215,7 +215,7 @@ struct PostUploadView: View {
         }
     }
     
-    private func createPostWithImage(imageFileName: String?, image: UIImage?, token: String) {
+    private func postcreatewithimage(imageFileName: String?, image: UIImage?, token: String) {
         PostService.shared.Postcreate(
             title: title,
             content: content,
@@ -244,7 +244,7 @@ struct PostUploadView: View {
         }
     }
 
-    private func Postupdate(postID: Int) {
+    private func postupdate(postID: Int) {
         guard let token = PostService.shared.LoadtokenFromKeychain() else {
             alertMessage = "토큰을 찾을 수 없습니다."
             showAlert = true

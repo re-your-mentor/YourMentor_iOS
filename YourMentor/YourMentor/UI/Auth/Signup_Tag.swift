@@ -30,7 +30,7 @@ struct Signup_Tag: View {
                 ZStack {
                     if !selectedHashtags.isEmpty {
                         Button(action: {
-                            addUserTags()
+                            addusertags()
                         }) {
                             Text("다음")
                                 .font(.system(size: 15, weight: .black))
@@ -74,7 +74,7 @@ struct Signup_Tag: View {
                     dismissButton: .default(Text("확인")) {
                         if alertMessage.contains("성공") {
                             isAddTagSuccess = true
-                            addUserTags()
+                            addusertags()
                         }
                     }
                 )
@@ -83,7 +83,7 @@ struct Signup_Tag: View {
         .navigationBarBackButtonHidden(true)
     }
     
-    private func addUserTags() {
+    private func addusertags() {
         guard let userId = userId else { return }
         let hashtags = Array(selectedHashtags)
         
