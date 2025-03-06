@@ -11,6 +11,7 @@ struct CardLayout: View {
     var id: Int
     var title: String
     var date: Date
+    var like: Int
     var hashtag: [String]
     var img: String?
 
@@ -88,11 +89,17 @@ struct CardLayout: View {
                         }
                         .contentShape(Rectangle())
                     }
-                    HStack(spacing: 1) {
+                    HStack(spacing: 3) {
                         Image(systemName: "clock")
                             .resizable()
                             .frame(width: 10, height: 10)
-                        Text(formattedDate(date))
+                        Text(formatteddate(date))
+                            .font(.system(size: 10, weight: .semibold))
+                            .padding(.trailing, 20)
+                        Image(systemName: "heart")
+                            .resizable()
+                            .frame(width: 10, height: 10)
+                        Text("\(like)")
                             .font(.system(size: 10, weight: .semibold))
                     }
                     .foregroundColor(.gray)
@@ -132,7 +139,7 @@ struct CardLayout: View {
         }
         .alert("정말로 게시물을 삭제하시겠습니까?", isPresented: $showDeleteAlert) {
             Button("네", role: .destructive) {
-                PostDelete(postid: id)
+                postdelete(postid: id)
             }
             Button("아니요", role: .cancel) {
                 dismiss()
@@ -153,13 +160,13 @@ struct CardLayout: View {
         .frame(height: 140)
     }
 
-    private func formattedDate(_ date: Date) -> String {
+    private func formatteddate(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy.MM.dd"
         return formatter.string(from: date)
     }
 
-    private func PostDelete(postid: Int) {
+    private func postdelete(postid: Int) {
         guard let token = PostService.shared.LoadtokenFromKeychain() else {
             alertMessage = "토큰을 찾을 수 없습니다."
             showAlert = true
@@ -204,7 +211,3 @@ struct RoundedCornerShape: Shape {
         return Path(path.cgPath)
     }
 }
-//
-//#Preview {
-//    CardLayout(title: "안드로이드 깃허브로 협업하는 방법에 대하여", date: Date(), hashtag: "sw")
-//}

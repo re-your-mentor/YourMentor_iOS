@@ -11,6 +11,7 @@ struct PostCell: View {
     var id: Int
     var title: String
     var date: Date
+    var like: Int
     var hashtag: [String]
     
     @State private var isEditing = false
@@ -45,11 +46,17 @@ struct PostCell: View {
                     .contentShape(Rectangle())
                 }
                 
-                HStack(spacing: 1) {
+                HStack(spacing: 3) {
                     Image(systemName: "clock")
                         .resizable()
                         .frame(maxWidth: 10, maxHeight: 10)
                     Text(formattedDate(date))
+                        .font(.system(size: 10, weight: .semibold))
+                        .padding(.trailing, 20)
+                    Image(systemName: "heart")
+                        .resizable()
+                        .frame(width: 10, height: 10)
+                    Text("\(like)")
                         .font(.system(size: 10, weight: .semibold))
                 }
                 .foregroundColor(.gray)
@@ -147,8 +154,4 @@ struct PostCell: View {
             }
         }
     }
-}
-
-#Preview {
-    PostCell(id: 10, title: "안드로이드 깃허브로 협업하는 방법에 대하여", date: Date(), hashtag: ["String"])
 }

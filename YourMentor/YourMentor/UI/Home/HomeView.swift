@@ -86,6 +86,7 @@ struct HomeView: View {
                                     id: post.id,
                                     title: post.title,
                                     date: postDate,
+                                    like: post.likesCount,
                                     hashtag: postHashtags,
                                     img: postImageUrl
                                 )

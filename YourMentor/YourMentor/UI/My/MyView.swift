@@ -8,9 +8,7 @@
 import SwiftUI
 
 struct MyView: View {
-    
     @Binding var user: UserDetail?
-    let service = APIConstants.baseURL+"/img/"
     
     @State private var isLogoutSuccess = false
     @State private var showAlert = false
@@ -18,122 +16,34 @@ struct MyView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            VStack {
-                HStack {
-                    VStack(alignment: .leading, spacing: 7) {
-                        HStack {
-                            
-                            Text((user?.nick ?? "이름 없음") + "님")
-                            
-                                .font(.system(size: 22, weight: .bold))
-                            
-                            NavigationLink(destination: MyEditView(
-                                newnickname: user?.nick ?? "",
-                                selectedHashtags: Set(user?.hashtags.map { $0.id } ?? []),
-                                profileImageURL: service + (user?.profile_pic ?? ""),
-                                userId: user?.user_id ?? 0
-                            )) {
-                                Image(systemName: "pencil")
-                                    .resizable()
-                                    .frame(width: 20, height: 20)
-                                    .bold()
-                                    .foregroundColor(.gray)
-                            }
-
-                        }
-                        
-                        Text(verbatim: user?.email ?? "")
-                            .font(.system(size: 18))
-                            .foregroundColor(.subfont)
-                    }
-                    Spacer()
-                    let url = URL(string: service + (user?.profile_pic ?? ""))
-                    AsyncImage(url: url) { image in
-                        image.resizable()
-                            .scaledToFill()
-                            .clipShape(Circle())
-                            .frame(width: 84, height: 84)
-                    } placeholder: {
-                        ProgressView()
-                    }
-                }
-                .frame(maxWidth: 295)
-                .padding(.top)
-                
-                HStack(alignment: .top) {
-                    VStack(alignment: .leading) {
-                        Text("내가 선택한 관심태그")
-                            .font(.system(size: 14, weight: .semibold))
-                            .foregroundColor(.black.opacity(0.8))
-                        HStack(spacing: 5) {
-                            ForEach(user?.hashtags ?? []) { hashtag in
-                                MyProfileHashtag(title: hashtag.name)
-                            }
-                        }
-                    }
-                    Spacer()
-                    Button(action: {
-                        logout()
-                    }) {
-                        Image(systemName: "rectangle.portrait.and.arrow.right")
-                            .resizable()
-                            .frame(width: 22, height: 20)
-                            .foregroundColor(.black.opacity(0.8))
-                    }
-                }
-                .frame(maxWidth: 295)
-                
-                HStack {
-                    VStack(spacing: 5) {
-                        Text("내가 쓴 글")
-                            .font(.system(size: 17, weight: .semibold))
-                        RoundedRectangle(cornerRadius: 30)
-                            .frame(width: 70, height: 2.3)
-                            .foregroundColor(.black.opacity(0.9))
-                    }
-                    Spacer()
-                }
-                .frame(maxWidth: 295)
-                .padding(.top, 30)
-            }
+            MyProfileView(user: $user)
             
-            ZStack {
-                Color.back.ignoresSafeArea()
-                ScrollView(showsIndicators: false) {
-                    VStack(alignment: .leading) {
-                        Text("최근 업로드")
-                            .padding(.leading, 7)
-                            .font(.system(size: 17, weight: .semibold))
-                        ForEach(user?.posts ?? []) { post in
-                            if let user = user {
-                                NavigationLink(destination: PostDetailView(
-                                    id: post.id,
-                                    title: post.title,
-                                    date: post.createdAt.toDate() ?? Date(),
-                                    nickname: user.nick,
-                                    content: post.content,
-                                    hashtag: post.hashtags.map { $0.name },
-                                    img: post.img.map { service+"\($0)" }
-                                )) {
-                                    PostCell(
-                                        id: post.id,
-                                        title: post.title,
-                                        date: post.createdAt.toDate() ?? Date(),
-                                        hashtag: post.hashtags.map { $0.name }
-                                    )
-                                }
-                            } else {
-                                Text("사용자 정보 로딩 중...")
-                            }
-                        }
-
-                    }
-                    .padding(.top, 30)
+            HStack {
+                VStack(spacing: 5) {
+                    Text("내가 쓴 글")
+                        .font(.system(size: 17, weight: .semibold))
+                    RoundedRectangle(cornerRadius: 30)
+                        .frame(width: 70, height: 2.3)
+                        .foregroundColor(.black.opacity(0.9))
+                }
+                Spacer()
+                
+                Button(action: {
+                    logout()
+                }) {
+                    Image(systemName: "rectangle.portrait.and.arrow.right")
+                        .resizable()
+                        .frame(width: 22, height: 20)
+                        .foregroundColor(.black.opacity(0.8))
                 }
             }
-//            NavigationLink(destination: LoginView(), isActive: $isLogoutSuccess) {
-//                EmptyView()
-//            }
+            .frame(maxWidth: 295)
+            .padding(.top, 30)
+            
+            MyPostsView(user: $user)
+        }
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("로그아웃 실패"), message: Text(alertMessage), dismissButton: .default(Text("확인")))
         }
     }
     

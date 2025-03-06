@@ -61,6 +61,7 @@ struct PostListView: View {
                                                 id: post.id,
                                                 title: post.title,
                                                 date: post.createdAt.toDate() ?? Date(),
+                                                like: post.likesCount,
                                                 hashtag: post.Hashtags.map { $0.name },
                                                 img: post.img.map { service+"\($0)" }
                                             )
@@ -90,6 +91,7 @@ struct PostListView: View {
                                         id: post.id,
                                         title: post.title,
                                         date: post.createdAt.toDate() ?? Date(),
+                                        like: post.likesCount,
                                         hashtag: post.Hashtags.map { $0.name }
                                     )
                                 }
