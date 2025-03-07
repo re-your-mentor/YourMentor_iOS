@@ -11,23 +11,22 @@ struct ChatView: View {
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        NavigationStack {
-            ScrollView {
+        ZStack {
+            Color.back.ignoresSafeArea()
+            ScrollView(showsIndicators: true) {
                 VStack(spacing: 30) {
+                    Spacer()
+                        .frame(height: 100)
                     HStack(alignment: .top) {
                         VStack {
                             IncomingProfile()
-                            Text("신고")
-                                .foregroundColor(.gray)
-                                .font(.system(size: 12))
                         }
                         VStack(alignment: .leading, spacing: 13) {
                             HStack {
                                 Text("이즈리얼")
+                                    .font(.system(size: 14))
                                     .fontWeight(.semibold)
                                     .padding(.leading)
-                                Image(systemName: "light.beacon.max")
-                                    .foregroundColor(.gray)
                             }
                             IncomingBubble(char: "안녕하세요!")
                             IncomingBubble(char: "이번에 안드로이드 프로젝트를 하게 되었는데 코드에서 오류가 생겨서 도저히 어떡해야할지 모르겠어요ㅠㅜ")
@@ -37,6 +36,7 @@ struct ChatView: View {
                     HStack(alignment: .top) {
                         VStack(alignment: .trailing, spacing: 13) {
                             Text("요네")
+                                .font(.system(size: 14))
                                 .fontWeight(.semibold)
                                 .padding(.trailing)
                             OutgoingBubble(char: "녜..? 전 iOS전공인데요 ㄹㅇㅋㅋ")
@@ -47,20 +47,10 @@ struct ChatView: View {
                     }
                 }
                 .frame(maxWidth: 370)
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button(action: {
-                            dismiss()
-                        }) {
-                            HStack {
-                                Image(systemName: "chevron.backward")
-                                Text("돌아가기")
-                            }
-                            .fontWeight(.bold)
-                            .foregroundColor(.black)
-                        }
-                    }
-                }
+            }
+            VStack {
+                HeadView()
+                Spacer()
             }
         }
         .navigationBarBackButtonHidden(true)

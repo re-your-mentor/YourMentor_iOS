@@ -27,15 +27,7 @@ struct MyView: View {
                         .foregroundColor(.black.opacity(0.9))
                 }
                 Spacer()
-                
-                Button(action: {
-                    logout()
-                }) {
-                    Image(systemName: "rectangle.portrait.and.arrow.right")
-                        .resizable()
-                        .frame(width: 22, height: 20)
-                        .foregroundColor(.black.opacity(0.8))
-                }
+            
             }
             .frame(maxWidth: 295)
             .padding(.top, 30)
@@ -46,25 +38,25 @@ struct MyView: View {
             Alert(title: Text("로그아웃 실패"), message: Text(alertMessage), dismissButton: .default(Text("확인")))
         }
     }
-    
-    func logout() {
-        AuthService.shared.logout { result in
-            switch result {
-            case .success(let message):
-                isLogoutSuccess = true
-            case .requestErr(let message):
-                alertMessage = message as? String ?? "오류가 발생했습니다."
-                showAlert = true
-            case .pathErr:
-                alertMessage = "잘못된 경로 요청입니다."
-                showAlert = true
-            case .serverErr:
-                alertMessage = "서버 오류가 발생했습니다."
-                showAlert = true
-            case .networkFail:
-                alertMessage = "네트워크 연결에 실패했습니다."
-                showAlert = true
-            }
-        }
-    }
+//    
+//    func logout() {
+//        AuthService.shared.logout { result in
+//            switch result {
+//            case .success(let message):
+//                isLogoutSuccess = true
+//            case .requestErr(let message):
+//                alertMessage = message as? String ?? "오류가 발생했습니다."
+//                showAlert = true
+//            case .pathErr:
+//                alertMessage = "잘못된 경로 요청입니다."
+//                showAlert = true
+//            case .serverErr:
+//                alertMessage = "서버 오류가 발생했습니다."
+//                showAlert = true
+//            case .networkFail:
+//                alertMessage = "네트워크 연결에 실패했습니다."
+//                showAlert = true
+//            }
+//        }
+//    }
 }

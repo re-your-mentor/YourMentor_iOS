@@ -13,15 +13,16 @@ struct IncomingBubble: View {
     var body: some View {
         HStack {
             Text(char)
-                .padding(.vertical, 10)
-                .padding(.horizontal, 20)
+                .font(.system(size: 14, weight: .medium))
+                .padding(.vertical, 12)
+                .padding(.horizontal, 27)
                 .fixedSize(horizontal: false, vertical: true)
                 .background(
                     ZStack(alignment: .bottomLeading) {
                         RoundedRectangle(cornerRadius: 20)
-                            .foregroundColor(.bubble)
+                            .foregroundColor(.white)
                         Triangle()
-                            .foregroundColor(.bubble)
+                            .foregroundColor(.white)
                             .frame(width: 25, height: 25)
                             .padding(.trailing, 15)
                             .padding(.top, 10)

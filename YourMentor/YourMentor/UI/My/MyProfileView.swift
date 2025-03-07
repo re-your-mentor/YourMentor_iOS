@@ -16,7 +16,7 @@ struct MyProfileView: View {
             HStack {
                 VStack(alignment: .leading, spacing: 7) {
                     HStack {
-                        Text((user?.nick ?? "이름 없음") + "님")
+                        Text((user?.nick ?? "") + "님")
                             .font(.system(size: 22, weight: .bold))
                         
                         NavigationLink(destination: MyEditView(
@@ -51,6 +51,19 @@ struct MyProfileView: View {
             }
             .frame(maxWidth: 295)
             .padding(.top)
+            
+            HStack {
+                Spacer()
+                Button(action: {
+//                    logout()
+                }) {
+                    Image(systemName: "rectangle.portrait.and.arrow.right")
+                        .resizable()
+                        .frame(width: 22, height: 20)
+                        .foregroundColor(.black.opacity(0.8))
+                }
+                .padding(.trailing, 40)
+            }
             
             HStack(alignment: .top) {
                 VStack(alignment: .leading) {

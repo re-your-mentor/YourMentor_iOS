@@ -13,9 +13,10 @@ struct OutgoingBubble: View {
     var body: some View {
         HStack {
             Text(char)
+                .font(.system(size: 14, weight: .medium))
                 .foregroundColor(.white)
-                .padding(.vertical, 10)
-                .padding(.horizontal, 20)
+                .padding(.vertical, 12)
+                .padding(.horizontal, 25)
                 .fixedSize(horizontal: false, vertical: true)
                 .background(
                     ZStack(alignment: .bottomTrailing) {

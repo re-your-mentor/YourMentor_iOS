@@ -18,8 +18,9 @@ struct MyPostsView: View {
                     let posts = user?.posts ?? []
                     
                     Text("총 \(posts.count)개")
-                        .padding(.leading, 7)
-                        .font(.system(size: 17, weight: .semibold))
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundColor(.gray)
+                        .padding(.leading, 50)
                     
                     if posts.isEmpty {
                         VStack {
