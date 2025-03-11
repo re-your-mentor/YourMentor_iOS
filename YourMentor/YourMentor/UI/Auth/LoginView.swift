@@ -6,6 +6,9 @@
 //
 
 import SwiftUI
+import KakaoSDKUser
+import KakaoSDKAuth
+import RxSwift
 
 struct LoginView: View {
     @State private var email: String = ""
@@ -14,8 +17,12 @@ struct LoginView: View {
     @State private var showAlert = false
     @State private var alertMessage = ""
     @State private var isLoginSuccess = false
+    @State private var isKakaoLogin = false
     
     @State private var userId: Int!
+    
+    @State private var profileImg: String?
+    @State private var nicname: String?
     
     var body: some View {
         NavigationStack {
@@ -25,9 +32,9 @@ struct LoginView: View {
                         Spacer()
                         NavigationLink(destination: Signup_Nickname()
                             .environmentObject(userData)) {
-                            ChangeButton(auth: "Sign Up")
-                                .padding(.trailing)
-                        }
+                                ChangeButton(auth: "Sign Up")
+                                    .padding(.trailing)
+                            }
                     }
                     Spacer()
                 }
@@ -49,7 +56,7 @@ struct LoginView: View {
                             AuthButton(text: "Login")
                         }
                         Button(action: {
-                            kakaologin()
+                            isKakaoLogin.toggle()
                         }) {
                             KakaoButton()
                                 .padding(.top)
@@ -63,7 +70,13 @@ struct LoginView: View {
             NavigationLink(destination: MainView(selectedTab: 0, userId: userId), isActive: $isLoginSuccess) {
                 EmptyView()
             }
+            NavigationLink(destination: MainView(selectedTab: 0, userId: userId), isActive: $isLoginSuccess) {
+                            EmptyView()
+                        }
         }
+        .fullScreenCover(isPresented: $isKakaoLogin) {
+                       KakaoLoginView(isLoginSuccess: $isLoginSuccess, userId: $userId)
+                   }
         .alert(isPresented: $showAlert) {
             Alert(title: Text("오류"), message: Text(alertMessage), dismissButton: .default(Text("확인")))
         }
@@ -102,24 +115,5 @@ struct LoginView: View {
         }
     }
     
-    private func kakaologin() {
-        AuthService.shared.kakaologin() { result in
-            switch result {
-            case .success:
-                isLoginSuccess = true
-            case .requestErr(let message):
-                alertMessage = message as? String ?? "오류가 발생했습니다."
-                showAlert = true
-            case .pathErr:
-                alertMessage = "잘못된 경로 요청입니다."
-                showAlert = true
-            case .serverErr:
-                alertMessage = "서버 오류가 발생했습니다."
-                showAlert = true
-            case .networkFail:
-                alertMessage = "네트워크 연결에 실패했습니다."
-                showAlert = true
-            }
-        }
-    }
+    
 }

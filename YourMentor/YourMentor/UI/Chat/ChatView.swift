@@ -46,7 +46,7 @@ struct ChatView: View {
                         OutgoingProfile()
                     }
                 }
-                .frame(maxWidth: 370)
+//                .frame(maxWidth: 370)
             }
             VStack {
                 HeadView()

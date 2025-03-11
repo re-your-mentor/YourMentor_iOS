@@ -13,7 +13,7 @@ struct OutgoingProfile: View {
             .resizable()
             .renderingMode(.original)
             .clipShape(Circle())
-            .frame(maxWidth: 55, maxHeight: 55)
+            .frame(maxWidth: 50, maxHeight: 50)
 
     }
 }
@@ -24,7 +24,7 @@ struct IncomingProfile: View {
             .resizable()
             .renderingMode(.original)
             .clipShape(Circle())
-            .frame(maxWidth: 55, maxHeight: 55)
+            .frame(maxWidth: 50, maxHeight: 50 )
     }
 }
 
