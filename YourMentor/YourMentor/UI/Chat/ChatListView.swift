@@ -8,11 +8,8 @@
 import SwiftUI
 
 struct ChatListView: View {
-    
-    @State private var showAlert = false
-    @State private var alertMessage = ""
     @Binding var rooms: [rooms]
-//    let token = PostService.shared.LoadtokenFromKeychain()
+    
     var body: some View {
         ZStack {
             Color.back
@@ -62,7 +59,7 @@ struct ChatListView: View {
                         VStack(spacing: 20) {
                             ForEach(rooms) { room in
                                 NavigationLink(destination: ChatView()) {
-                                    ChatCell(title: room.name, nick: room.creator.nick)
+                                    ChatCell(title: room.name, nick: room.creator.nick, hashtag: room.hashtags.map { $0.name })
                                 }
                             }
                         }
@@ -72,32 +69,5 @@ struct ChatListView: View {
                 .padding(.top)
             }
         }
-//        .onAppear {
-//            chatroomlist()
-//        }
     }
-    
-//    private func chatroomlist() {
-//        ChatService.shared.Chatroomlist(
-//            token: token!
-//        ) { result in
-//            switch result {
-//            case .success(let response):
-//                print("채팅방 목록 조회 성공: \(response)")
-//            case .requestErr(let message):
-//                alertMessage = message as? String ?? "채팅방 목록 조회 실패"
-//                showAlert = true
-//            case .pathErr:
-//                alertMessage = "잘못된 경로 요청입니다."
-//                showAlert = true
-//            case .serverErr:
-//                alertMessage = "서버 오류가 발생했습니다."
-//                showAlert = true
-//            case .networkFail:
-//                alertMessage = "네트워크 연결에 실패했습니다."
-//                showAlert = true
-//            }
-//        }
-//    }
 }
-

@@ -10,6 +10,7 @@ import SwiftUI
 struct ChatCell: View {
     var title: String
     var nick: String
+    var hashtag: [String]
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -24,19 +25,14 @@ struct ChatCell: View {
             }
             HStack {
                 HStack(spacing: 5) {
-                    ForEach(0..<3, id: \.self) { _ in
-                        Hashtag(title: "SwiftUI")
+                    ForEach(hashtag, id: \.self) { tag in
+                        Hashtag(title: tag)
                     }
                 }
-//                Spacer()
             }
             .padding(.bottom)
             Divider()
         }
         .frame(maxWidth: 295)
     }
-}
-
-#Preview {
-    ChatCell(title: "저 안드로이드 개발 중인데 하나도 모르겠습니다.", nick: "밤긋이아바밤규")
 }

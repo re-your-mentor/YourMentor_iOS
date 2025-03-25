@@ -14,10 +14,13 @@ struct ChatAddView: View {
     @State private var description: String = ""
     @State private var selectedHashtags: Set<Int> = []
     
+    @State private var isAddSuccess = false
     @State private var showAlert = false
     @State private var alertMessage = ""
     
     let token = PostService.shared.LoadtokenFromKeychain()
+    
+    @State private var userId: Int = 0
     
     var body: some View {
         ZStack {
@@ -80,6 +83,10 @@ struct ChatAddView: View {
                 HeadView()
                 Spacer()
             }
+            
+            NavigationLink(destination: MainView(selectedTab: 0, userId: userId), isActive: $isAddSuccess) {
+                EmptyView()
+            }
         }
         .alert(isPresented: $showAlert) {
             Alert(title: Text("오류"), message: Text(alertMessage), dismissButton: .default(Text("확인")))
@@ -97,6 +104,8 @@ struct ChatAddView: View {
             switch result {
             case .success(let response):
                 print("채팅방 생성 성공: \(response)")
+                print("선택된 해시태그: \(Array(selectedHashtags))")
+                isAddSuccess = true
             case .requestErr(let message):
                 alertMessage = message as? String ?? "채팅방 생성 실패"
                 showAlert = true

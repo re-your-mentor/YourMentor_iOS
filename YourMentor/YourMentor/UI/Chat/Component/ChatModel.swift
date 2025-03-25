@@ -33,3 +33,14 @@ struct chathashtag: Codable {
     let id: Int
     let title: String
 }
+
+struct ChatroomResponse: Codable {
+    let room: Chatroom
+}
+
+struct Creator: Codable {
+    let id: Int
+    let email: String
+    let nick: String
+    let profile_pic: String
+}
