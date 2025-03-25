@@ -11,7 +11,13 @@ struct ChatAddView: View {
     
     @State private var tag: String = ""
     @State private var title: String = ""
+    @State private var description: String = ""
     @State private var selectedHashtags: Set<Int> = []
+    
+    @State private var showAlert = false
+    @State private var alertMessage = ""
+    
+    let token = PostService.shared.LoadtokenFromKeychain()
     
     var body: some View {
         ZStack {
@@ -30,7 +36,11 @@ struct ChatAddView: View {
                             .font(.system(size: 14))
                     }
                     .fontWeight(.bold)
-                    
+                    VStack(alignment: .leading) {
+                        TextField("설명을 입력해주세요.", text: $description)
+                            .autocapitalization(.none)
+                            .font(.system(size: 17))
+                    }
                     VStack(alignment: .leading) {
                         Text("#태그를 선택해주세요.")
                             .font(.system(size: 15, weight: .semibold))
@@ -42,7 +52,7 @@ struct ChatAddView: View {
                 .padding(.leading)
                 
                 Button {
-                    
+                    chatroomadd()
                 } label: {
                     Text("채팅방 만들기")
                         .font(.system(size: 15, weight: .bold))
@@ -56,7 +66,7 @@ struct ChatAddView: View {
                         .padding(.horizontal, 15)
                 }
                 Spacer()
-                    .frame(height: 180)
+                    .frame(height: 100)
             }
             .frame(maxWidth: .infinity)
             .background(
@@ -71,7 +81,36 @@ struct ChatAddView: View {
                 Spacer()
             }
         }
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("오류"), message: Text(alertMessage), dismissButton: .default(Text("확인")))
+        }
         .navigationBarBackButtonHidden()
+    }
+    
+    private func chatroomadd() {
+        ChatService.shared.Chatroomadd(
+            name: title,
+            description: description,
+            token: token!,
+            hashtags: Array(selectedHashtags)
+        ) { result in
+            switch result {
+            case .success(let response):
+                print("채팅방 생성 성공: \(response)")
+            case .requestErr(let message):
+                alertMessage = message as? String ?? "채팅방 생성 실패"
+                showAlert = true
+            case .pathErr:
+                alertMessage = "잘못된 경로 요청입니다."
+                showAlert = true
+            case .serverErr:
+                alertMessage = "서버 오류가 발생했습니다."
+                showAlert = true
+            case .networkFail:
+                alertMessage = "네트워크 연결에 실패했습니다."
+                showAlert = true
+            }
+        }
     }
 }
 

@@ -76,4 +76,20 @@ struct APIConstants {
     
     // 유저 태그 추가 & 삭제
     static let usertagURL = userURL + "/tag"
+    
+    // 채팅
+    static let chatURL = baseURL + "/chat"
+    
+    // 채팅방 생성 & 조회
+    static let chatroomURL = chatURL + "/rooms"
+    
+    // 채팅방 정보 수정
+    static func chatroomupdataURL(id: Int) -> String {
+        return chatroomURL + "/\(id)"
+    }
+    
+    // 채팅방 참여
+    static func chatroomjoinURL(roomId: Int) -> String {
+        return chatroomURL + "/\(roomId)/join"
+    }
 }

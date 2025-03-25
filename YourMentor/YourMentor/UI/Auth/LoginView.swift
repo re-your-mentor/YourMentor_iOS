@@ -5,10 +5,8 @@
 //  Created by 이다경 on 12/25/24.
 //
 
+// LoginView.swift
 import SwiftUI
-import KakaoSDKUser
-import KakaoSDKAuth
-import RxSwift
 
 struct LoginView: View {
     @State private var email: String = ""
@@ -19,10 +17,7 @@ struct LoginView: View {
     @State private var isLoginSuccess = false
     @State private var isKakaoLogin = false
     
-    @State private var userId: Int!
-    
-    @State private var profileImg: String?
-    @State private var nicname: String?
+    @State private var userId: Int?
     
     var body: some View {
         NavigationStack {
@@ -67,16 +62,13 @@ struct LoginView: View {
             .background(Image("loginback"))
             .padding(.horizontal, 7)
             
-            NavigationLink(destination: MainView(selectedTab: 0, userId: userId), isActive: $isLoginSuccess) {
+            NavigationLink(destination: MainView(selectedTab: 0, userId: userId ?? 0), isActive: $isLoginSuccess) {
                 EmptyView()
             }
-            NavigationLink(destination: MainView(selectedTab: 0, userId: userId), isActive: $isLoginSuccess) {
-                            EmptyView()
-                        }
         }
         .fullScreenCover(isPresented: $isKakaoLogin) {
-                       KakaoLoginView(isLoginSuccess: $isLoginSuccess, userId: $userId)
-                   }
+            KakaoLoginView(isLoginSuccess: $isLoginSuccess, userId: $userId)
+        }
         .alert(isPresented: $showAlert) {
             Alert(title: Text("오류"), message: Text(alertMessage), dismissButton: .default(Text("확인")))
         }
@@ -92,12 +84,8 @@ struct LoginView: View {
             case .success(let loginResponse):
                 if let response = loginResponse as? LoginResponse {
                     print("\(response.message)\nUser\n ID: \(response.user.id)")
-                    print(" Email: \(response.user.email)\n Nick: \(response.user.nick)\nToken: \(response.token)")
-                    
                     self.userId = response.user.id
                     self.isLoginSuccess = true
-                } else {
-                    print("Failed to cast loginResponse to LoginResponse")
                 }
             case .requestErr(let message):
                 alertMessage = message as? String ?? "오류가 발생했습니다."
@@ -114,6 +102,4 @@ struct LoginView: View {
             }
         }
     }
-    
-    
 }

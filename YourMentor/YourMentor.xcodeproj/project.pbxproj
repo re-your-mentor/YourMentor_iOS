@@ -8,8 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		617B889DD1CA99E3D1DE4AA3 /* Pods_YourMentor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D36E1595A4F8B69DB71CCAB /* Pods_YourMentor.framework */; };
+		AF2963D42D90FA6800C02D77 /* ChatModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2963D32D90FA6800C02D77 /* ChatModel.swift */; };
 		AF4D609F2D8000B000635A1A /* KakaoLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF4D609E2D8000B000635A1A /* KakaoLoginView.swift */; };
 		AF4D60A12D8000DD00635A1A /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF4D60A02D8000DD00635A1A /* WebView.swift */; };
+		AF4E584D2D8FE0D500F2114B /* ChatService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF4E584C2D8FE0D500F2114B /* ChatService.swift */; };
 		AF91952C2D7FC4E10025CA9C /* Keyword.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF9195262D7FC4E10025CA9C /* Keyword.swift */; };
 		AF91952D2D7FC4E10025CA9C /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF91950A2D7FC4E10025CA9C /* HomeView.swift */; };
 		AF91952E2D7FC4E10025CA9C /* Signup_Password.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF9194F82D7FC4E10025CA9C /* Signup_Password.swift */; };
@@ -72,9 +74,11 @@
 /* Begin PBXFileReference section */
 		0D36E1595A4F8B69DB71CCAB /* Pods_YourMentor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YourMentor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A23BAB2A6854EB00FADA0FD /* Pods-YourMentor.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YourMentor.debug.xcconfig"; path = "Target Support Files/Pods-YourMentor/Pods-YourMentor.debug.xcconfig"; sourceTree = "<group>"; };
+		AF2963D32D90FA6800C02D77 /* ChatModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatModel.swift; sourceTree = "<group>"; };
 		AF2EA9472D7FC7EF00E4E13C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AF4D609E2D8000B000635A1A /* KakaoLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KakaoLoginView.swift; sourceTree = "<group>"; };
 		AF4D60A02D8000DD00635A1A /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
+		AF4E584C2D8FE0D500F2114B /* ChatService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatService.swift; sourceTree = "<group>"; };
 		AF66A7EC2D1A88170003403B /* YourMentor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YourMentor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AF9194E72D7FC4E10025CA9C /* APIConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIConstants.swift; sourceTree = "<group>"; };
 		AF9194E82D7FC4E10025CA9C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -233,7 +237,9 @@
 			children = (
 				AF9194FD2D7FC4E10025CA9C /* ChatCell.swift */,
 				AF9194FE2D7FC4E10025CA9C /* IncomingBubble.swift */,
+				AF2963D32D90FA6800C02D77 /* ChatModel.swift */,
 				AF9194FF2D7FC4E10025CA9C /* OutgoingtBubble.swift */,
+				AF4E584C2D8FE0D500F2114B /* ChatService.swift */,
 				AF9195002D7FC4E10025CA9C /* Profile.swift */,
 			);
 			path = Component;
@@ -391,7 +397,6 @@
 				AFBF83BC2D7FBA34006750B2 /* KakaoSDKAuth */,
 				AFBF83BE2D7FBA34006750B2 /* KakaoSDKCommon */,
 				AFBF83C02D7FBA34006750B2 /* KakaoSDKUser */,
-				AFA7CA222D7FCF8300287523 /* AlamofireDynamic */,
 			);
 			productName = YourMentor;
 			productReference = AF66A7EC2D1A88170003403B /* YourMentor.app */;
@@ -528,6 +533,7 @@
 				AF91953A2D7FC4E10025CA9C /* HeadView.swift in Sources */,
 				AF91953B2D7FC4E10025CA9C /* PostCell.swift in Sources */,
 				AF91953C2D7FC4E10025CA9C /* APIConstants.swift in Sources */,
+				AF2963D42D90FA6800C02D77 /* ChatModel.swift in Sources */,
 				AF91953D2D7FC4E10025CA9C /* YourMentorApp.swift in Sources */,
 				AF91953E2D7FC4E10025CA9C /* MyView.swift in Sources */,
 				AF91953F2D7FC4E10025CA9C /* ChatListView.swift in Sources */,
@@ -542,6 +548,7 @@
 				AF9195482D7FC4E10025CA9C /* CardLayout.swift in Sources */,
 				AF9195492D7FC4E10025CA9C /* ChatCell.swift in Sources */,
 				AF91954A2D7FC4E10025CA9C /* MyEditView.swift in Sources */,
+				AF4E584D2D8FE0D500F2114B /* ChatService.swift in Sources */,
 				AF91954B2D7FC4E10025CA9C /* UserModel.swift in Sources */,
 				AF91954C2D7FC4E10025CA9C /* NetworkResult.swift in Sources */,
 				AF91954D2D7FC4E10025CA9C /* UserService.swift in Sources */,
@@ -797,11 +804,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		AFA7CA222D7FCF8300287523 /* AlamofireDynamic */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = AFE712282D449D8100CF9EF6 /* XCRemoteSwiftPackageReference "Alamofire" */;
-			productName = AlamofireDynamic;
-		};
 		AFBF83BC2D7FBA34006750B2 /* KakaoSDKAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = AFBF83BB2D7FBA34006750B2 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;

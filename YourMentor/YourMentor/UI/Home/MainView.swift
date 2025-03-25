@@ -102,7 +102,8 @@ struct MainView: View {
 //    @EnvironmentObject var userData: UserJoinData
     @State private var posts: [Posts] = []
     @State private var user: UserDetail?
-    
+    @State private var rooms: [rooms] = []
+    let token = PostService.shared.LoadtokenFromKeychain()
     var userId: Int?
 
     var body: some View {
@@ -124,7 +125,8 @@ struct MainView: View {
                         } else if selectedTab == 2 {
                             PostUploadView(isEditing: .constant(false))
                         } else if selectedTab == 3 {
-                            ChatListView()
+                            ChatListView(rooms: $rooms)
+                                .onAppear { fetchChatroom() }
                         } else if selectedTab == 4 {
                             MyView(user: $user)
                                 .onAppear { fetchUser() }
@@ -147,6 +149,18 @@ struct MainView: View {
                 }
             }
         }
+    
+    private func fetchChatroom() {
+        ChatService.shared.Chatroomlist(token: token!) { result in
+            switch result {
+            case .success(let fetchedChatroom):
+                self.rooms = fetchedChatroom.rooms
+            default:
+                print("게시물 목록 조회 실패")
+            }
+        }
+    }
+
     
     private func fetchUser() {
         UserService.shared.UserDetail(userId: userId ?? 0) { result in

@@ -43,7 +43,6 @@ struct WebView: UIViewRepresentable {
         }
 
         private func extractCode(from url: URL) -> String? {
-            // URL에서 'code' 파라미터를 추출합니다.
             guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
                   let queryItems = components.queryItems else { return nil }
             return queryItems.first(where: { $0.name == "code" })?.value

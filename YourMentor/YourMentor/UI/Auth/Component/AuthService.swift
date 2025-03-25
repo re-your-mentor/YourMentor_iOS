@@ -145,34 +145,6 @@ class AuthService {
         }
     }
     
-    func kakaologin(completion: @escaping (NetworkResult<Any>) -> Void) {
-        let url = APIConstants.kakaoURL
-        let header: HTTPHeaders = ["Content-Type": "application/json"]
-        
-        let dataRequest = AF.request(url,
-                                     method: .get,
-                                     headers: header)
-        
-        dataRequest.responseData { response in
-            switch response.result {
-            case .success(let data):
-                guard let statusCode = response.response?.statusCode else { return }
-                
-                if (200...299).contains(statusCode) {
-                    completion(.success("카카오톡 로그인 요청"))
-                } else {
-                    if let responseString = String(data: data, encoding: .utf8) {
-                        completion(.requestErr(responseString))
-                    } else {
-                        completion(.pathErr)
-                    }
-                }
-            case .failure:
-                completion(.networkFail)
-            }
-        }
-    }
-    
     func savetokentokeychain(_ token: String) {
         guard let tokenData = token.data(using: .utf8) else {
             print("토큰을 Data로 변환하는 데 실패했습니다.")
