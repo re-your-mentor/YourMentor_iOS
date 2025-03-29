@@ -79,7 +79,7 @@ struct KakaoLoginView: UIViewRepresentable {
                     
                     if let accessToken = json["access_token"] as? String {
                         print("Access Token: \(accessToken)")
-//                        self.saveTokenToKeychain(accessToken)
+                        self.saveTokenToUserDefaults(accessToken)
                         self.fetchUserInfo(accessToken: accessToken) // 사용자 정보 요청
                     } else {
                         print("액세스 토큰 요청 실패: \(json)")
@@ -180,6 +180,17 @@ struct KakaoLoginView: UIViewRepresentable {
                     completion(false, nil) // 실패 시 userId를 nil로 전달
                 }
             }.resume()
+        }
+        private func saveTokenToUserDefaults(_ token: String) {
+            UserDefaults.standard.set(token, forKey: "kakaoAccessToken")
+            UserDefaults.standard.synchronize()
+            print("토큰 저장 완료: \(token)")
+        }
+
+        private func loadTokenFromUserDefaults() -> String? {
+            let token = UserDefaults.standard.string(forKey: "kakaoAccessToken")
+            print("저장된 토큰: \(token ?? "토큰 없음")")
+            return token
         }
 
     }

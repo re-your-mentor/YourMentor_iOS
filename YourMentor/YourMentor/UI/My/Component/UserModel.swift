@@ -37,7 +37,7 @@ struct UserNickUpdateRespone: Codable {
 
 struct UsertagAddResponse: Codable {
     let success: Bool
-    let user: User
+    let addedCount: Int
     let addedHashtags: [hashtags]
 }
 

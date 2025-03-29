@@ -18,29 +18,43 @@ struct rooms: Codable, Identifiable {
     let id: Int
     let name: String
     let description: String
+    let creator: roomscreator
+    let hashtags: [chathashtags]
+    let createdAt: String
+}
+
+struct roomscreator: Codable {
+    let id: Int
+    let nick: String
+    let profile_pic: String
+}
+
+struct room: Codable, Identifiable {
+    let id: Int
+    let name: String
+    let description: String
     let userId: Int
     let createdAt: String
     let updatedAt: String
-    let creator: creator
-    let hashtags: [hashtags]
+    let deletedAt: String?
+    let creator: roomcreator
+    let hashtags: [chathashtags]
 }
 
-struct creator: Codable {
-    let nick: String
-}
-
-struct chathashtag: Codable {
-    let id: Int
-    let title: String
-}
-
-struct ChatroomResponse: Codable {
-    let room: Chatroom
-}
-
-struct Creator: Codable {
+struct roomcreator: Codable {
     let id: Int
     let email: String
     let nick: String
-    let profile_pic: String
+    let profile_pic: String?
+}
+
+struct ChatroomResponse: Codable {
+    let room: room
+}
+
+struct chathashtags: Codable {
+    let id: Int
+    let name: String
+    let createdAt: String
+    let updatedAt: String
 }

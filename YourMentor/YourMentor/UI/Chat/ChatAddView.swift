@@ -84,7 +84,7 @@ struct ChatAddView: View {
                 Spacer()
             }
             
-            NavigationLink(destination: MainView(selectedTab: 0, userId: userId), isActive: $isAddSuccess) {
+            NavigationLink(destination: MainView(selectedTab: 3, userId: userId), isActive: $isAddSuccess) {
                 EmptyView()
             }
         }
@@ -99,12 +99,13 @@ struct ChatAddView: View {
             name: title,
             description: description,
             token: token!,
-            hashtags: Array(selectedHashtags)
+            hashtag: Array(selectedHashtags)
         ) { result in
             switch result {
             case .success(let response):
                 print("채팅방 생성 성공: \(response)")
                 print("선택된 해시태그: \(Array(selectedHashtags))")
+                self.userId = response.room.userId
                 isAddSuccess = true
             case .requestErr(let message):
                 alertMessage = message as? String ?? "채팅방 생성 실패"

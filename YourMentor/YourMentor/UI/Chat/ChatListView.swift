@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct ChatListView: View {
-    @Binding var rooms: [rooms]
-    
+//    @Binding var room: [rooms]
+    @State private var rooms: [rooms] = []
+    let token = PostService.shared.LoadtokenFromKeychain()
     var body: some View {
         ZStack {
             Color.back
@@ -59,7 +60,15 @@ struct ChatListView: View {
                         VStack(spacing: 20) {
                             ForEach(rooms) { room in
                                 NavigationLink(destination: ChatView()) {
-                                    ChatCell(title: room.name, nick: room.creator.nick, hashtag: room.hashtags.map { $0.name })
+                                    ChatCell(
+                                        id: room.id,
+                                        title: room.name,
+                                        nick: room.creator.nick,
+                                        hashtag: room.hashtags.map { $0.name },
+                                        onDelete: {
+                                            deleteRoom(id: room.id)
+                                        }
+                                    )
                                 }
                             }
                         }
@@ -69,5 +78,21 @@ struct ChatListView: View {
                 .padding(.top)
             }
         }
+        .onAppear { fetchChatroom() }
+    }
+    
+    private func fetchChatroom() {
+        ChatService.shared.Chatroomlist(token: token!) { result in
+            switch result {
+            case .success(let fetchedChatroom):
+                self.rooms = fetchedChatroom.rooms
+            default:
+                print("게시물 목록 조회 실패")
+            }
+        }
+    }
+    
+    private func deleteRoom(id: Int) {
+        rooms.removeAll { $0.id == id }
     }
 }

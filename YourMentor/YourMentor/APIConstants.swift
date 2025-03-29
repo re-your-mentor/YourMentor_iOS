@@ -83,7 +83,7 @@ struct APIConstants {
     // 채팅방 생성 & 조회
     static let chatroomURL = chatURL + "/rooms"
     
-    // 채팅방 정보 수정
+    // 채팅방 정보 수정 & 삭제
     static func chatroomupdataURL(id: Int) -> String {
         return chatroomURL + "/\(id)"
     }

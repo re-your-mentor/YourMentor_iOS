@@ -17,11 +17,6 @@ struct MyPostsView: View {
                 VStack(alignment: .leading) {
                     let posts = user?.posts ?? []
                     
-                    Text("총 \(posts.count)개")
-                        .font(.system(size: 12, weight: .medium))
-                        .foregroundColor(.gray)
-                        .padding(.leading, 50)
-                    
                     if posts.isEmpty {
                         VStack {
                             Image(systemName: "nosign")
@@ -30,7 +25,12 @@ struct MyPostsView: View {
                             Text("현재 만든 게시물이 없습니다!")
                                 .font(.system(size: 20, weight: .semibold))
                         }
+                        .padding(.top, 100)
                     } else {
+                        Text("총 \(posts.count)개")
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundColor(.gray)
+                            .padding(.leading, 50)
                         PostsView(user: $user)
                     }
                 }
