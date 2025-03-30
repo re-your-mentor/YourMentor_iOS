@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SearchView: View {
-    @Binding var posts: [Posts]
+    @State var posts: [Posts] = []
     @State var searchtext: String = ""
     let service = APIConstants.baseURL + "/img/"
 
@@ -61,7 +61,10 @@ struct SearchView: View {
                                     title: post.title,
                                     date: post.createdAt.toDate() ?? Date(),
                                     like: post.likesCount,
-                                    hashtag: post.Hashtags.map { $0.name }
+                                    hashtag: post.Hashtags.map { $0.name },
+                                    onDelete: {
+                                        deletePost(id: post.id)
+                                    }
                                 )
                             }
                         }
@@ -71,5 +74,20 @@ struct SearchView: View {
             }
         }
         .navigationBarBackButtonHidden(true)
+        .onAppear { fetchPosts() }
+    }
+    
+    private func fetchPosts() {
+        PostService.shared.Postlist { result in
+                switch result {
+                case .success(let fetchedPosts):
+                    self.posts = fetchedPosts.posts
+                default:
+                    print("게시물 목록 조회 실패")
+                }
+            }
+        }
+    private func deletePost(id: Int) {
+        posts.removeAll { $0.id == id }
     }
 }

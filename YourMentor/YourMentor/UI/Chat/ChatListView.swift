@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct ChatListView: View {
-//    @Binding var room: [rooms]
     @State private var rooms: [rooms] = []
     let token = PostService.shared.LoadtokenFromKeychain()
     var body: some View {

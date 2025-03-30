@@ -9,7 +9,8 @@ import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject var userData: UserJoinData
-    @Binding var posts: [Posts]
+//    @Binding var posts: [Posts]
+    @State private var posts: [Posts] = []
     @Binding var user: UserDetail?
     let service = APIConstants.baseURL+"/img/"
 
@@ -41,7 +42,7 @@ struct HomeView: View {
                         .frame(height: 150)
                         .padding(.bottom, 20)
                     
-                    NavigationLink(destination: SearchView(posts: $posts)) {
+                    NavigationLink(destination: SearchView()) {
                         HStack(spacing: 10) {
                             Image(systemName: "magnifyingglass")
                                 .foregroundColor(.gray)
@@ -88,7 +89,10 @@ struct HomeView: View {
                                     date: postDate,
                                     like: post.likesCount,
                                     hashtag: postHashtags,
-                                    img: postImageUrl
+                                    img: postImageUrl,
+                                    onDelete: {
+                                        deletePost(id: post.id)
+                                    }
                                 )
                             }
                             .frame(maxWidth: 295)
@@ -99,6 +103,21 @@ struct HomeView: View {
                 }
             }
         }
+        .onAppear { fetchPosts() }
+    }
+    
+    private func fetchPosts() {
+        PostService.shared.Postlist { result in
+                switch result {
+                case .success(let fetchedPosts):
+                    self.posts = fetchedPosts.posts
+                default:
+                    print("게시물 목록 조회 실패")
+                }
+            }
+        }
+    private func deletePost(id: Int) {
+        posts.removeAll { $0.id == id }
     }
 }
 

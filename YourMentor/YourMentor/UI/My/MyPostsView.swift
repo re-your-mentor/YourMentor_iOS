@@ -31,7 +31,7 @@ struct MyPostsView: View {
                             .font(.system(size: 12, weight: .medium))
                             .foregroundColor(.gray)
                             .padding(.leading, 50)
-                        PostsView(user: $user)
+                        PostsView(userId: user?.user_id ?? 0)
                     }
                 }
                 .padding(.top, 30)
@@ -41,39 +41,70 @@ struct MyPostsView: View {
 }
 
 struct PostsView: View {
-    @Binding var user: UserDetail?
-    let service = APIConstants.baseURL+"/img/"
+    @State var userId: Int
+    @State private var posts: [UserPosts] = []
+    @State private var user: UserDetail?
+    let service = APIConstants.baseURL + "/img/"
     
     var body: some View {
         LazyVStack {
-            let posts = user?.posts ?? []
-            
-            ForEach(posts, id: \.id) { post in
-                let postDate = post.createdAt.toDate() ?? Date()
-                let postHashtags = post.hashtags.map { $0.name }
-                let postImageURLs = post.img.map { service + "\($0)" }
-                let userNickname = user?.nick ?? "알 수 없음"
-                
-                NavigationLink(
-                    destination: PostDetailView(
-                        id: post.id,
-                        title: post.title,
-                        date: postDate,
-                        nickname: userNickname,
-                        content: post.content,
-                        hashtag: postHashtags,
-                        img: postImageURLs
-                    )
-                ) {
-                    PostCell(
-                        id: post.id,
-                        title: post.title,
-                        date: postDate,
-                        like: post.likesCount,
-                        hashtag: postHashtags
-                    )
+            if posts.isEmpty {
+                Text("게시물이 없습니다.")
+                    .foregroundColor(.gray)
+                    .padding(.top, 50)
+            } else {
+                ForEach(posts, id: \.id) { post in
+                    let postDate = post.createdAt.toDate() ?? Date()
+                    let postHashtags = post.hashtags.map { $0.name }
+                    let postImageURLs = post.img.map { service + "\($0)" }
+                    let userNickname = user?.nick ?? "알 수 없음"
+                    
+                    NavigationLink(
+                        destination: PostDetailView(
+                            id: post.id,
+                            title: post.title,
+                            date: postDate,
+                            nickname: userNickname,
+                            content: post.content,
+                            hashtag: postHashtags,
+                            img: postImageURLs
+                        )
+                    ) {
+                        PostCell(
+                            id: post.id,
+                            title: post.title,
+                            date: postDate,
+                            like: post.likesCount,
+                            hashtag: postHashtags,
+                            onDelete: {
+                                deletePost(id: post.id)
+                            }
+                        )
+                    }
                 }
             }
         }
+        .onAppear {
+            fetchUser()
+        }
+    }
+    
+    private func fetchUser() {
+        UserService.shared.UserDetail(userId: userId) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let fetchedUser):
+                    print("사용자 데이터: \(fetchedUser)")
+                    self.user = fetchedUser
+                    self.posts = fetchedUser.posts
+                default:
+                    print("게시물 목록 조회 실패")
+                }
+            }
+        }
+    }
+    
+    private func deletePost(id: Int) {
+        posts.removeAll { $0.id == id }
     }
 }

@@ -14,6 +14,7 @@ struct CardLayout: View {
     var like: Int
     var hashtag: [String]
     var img: String?
+    var onDelete: () -> Void
 
     @State private var isSheetPresented = false
     @State private var showMenu = false
@@ -179,7 +180,7 @@ struct CardLayout: View {
                 print("게시물 삭제 성공")
                 alertMessage = "게시물이 성공적으로 삭제되었습니다."
                 showAlert = true
-
+                onDelete()
             case .requestErr(let message):
                 alertMessage = "오류:\n\(message ?? "알 수 없는 오류")"
                 showAlert = true

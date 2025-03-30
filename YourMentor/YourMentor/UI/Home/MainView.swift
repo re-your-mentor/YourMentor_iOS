@@ -112,16 +112,16 @@ struct MainView: View {
 //                MainHeaderView(isSearchActive: $isSearchActive)
                 
                 if isSearchActive {
-                    SearchView(posts: $posts)
+                    SearchView()
                 } else {
                     VStack {
                         if selectedTab == 0 {
-                            HomeView(posts: $posts, user: $user)
-                                .onAppear { fetchPosts() }
+                            HomeView(user: $user)
+//                                .onAppear { fetchPosts() }
                                 .onAppear { fetchUser() }
                         } else if selectedTab == 1 {
-                            PostListView(posts: $posts)
-                                .onAppear { fetchPosts() }
+                            PostListView()
+//                                .onAppear { fetchPosts() }
                         } else if selectedTab == 2 {
                             PostUploadView(isEditing: .constant(false))
                         } else if selectedTab == 3 {
@@ -138,16 +138,16 @@ struct MainView: View {
         .navigationBarBackButtonHidden()
     }
     
-    private func fetchPosts() {
-        PostService.shared.Postlist { result in
-                switch result {
-                case .success(let fetchedPosts):
-                    self.posts = fetchedPosts.posts
-                default:
-                    print("게시물 목록 조회 실패")
-                }
-            }
-        }
+//    private func fetchPosts() {
+//        PostService.shared.Postlist { result in
+//                switch result {
+//                case .success(let fetchedPosts):
+//                    self.posts = fetchedPosts.posts
+//                default:
+//                    print("게시물 목록 조회 실패")
+//                }
+//            }
+//        }
 
     private func fetchUser() {
         UserService.shared.UserDetail(userId: userId ?? 0) { result in
