@@ -69,6 +69,7 @@
 		AFBF83BF2D7FBA34006750B2 /* KakaoSDKCommon in Frameworks */ = {isa = PBXBuildFile; productRef = AFBF83BE2D7FBA34006750B2 /* KakaoSDKCommon */; };
 		AFBF83C12D7FBA34006750B2 /* KakaoSDKUser in Frameworks */ = {isa = PBXBuildFile; productRef = AFBF83C02D7FBA34006750B2 /* KakaoSDKUser */; };
 		AFE7122A2D449D8100CF9EF6 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = AFE712292D449D8100CF9EF6 /* Alamofire */; };
+		AFEEA2612D99235700B62951 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFEEA2602D99235700B62951 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -133,6 +134,7 @@
 		AF9195262D7FC4E10025CA9C /* Keyword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keyword.swift; sourceTree = "<group>"; };
 		AF9195282D7FC4E10025CA9C /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		AF91952B2D7FC4E10025CA9C /* YourMentorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YourMentorApp.swift; sourceTree = "<group>"; };
+		AFEEA2602D99235700B62951 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E2F998FC525B4C55531DCDD7 /* Pods-YourMentor.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YourMentor.release.xcconfig"; path = "Target Support Files/Pods-YourMentor/Pods-YourMentor.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -189,6 +191,7 @@
 				AF9194ED2D7FC4E10025CA9C /* Preview Content */,
 				AF91952A2D7FC4E10025CA9C /* UI */,
 				AF91952B2D7FC4E10025CA9C /* YourMentorApp.swift */,
+				AFEEA2602D99235700B62951 /* AppDelegate.swift */,
 				AF2EA9472D7FC7EF00E4E13C /* Info.plist */,
 			);
 			path = YourMentor;
@@ -549,6 +552,7 @@
 				AF9195492D7FC4E10025CA9C /* ChatCell.swift in Sources */,
 				AF91954A2D7FC4E10025CA9C /* MyEditView.swift in Sources */,
 				AF4E584D2D8FE0D500F2114B /* ChatService.swift in Sources */,
+				AFEEA2612D99235700B62951 /* AppDelegate.swift in Sources */,
 				AF91954B2D7FC4E10025CA9C /* UserModel.swift in Sources */,
 				AF91954C2D7FC4E10025CA9C /* NetworkResult.swift in Sources */,
 				AF91954D2D7FC4E10025CA9C /* UserService.swift in Sources */,

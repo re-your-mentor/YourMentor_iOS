@@ -18,8 +18,8 @@ struct YourMentorApp: App {
         WindowGroup {
             LoginView()
                 .onOpenURL { url in
-                    if (AuthApi.isKakaoTalkLoginUrl(url)) {
-                        _ = AuthController.handleOpenUrl(url: url)
+                    if AuthApi.isKakaoTalkLoginUrl(url) {
+                        AuthController.handleOpenUrl(url: url)
                     }
                 }
         }

@@ -80,7 +80,7 @@ struct KakaoLoginView: UIViewRepresentable {
                     if let accessToken = json["access_token"] as? String {
                         print("Access Token: \(accessToken)")
                         self.saveTokenToUserDefaults(accessToken)
-                        self.fetchUserInfo(accessToken: accessToken) // 사용자 정보 요청
+                        self.fetchUserInfo(accessToken: accessToken)
                     } else {
                         print("액세스 토큰 요청 실패: \(json)")
                     }
@@ -105,19 +105,17 @@ struct KakaoLoginView: UIViewRepresentable {
                 if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
                     print("사용자 정보: \(json)")
 
-                    if let kakaoId = json["id"] as? Int { // 카카오 snsId 추출
-                        // 회원가입 또는 로그인 요청
-                        self.registerUser(kakaoId: kakaoId, accessToken: accessToken) { success, userId in // userId를 registerUser에서 받아옴
-                            if success, let userId = userId {
-                                DispatchQueue.main.async {
-                                    self.parent.isLoginSuccess = true
-                                    self.parent.userId = userId // 서버에서 받은 userId 저장
-                                }
-                            } else {
-                                print("회원가입/로그인 실패")
-                                // 실패 처리 (예: 에러 메시지 표시)
-                            }
-                        }
+                    if let kakaoId = json["id"] as? Int {
+//                        self.registerUser(kakaoId: kakaoId, accessToken: accessToken) { success, userId in
+//                            if success, let userId = userId {
+//                                DispatchQueue.main.async {
+//                                    self.parent.isLoginSuccess = true
+//                                    self.parent.userId = userId
+//                                }
+//                            } else {
+//                                print("회원가입/로그인 실패")
+//                            }
+//                        }
                     } else {
                         print("사용자 ID 없음")
                     }
@@ -127,60 +125,6 @@ struct KakaoLoginView: UIViewRepresentable {
             }.resume()
         }
 
-        private func registerUser(kakaoId: Int, accessToken: String, completion: @escaping (Bool, Int?) -> Void) {
-            let url = URL(string: "http://3.148.49.139:8000/auth/signup")!
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-            let body: [String: Any] = [
-                "snsId": kakaoId,
-                "provider": "kakao",
-                "nickname": "카카오사용자", // 실제 닉네임 값으로 수정 필요
-                "profile_image": "기본이미지URL"
-            ]
-
-            do {
-                request.httpBody = try JSONSerialization.data(withJSONObject: body)
-            } catch {
-                print("JSON 변환 실패: \(error)")
-                completion(false, nil) // 실패 시 userId를 nil로 전달
-                return
-            }
-
-            URLSession.shared.dataTask(with: request) { data, response, error in
-                guard let httpResponse = response as? HTTPURLResponse,
-                      let data = data,
-                      error == nil else {
-                    print("회원가입/로그인 네트워크 에러: \(error?.localizedDescription ?? "")")
-                    completion(false, nil) // 실패 시 userId를 nil로 전달
-                    return
-                }
-
-                if httpResponse.statusCode == 200 || httpResponse.statusCode == 201 { // 성공
-                    if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-                       let userId = json["userId"] as? Int {
-                        completion(true, userId) // 성공 시 userId 전달
-                    } else {
-                        print("userId 추출 실패")
-                        completion(false, nil) // 실패 시 userId를 nil로 전달
-                    }
-                } else if httpResponse.statusCode == 409 { // 이미 가입된 사용자
-                     if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-                        let userId = json["userId"] as? Int {
-                        completion(true, userId) // 성공 시 userId 전달
-                     } else {
-                         print("userId 추출 실패 (기존 사용자)")
-                         completion(false, nil) // 실패 시 userId를 nil로 전달
-                     }
-
-                } else {
-                    print("회원가입/로그인 실패: \(httpResponse.statusCode)")
-                    completion(false, nil) // 실패 시 userId를 nil로 전달
-                }
-            }.resume()
-        }
         private func saveTokenToUserDefaults(_ token: String) {
             UserDefaults.standard.set(token, forKey: "kakaoAccessToken")
             UserDefaults.standard.synchronize()

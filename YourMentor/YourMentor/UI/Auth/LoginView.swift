@@ -5,7 +5,6 @@
 //  Created by 이다경 on 12/25/24.
 //
 
-// LoginView.swift
 import SwiftUI
 
 struct LoginView: View {
@@ -50,12 +49,12 @@ struct LoginView: View {
                         }) {
                             AuthButton(text: "Login")
                         }
-                        Button(action: {
-                            isKakaoLogin.toggle()
-                        }) {
-                            KakaoButton()
-                                .padding(.top)
-                        }
+//                        Button(action: {
+//                            isKakaoLogin.toggle()
+//                        }) {
+//                            KakaoButton()
+//                                .padding(.top)
+//                        }
                     }
                 }
             }
@@ -66,9 +65,9 @@ struct LoginView: View {
                 EmptyView()
             }
         }
-        .fullScreenCover(isPresented: $isKakaoLogin) {
-            KakaoLoginView(isLoginSuccess: $isLoginSuccess, userId: $userId)
-        }
+//        .fullScreenCover(isPresented: $isKakaoLogin) {
+//            KakaoLoginView(isLoginSuccess: $isLoginSuccess, userId: $userId)
+//        }
         .alert(isPresented: $showAlert) {
             Alert(title: Text("오류"), message: Text(alertMessage), dismissButton: .default(Text("확인")))
         }
